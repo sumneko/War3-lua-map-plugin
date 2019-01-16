@@ -63,21 +63,26 @@ local function isOpenByYDWE(w2l)
     return false
 end
 
+local function preventImportLua(w2l)
+    local file_save = w2l.file_save
+    function w2l:file_save(type, name, buf)
+        if type == 'scripts' and name ~= 'blizzard.j' and name ~= 'common.j' then
+            return
+        end
+        return file_save(self, type, name, buf)
+    end
+end
+
 function mt:on_full(w2l)
     if isOpenByYDWE(w2l) then
+        preventImportLua(w2l)
         return
     end
     if w2l.setting.remove_we_only then
         injectFiles(w2l)
     else
         injectFiles(w2l)
-        local file_save = w2l.file_save
-        function w2l:file_save(type, name, buf)
-            if type == 'scripts' and name ~= 'blizzard.j' and name ~= 'common.j' then
-                return
-            end
-            return file_save(self, type, name, buf)
-        end
+        preventImportLua(w2l)
     end
 end
 
