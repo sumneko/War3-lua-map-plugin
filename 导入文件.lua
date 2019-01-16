@@ -2,7 +2,7 @@ local mt = {}
 
 mt.info = {
     name = '导入文件',
-    version = 1.0,
+    version = 1.1,
     author = '最萌小汐',
     description = '导入底层需要的文件'
 }

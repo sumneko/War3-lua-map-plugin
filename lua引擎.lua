@@ -2,7 +2,7 @@ local mt = {}
 
 mt.info = {
     name = 'lua引擎',
-    version = 1.1,
+    version = 1.2,
     author = '最萌小汐',
     description = '让obj格式的地图使用本地的lua脚本。'
 }
@@ -48,28 +48,29 @@ local function injectFiles(w2l)
     end
 end
 
-local function reduceJass(w2l, name)
-    local buf = w2l:file_load('map', name)
-    if not buf then
-        return
+local function isOpenByYDWE(w2l)
+    if w2l.input_mode ~= 'lni' then
+        return false
     end
-    buf = buf:gsub('//Lua 引擎开始.-//Lua 引擎结束', '')
-    w2l:file_save('map', name, buf)
-end
-
-local function reduceFiles(w2l)
-    w2l:file_remove('map', '_luapath.lua')
-    w2l:file_remove('map', 'scripts\\_currentpath.lua')
-    reduceJass(w2l, 'war3map.j')
-    reduceJass(w2l, 'scripts\\war3map.j')
+    if w2l.setting.mode ~= 'obj' then
+        return false
+    end
+    for _, plugin in ipairs(w2l.plugins) do
+        if plugin.info.name == '日志路径' then
+            return true
+        end
+    end
+    return false
 end
 
 function mt:on_full(w2l)
-    if w2l.setting.mode == 'lni' then
-        reduceFiles(w2l)
-    elseif w2l.setting.remove_we_only then
+    if isOpenByYDWE(w2l) then
+        return
+    end
+    if w2l.setting.remove_we_only then
         injectFiles(w2l)
     else
+        injectFiles(w2l)
         local file_save = w2l.file_save
         function w2l:file_save(type, name, buf)
             if type == 'scripts' and name ~= 'blizzard.j' and name ~= 'common.j' then
@@ -77,21 +78,6 @@ function mt:on_full(w2l)
             end
             return file_save(self, type, name, buf)
         end
-
-        if not w2l:file_load('map', 'scripts\\_currentpath.lua') then
-            injectFiles(w2l)
-        end
-    end
-end
-
-function mt:on_pack(w2l, output_ar)
-    local buf = injectJass(w2l, output_ar:get 'war3map.j')
-    if buf then
-        output_ar:set('war3map.j', buf)
-    end
-    local buf = injectJass(w2l, output_ar:get 'scripts\\war3map.j')
-    if buf then
-        output_ar:set('scripts\\war3map.j', buf)
     end
 end
 
