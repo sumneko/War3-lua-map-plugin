@@ -150,7 +150,7 @@ function ac.unit(handle)
         _name = name,
         _data = data,
         _slk = slkUnit,
-        _owner = ac.player(1+jass.GetPlayerId(jass.GetOwningPlayer(handle))),
+        _owner = ac.player(jass.GetOwningPlayer(handle)),
         _collision = ac.toNumber(slkUnit.collision),
     }, mt)
     dbg.gchash(u, handle)

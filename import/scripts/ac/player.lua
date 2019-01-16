@@ -4,23 +4,21 @@ local unit = require 'ac.unit'
 local MIN_ID = 1
 local MAX_ID = 16
 local LocalPlayer
-local All = {}
+local All
 local mt = {}
 
-local function create(id)
-    if id < MIN_ID or id > MAX_ID then
-        return nil
+local function init()
+    All = {}
+    for id = MIN_ID, MAX_ID do
+        local handle = jass.Player(id - 1)
+        local player = setmetatable({
+            _handle = handle,
+            _id = id,
+            _hero = {}
+        }, mt)
+        All[id] = player
+        All[handle] = player
     end
-    local handle = jass.Player(id - 1)
-    local player = setmetatable({
-        _handle = handle,
-        _id = id,
-        _hero = {}
-    }, mt)
-    All[id] = player
-    All[handle] = player
-
-    return player
 end
 
 mt.__index = mt
@@ -98,8 +96,8 @@ function mt:eventNotify(name, ...)
 end
 
 function ac.player(id)
-    if not All[id] then
-        return create(id)
+    if not All then
+        init()
     end
     return All[id]
 end
