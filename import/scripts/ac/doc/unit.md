@@ -189,3 +189,9 @@ unit:walk(point/unit)
 unit:attack(point/unit)
     -> boolean
 ```
+
+### blink
+```lua
+unit:blink(point)
+    -> boolean
+```

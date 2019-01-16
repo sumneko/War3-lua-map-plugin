@@ -304,12 +304,26 @@ function mt:getPoint()
 end
 
 function mt:setPoint(point)
+    if self._removed then
+        return false
+    end
     local x, y = point:getXY()
     jass.SetUnitX(self._handle, x)
     jass.SetUnitY(self._handle, y)
     if self._lastPoint then
         self._lastPoint = point
     end
+    return true
+end
+
+function mt:blink(point)
+    if not self:isAlive() then
+        return false
+    end
+    if not self:setPoint(point) then
+        return false
+    end
+    return true
 end
 
 function mt:getOwner()

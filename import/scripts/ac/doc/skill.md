@@ -39,3 +39,9 @@ skill:loadString(string)
 skill:getOrder()
     -> string
 ```
+
+### getTarget
+```lua
+skill:getTarget()
+    -> unit/point
+```

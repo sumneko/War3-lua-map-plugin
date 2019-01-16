@@ -513,15 +513,18 @@ function mt:castByClient(target, x, y)
     local cast
     if self.targetType == '点' then
         cast = createCast(self)
+        cast._targetType = '点'
         cast._targetPoint = ac.point(x, y)
     elseif self.targetType == '单位' then
         if not target then
             return false
         end
         cast = createCast(self)
+        cast._targetType = '单位'
         cast._targetUnit = ac.point(x, y)
     elseif self.targetType == '单位或点' then
         cast = createCast(self)
+        cast._targetType = '单位或点'
         cast._targetUnit = target
         cast._targetPoint = ac.point(x, y)
     else
@@ -529,6 +532,22 @@ function mt:castByClient(target, x, y)
     end
 
     onCastStart(cast)
+end
+
+function mt:getTarget()
+    if self._targetType == '点' then
+        return self._targetPoint
+    elseif self._targetType == '单位' then
+        return self._targetUnit
+    elseif self._targetType == '单位或点' then
+        if self._targetUnit then
+            return self._targetUnit
+        else
+            return self._targetPoint
+        end
+    else
+        return nil
+    end
 end
 
 ac.skill = setmetatable({}, {
