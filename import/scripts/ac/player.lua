@@ -1,4 +1,5 @@
 local jass = require 'jass.common'
+local unit = require 'ac.unit'
 
 local MIN_ID = 1
 local MAX_ID = 16
@@ -59,6 +60,10 @@ function mt:selectUnit(unit)
         jass.ClearSelection()
         jass.SelectUnit(unit._handle, true)
     end
+end
+
+function mt:createUnit(name, point, face)
+    return unit.create(self, name, point, face)
 end
 
 function mt:event(name, f)

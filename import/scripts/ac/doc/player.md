@@ -23,6 +23,12 @@ player:getHero([index: integer])
 player:selectUnit(unit)
 ```
 
+### createUnit
+```lua
+player:createUnit(name, point, face)
+    -> unit
+```
+
 ### event
 ```lua
 player:event(name: string, callback: function)
