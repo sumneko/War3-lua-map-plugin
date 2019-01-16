@@ -19,7 +19,7 @@ end
 
 local function preventRemoveFiles(w2l)
     local fsRemove = fs.remove
-    local len = #w2l.path:string()
+    local len = #w2l.setting.output:string()
     function fs.remove(path)
         local name = path:string():sub(len+2):gsub('/', '\\')
         if name:sub(1, #'w3x2lni\\plugin\\'):lower() == 'w3x2lni\\plugin\\' then
