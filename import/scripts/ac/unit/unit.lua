@@ -248,7 +248,13 @@ function mt:hasRestriction(k)
 end
 
 function mt:isAlive()
-    return not self._dead
+    if self._removed then
+        return false
+    end
+    if self._dead then
+        return false
+    end
+    return true
 end
 
 function mt:isHero()
@@ -411,15 +417,47 @@ function mt:eventNotify(name, ...)
 end
 
 function mt:moverTarget(data)
+    if self._removed then
+        return nil
+    end
     data.source = self
     data.moverType = 'target'
     return mover.create(data)
 end
 
 function mt:moverLine(data)
+    if self._removed then
+        return nil
+    end
     data.source = self
     data.moverType = 'line'
     return mover.create(data)
+end
+
+function mt:walk(point)
+    if self._removed then
+        return false
+    end
+    if not ac.isPoint(point) then
+        return false
+    end
+    local x, y = point:getXY()
+    jass.IssuePointOrderById(self._handle, ORDER['move'], x, y)
+    return true
+end
+
+function mt:attack(target)
+    if self._removed then
+        return false
+    end
+    if not ac.isUnit(target) then
+        return false
+    end
+    if not target:isAlive() then
+        return false
+    end
+    jass.IssueTargetOrderById(self._handle, ORDER['attack'], target._handle)
+    return true
 end
 
 return {
