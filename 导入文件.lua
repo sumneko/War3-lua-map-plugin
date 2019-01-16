@@ -17,18 +17,7 @@ local function scanDir(dir, callback)
     end
 end
 
-function mt:on_convert(w2l)
-    -- TODO 如果是YDWE打开lni地图，则不执行以下代码
-    if w2l.setting.mode == 'obj' and w2l.log_path:filename():string() == 'w3x2lni' then
-        return
-    end
-    if w2l.setting.mode == 'lni' then
-        return
-    end
-    if w2l.input_mode ~= 'lni' then
-        return
-    end
-
+local function importFiles(w2l)
     local needInsideLua = w2l.setting.remove_we_only
     local basePath = 'w3x2lni\\plugin\\import\\'
     local list = w2l.input_ar:list_file()
@@ -50,6 +39,33 @@ function mt:on_convert(w2l)
             table.remove(list, i)
         end
     end
+end
+
+local function isOpenByYDWE(w2l)
+    if w2l.input_mode ~= 'lni' then
+        return false
+    end
+    if w2l.setting.mode ~= 'obj' then
+        return false
+    end
+    for _, plugin in ipairs(w2l.plugins) do
+        if plugin.info.name == '日志路径' then
+            return true
+        end
+    end
+    return false
+end
+
+function mt:on_convert(w2l)
+    -- TODO 如果是YDWE打开lni地图，则不执行以下代码
+    if isOpenByYDWE() then
+        return
+    end
+    if w2l.setting.mode == 'lni' then
+        return
+    end
+
+    importFiles(w2l)
 end
 
 return mt
