@@ -177,3 +177,15 @@ unit:moverTarget(data)
 unit:moverLine(data)
     -> mover
 ```
+
+### walk
+```lua
+unit:walk(point/unit)
+    -> boolean
+```
+
+### attack
+```lua
+unit:attack(point/unit)
+    -> boolean
+```

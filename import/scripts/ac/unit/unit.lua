@@ -450,30 +450,38 @@ function mt:moverLine(data)
     return mover.create(data)
 end
 
-function mt:walk(point)
+function mt:walk(target)
     if self._removed then
         return false
     end
-    if not ac.isPoint(point) then
-        return false
+    if ac.isPoint(target) then
+        local x, y = target:getXY()
+        return jass.IssuePointOrderById(self._handle, ORDER['move'], x, y)
+    elseif ac.isUnit(target) then
+        if not target:isAlive() then
+            return false
+        end
+        return jass.IssueTargetOrderById(self._handle, ORDER['move'], target._handle)
     end
-    local x, y = point:getXY()
-    jass.IssuePointOrderById(self._handle, ORDER['move'], x, y)
-    return true
+    log.error('walk的目标必须是点或单位')
+    return false
 end
 
 function mt:attack(target)
     if self._removed then
         return false
     end
-    if not ac.isUnit(target) then
-        return false
+    if ac.isPoint(target) then
+        local x, y = target:getXY()
+        return jass.IssuePointOrderById(self._handle, ORDER['attack'], x, y)
+    elseif ac.isUnit(target) then
+        if not target:isAlive() then
+            return false
+        end
+        return jass.IssueTargetOrderById(self._handle, ORDER['attack'], target._handle)
     end
-    if not target:isAlive() then
-        return false
-    end
-    jass.IssueTargetOrderById(self._handle, ORDER['attack'], target._handle)
-    return true
+    log.error('attack的目标必须是点或单位')
+    return false
 end
 
 return {
