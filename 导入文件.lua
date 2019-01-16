@@ -2,7 +2,7 @@ local mt = {}
 
 mt.info = {
     name = '导入文件',
-    version = 1.1,
+    version = 1.2,
     author = '最萌小汐',
     description = '导入底层需要的文件'
 }
@@ -66,12 +66,25 @@ local function removePlugin(w2l)
     end
 end
 
+local function preventRemoveFiles(w2l)
+    local fsRemove = fs.remove
+    local len = #w2l.path:string()
+    function fs.remove(path)
+        local name = path:string():sub(len+2):gsub('/', '\\')
+        if name:sub(1, #'w3x2lni\\plugin\\'):lower() == 'w3x2lni\\plugin\\' then
+            return
+        end
+        fsRemove(path)
+    end
+end
+
 function mt:on_convert(w2l)
     if isOpenByYDWE(w2l) then
         removePlugin(w2l)
         return
     end
     if w2l.setting.mode == 'lni' then
+        preventRemoveFiles(w2l)
         return
     end
 
