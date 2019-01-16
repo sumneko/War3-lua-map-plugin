@@ -24,6 +24,7 @@ local function create(id)
 end
 
 mt.__index = mt
+mt.type = 'player'
 
 function mt:addHero(unit)
     if self._hero[unit] then
@@ -50,9 +51,18 @@ end
 
 function mt:getHero(n)
     if n == nil then
-        n = 1
+        for _, hero in ipairs(self._hero) do
+            if hero._owner == self then
+                return hero
+            end
+        end
+    else
+        local hero = self._hero[n]
+        if hero and hero._owner == self then
+            return hero
+        end
     end
-    return self._hero[n]
+    return nil
 end
 
 function mt:selectUnit(unit)

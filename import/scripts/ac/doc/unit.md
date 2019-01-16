@@ -85,6 +85,12 @@ unit:getOwner()
     -> player
 ```
 
+### setOwner
+```lua
+unit:setOwner(player[, changeColor: boolean])
+    -> boolean
+```
+
 ### particle
 ```lua
 unit:particle(model: string, socket: string)

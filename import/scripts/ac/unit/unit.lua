@@ -316,6 +316,22 @@ function mt:getOwner()
     return self._owner
 end
 
+function mt:setOwner(player, changeColor)
+    if player == self._owner then
+        return false
+    end
+    if not ac.isPlayer(player) then
+        return false
+    end
+    jass.SetUnitOwner(self._handle, player._handle, ac.toBoolean(changeColor))
+    local newOwner = ac.player(jass.GetOwningPlayer(self._handle))
+    if newOwner == self._owner then
+        return false
+    end
+    self._owner = newOwner
+    return true
+end
+
 function mt:particle(model, socket)
     local handle = jass.AddSpecialEffectTarget(model, self._handle, socket)
     if handle == 0 then

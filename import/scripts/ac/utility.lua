@@ -8,6 +8,10 @@ function ac.isPoint(obj)
     return type(obj) == 'table' and obj.type == 'point'
 end
 
+function ac.isPlayer(obj)
+    return type(obj) == 'table' and obj.type == 'player'
+end
+
 function ac.isNumber(obj)
     return type(obj) == 'number'
 end
@@ -26,6 +30,14 @@ function ac.toInteger(obj, default)
         return int
     else
         return default or 0
+    end
+end
+
+function ac.toBoolean(obj)
+    if obj then
+        return true
+    else
+        return false
     end
 end
 
