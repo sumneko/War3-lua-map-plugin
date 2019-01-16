@@ -10,6 +10,7 @@ local skill = require 'ac.skill'
 local ORDER = require 'ac.war3.order'
 
 local All = {}
+local UNIT_LIST = ac.list()
 local IdMap
 
 local function getIdMap()
@@ -31,11 +32,10 @@ local function getIdMap()
 end
 
 local function update(delta)
-    -- 由于key是整数，因此遍历顺序是固定的
-    for handle, u in pairs(All) do
+    for u in UNIT_LIST:pairs() do
         if u._dead then
             -- 如果单位死亡后被魔兽移除，则在Lua中移除
-            if jass.GetUnitTypeId(handle) == 0 then
+            if jass.GetUnitTypeId(u._handle) == 0 then
                 u:remove()
                 goto CONTINUE
             end
@@ -52,6 +52,7 @@ local function update(delta)
         end
         ::CONTINUE::
     end
+    UNIT_LIST:clean()
 end
 
 local function createDestructor(unit, callback)
@@ -158,6 +159,7 @@ function ac.unit(handle)
     u._gchash = handle
 
     All[handle] = u
+    UNIT_LIST:insert(u)
 
     if class == '生物' then
         -- 初始化单位属性
@@ -288,6 +290,7 @@ function mt:remove()
     end
     local handle = self._handle
     All[handle] = nil
+    UNIT_LIST:remove(self)
     jass.RemoveUnit(handle)
     onRemove(self)
 
