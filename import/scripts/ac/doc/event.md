@@ -42,12 +42,12 @@ end)
 
 ### 玩家-选中单位
 ```lua
-unit:event('玩家-选中单位', function (trg, player, unit)
+player:event('玩家-选中单位', function (trg, player, unit)
 end)
 ```
 
 ### 玩家-取消选中
 ```lua
-unit:event('玩家-取消选中', function (trg, player, unit)
+player:event('玩家-取消选中', function (trg, player, unit)
 end)
 ```
