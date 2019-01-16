@@ -67,24 +67,18 @@ local function removePlugin(w2l)
 end
 
 local function preventRemoveFiles(w2l)
-    local fsRemove = fs.remove
-    local len = #w2l.path:string()
-    function fs.remove(path)
-        local name = path:string():sub(len+2):gsub('/', '\\')
-        if name:sub(1, #'w3x2lni\\plugin\\'):lower() == 'w3x2lni\\plugin\\' then
-            return
-        end
-        fsRemove(path)
-    end
+    -- 导入一个插件，用于阻止保存地图时删除本地插件，这个插件会自我删除
+    w2l:file_save('w3x2lni', '.config', '阻止删除本地插件')
+    w2l:file_save('w3x2lni', '阻止删除本地插件.lua', io.load(w2l.root / 'w3x2lni' / '阻止删除本地插件'))
 end
 
 function mt:on_convert(w2l)
     if isOpenByYDWE(w2l) then
         removePlugin(w2l)
+        preventRemoveFiles(w2l)
         return
     end
     if w2l.setting.mode == 'lni' then
-        preventRemoveFiles(w2l)
         return
     end
 
