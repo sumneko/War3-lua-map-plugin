@@ -58,7 +58,7 @@ end
 
 function mt:on_convert(w2l)
     -- TODO 如果是YDWE打开lni地图，则不执行以下代码
-    if isOpenByYDWE() then
+    if isOpenByYDWE(w2l) then
         return
     end
     if w2l.setting.mode == 'lni' then
