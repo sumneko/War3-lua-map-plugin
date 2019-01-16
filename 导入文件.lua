@@ -56,9 +56,19 @@ local function isOpenByYDWE(w2l)
     return false
 end
 
+local function removePlugin(w2l)
+    local set = w2l.output_ar.set
+    function w2l.output_ar:set(name, buf)
+        if name:sub(1, #'w3x2lni\\plugin\\') == 'w3x2lni\\plugin\\' then
+            return
+        end
+        set(self, name, buf)
+    end
+end
+
 function mt:on_convert(w2l)
-    -- TODO 如果是YDWE打开lni地图，则不执行以下代码
     if isOpenByYDWE(w2l) then
+        removePlugin(w2l)
         return
     end
     if w2l.setting.mode == 'lni' then
