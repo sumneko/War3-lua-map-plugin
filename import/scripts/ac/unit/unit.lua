@@ -501,6 +501,14 @@ function mt:attack(target)
     return false
 end
 
+function mt:reborn(point, showEffect)
+    if not self:isHero() then
+        return false
+    end
+    local x, y = point:getXY()
+    return jass.ReviveHero(self._handle, x, y, ac.toBoolean(showEffect))
+end
+
 return {
     all = All,
     update = update,

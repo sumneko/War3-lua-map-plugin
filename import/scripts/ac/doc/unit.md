@@ -195,3 +195,9 @@ unit:attack(point/unit)
 unit:blink(point)
     -> boolean
 ```
+
+### reborn
+```lua
+unit:reborn(point, showEffect: boolean)
+    -> boolean
+```
