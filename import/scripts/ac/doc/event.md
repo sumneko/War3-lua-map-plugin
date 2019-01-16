@@ -51,3 +51,59 @@ end)
 player:event('玩家-取消选中', function (trg, player, unit)
 end)
 ```
+
+# skill
+
+### 技能-获得
+```lua
+skill:event('技能-获得', function (trg, skill)
+end)
+```
+
+### 技能-失去
+```lua
+skill:event('技能-失去', function (trg, skill)
+end)
+```
+
+### 技能-升级
+```lua
+skill:event('技能-升级', function (trg, skill)
+end)
+```
+
+### 技能-施法开始
+```lua
+skill:event('技能-施法开始', function (trg, skill)
+end)
+```
+
+### 技能-施法引导
+```lua
+skill:event('技能-施法引导', function (trg, skill)
+end)
+```
+
+### 技能-施法出手
+```lua
+skill:event('技能-施法出手', function (trg, skill)
+end)
+```
+
+### 技能-施法完成
+```lua
+skill:event('技能-施法完成', function (trg, skill)
+end)
+```
+
+### 技能-施法停止
+```lua
+skill:event('技能-施法停止', function (trg, skill)
+end)
+```
+
+### 技能-施法打断
+```lua
+skill:event('技能-施法打断', function (trg, skill)
+end)
+```

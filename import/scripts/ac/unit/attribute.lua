@@ -1,7 +1,7 @@
 local jass = require 'jass.common'
 local japi = require 'jass.japi'
 
-local Care = {'生命', '生命上限', '生命恢复', '魔法', '魔法上限', '魔法恢复', '攻击', '护甲', '移动速度', '攻击速度'}
+local Care = {'生命', '生命上限', '生命恢复', '魔法', '魔法上限', '魔法恢复', '攻击', '护甲', '移动速度', '攻击速度', '冷却缩减', '减耗'}
 
 local Show = {
     ['生命'] = function (unit, v)

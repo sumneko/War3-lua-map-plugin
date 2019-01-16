@@ -197,7 +197,7 @@ end
 
 function mt:updateCost()
     local skill = self._skill
-    local cost = ac.toNumber(skill.cost)
+    local cost = ac.toInteger(skill._cost)
     if cost == self._cache.cost then
         return
     end

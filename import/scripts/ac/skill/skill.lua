@@ -15,6 +15,7 @@ local METHOD = {
     ['onCastShot']    = '技能-施法出手',
     ['onCastFinish']  = '技能-施法完成',
     ['onCastStop']    = '技能-施法停止',
+    ['onCastBreak']   = '技能-施法打断',
 }
 
 -- 技能分为4层：
@@ -43,8 +44,8 @@ end
 local function eventNotify(skill, name, ...)
     local event = METHOD[name]
     if event then
-        ac.eventNotify(skill, event, ...)
-        skill:getOwner():eventNotify(event, ...)
+        ac.eventNotify(skill, event, skill, ...)
+        skill:getOwner():eventNotify(event, skill, ...)
     end
     callMethod(skill, name, ...)
 end
@@ -213,6 +214,19 @@ local function updateIcon(skill)
     end
 end
 
+local function computeCost(skill)
+    local cost = ac.toNumber(skill.cost)
+    if cost == 0.0 then
+        return 0.0
+    end
+    local costReduce = skill._owner:get '减耗'
+    cost = cost * (1.0 - costReduce / 100.0)
+    if cost < 0.0 then
+        cost = 0.0
+    end
+    return cost
+end
+
 local function upgradeSkill(skill)
     local newLevel = skill._level + 1
     if newLevel > skill._maxLevel then
@@ -251,6 +265,7 @@ local function addSkill(mgr, name, tp, slot)
     skill._level = 0
     skill._type = tp
     skill._slot = slot
+    skill._cost = computeCost(skill)
     skill.level = 0
     for _ = 1, ac.toInteger(skill.initLevel, 1) do
         upgradeSkill(skill)
@@ -389,6 +404,16 @@ local function onCastStop(cast)
     callMethod(cast, 'onCastStop')
 end
 
+local function onCastBreak(cast)
+    local unit = cast._owner
+
+    if cast._stun then
+        cast._stun()
+    end
+
+    callMethod(cast, 'onCastBreak')
+end
+
 local function onCastFinish(cast)
     local unit = cast._owner
 
@@ -421,6 +446,13 @@ end
 
 local function onCastChannel(cast)
     local unit = cast._owner
+    local mana = unit:get '魔法'
+    if mana >= cast._cost then
+        unit:add('魔法', - cast._cost)
+        onCastBreak(cast)
+    else
+        return
+    end
 
     callMethod(cast, 'onCastChannel')
 
