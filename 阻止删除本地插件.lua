@@ -37,3 +37,5 @@ function mt:on_convert(w2l)
     removePlugin(w2l)
     preventRemoveFiles(w2l)
 end
+
+return mt
