@@ -117,7 +117,7 @@ local function update(delta)
     if curIndex ~= 0 then
         curFrame = curFrame - 1
     end
-    maxFrame = maxFrame + delta
+    maxFrame = maxFrame + delta * 1000.0
     while curFrame < maxFrame do
         curFrame = curFrame + 1
         onTick()
@@ -183,7 +183,7 @@ end
 
 function ac.wait(timeout, on_timer)
     local t = setmetatable({
-        ['_timeout'] = mathMax(mathFloor(timeout), 1),
+        ['_timeout'] = mathMax(mathFloor(timeout * 1000.0), 1),
         ['_onTimer'] = on_timer,
         ['_timerCount'] = 1,
     }, mt)
@@ -193,7 +193,7 @@ end
 
 function ac.loop(timeout, on_timer)
     local t = setmetatable({
-        ['_timeout'] = mathFloor(timeout),
+        ['_timeout'] = mathFloor(timeout * 1000.0),
         ['_onTimer'] = on_timer,
     }, mt)
     mTimeout(t, t._timeout)
@@ -220,7 +220,7 @@ local function utimer_initialize(u)
     if #u._timers > 0 then
         return
     end
-    u._timers[1] = ac.loop(10000, function()
+    u._timers[1] = ac.loop(0.01, function()
         local timers = u._timers
         for i = #timers, 2, -1 do
             if timers[i]._removed then

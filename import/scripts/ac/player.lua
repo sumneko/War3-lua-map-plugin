@@ -108,11 +108,11 @@ function mt:message(...)
             y = 0.0
         end
         local text = ac.formatText(data.text, data.data, data.color)
-        local time = ac.toNumber(data.time, 10000.0)
-        jass.DisplayTimedTextToPlayer(self._handle, x, y, time / 1000.0, text)
+        local time = ac.toNumber(data.time, 10.0)
+        jass.DisplayTimedTextToPlayer(self._handle, x, y, time, text)
     else
         local text, time = ...
-        jass.DisplayTimedTextToPlayer(self._handle, 0.0, 0.0, ac.toNumber(time, 10000.0) / 1000.0, tostring(text))
+        jass.DisplayTimedTextToPlayer(self._handle, 0.0, 0.0, ac.toNumber(time, 10.0), tostring(text))
     end
 end
 

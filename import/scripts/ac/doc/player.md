@@ -49,7 +49,7 @@ player:eventNotify(name: string, ...)
 
 ### message
 ```lua
-player:message(text: string, time: number(10000.0))
+player:message(text: string, time: number(10.0))
 player:message {
     text = '这是字符串{red:s}，这是整数{int:d}，这是保留三位小数的{number:.3f}',
     data = {
@@ -60,7 +60,7 @@ player:message {
     color = {
         red = 'ff1111',
     },
-    time = 10000,
+    time = 10.0,
     position = {0.5, 0.5},
 }
 ```

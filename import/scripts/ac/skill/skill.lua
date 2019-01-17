@@ -421,7 +421,7 @@ local function onCastFinish(cast)
 
     local time = ac.toNumber(cast.castFinishTime)
     if time > 0 then
-        ac.wait(time * 1000, function ()
+        ac.wait(time, function ()
             onCastStop(cast)
         end)
     else
@@ -436,7 +436,7 @@ local function onCastShot(cast)
 
     local time = ac.toNumber(cast.castShotTime)
     if time > 0 then
-        ac.wait(time * 1000, function ()
+        ac.wait(time, function ()
             onCastFinish(cast)
         end)
     else
@@ -458,7 +458,7 @@ local function onCastChannel(cast)
 
     local time = ac.toNumber(cast.castChannelTime)
     if time > 0 then
-        ac.wait(time * 1000, function ()
+        ac.wait(time, function ()
             onCastShot(cast)
         end)
     else
@@ -476,7 +476,7 @@ local function onCastStart(cast)
 
     local time = ac.toNumber(cast.castStartTime)
     if time > 0 then
-        ac.wait(time * 1000, function ()
+        ac.wait(time, function ()
             onCastChannel(cast)
         end)
     else

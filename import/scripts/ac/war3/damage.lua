@@ -29,7 +29,7 @@ end
 
 return function ()
     createTrigger()
-    ac.loop(600 * 1000, function ()
+    ac.loop(600, function ()
         createTrigger()
     end)
     ac.game:event('单位-初始化', function (_, u)

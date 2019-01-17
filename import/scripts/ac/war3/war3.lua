@@ -3,12 +3,12 @@ local dbg = require 'jass.debug'
 
 local initDamage = require 'ac.war3.damage'
 
-local FRAME = 10
+local FRAME = 0.01
 
 local function startTimer()
     local jTimer = jass.CreateTimer()
     dbg.handle_ref(jTimer)
-    jass.TimerStart(jTimer, 0.001 * FRAME, true, function ()
+    jass.TimerStart(jTimer, FRAME, true, function ()
         ac.world.update(FRAME)
     end)
 end

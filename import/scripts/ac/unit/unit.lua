@@ -41,11 +41,11 @@ local function update(delta)
             end
         end
         if u.class == '生物' then
-            local life = delta / 1000 * u:get '生命恢复'
+            local life = delta * u:get '生命恢复'
             if life > 0 then
                 u:add('生命', life)
             end
-            local mana = delta / 1000 * u:get '魔法恢复'
+            local mana = delta * u:get '魔法恢复'
             if mana > 0 then
                 u:add('魔法', mana)
             end
@@ -363,7 +363,7 @@ end
 
 function mt:setFacing(angle, time)
     if time then
-        jass.SetUnitFacingTimed(self._handle, angle, time / 1000.0)
+        jass.SetUnitFacingTimed(self._handle, angle, time)
     else
         japi.EXSetUnitFacing(self._handle, angle)
     end
