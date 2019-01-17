@@ -132,7 +132,8 @@ state: string
 
 ### timerDialog
 ```lua
-player:timerDialog()
+player:timerDialog(title: string[, timer])
+    -> timerDialog
 ```
 
 ### ac.player

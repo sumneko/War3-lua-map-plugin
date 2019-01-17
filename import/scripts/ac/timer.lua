@@ -41,7 +41,9 @@ local function mWakeup(self)
         return
     end
     self._running = false
-    self:_onTimer()
+    if self._onTimer then
+        self:_onTimer()
+    end
     if self._removed then
         return
     end
@@ -90,7 +92,7 @@ local function onTick()
 end
 
 function ac.clock()
-    return curFrame
+    return curFrame / 1000.0
 end
 
 function ac.timer_size()
@@ -182,35 +184,37 @@ function mt:restart()
 end
 
 function mt:onTimer()
-    self:_onTimer()
+    if self._onTimer then
+        self:_onTimer()
+    end
 end
 
-function ac.wait(timeout, on_timer)
+function ac.wait(timeout, onTimer)
     local t = setmetatable({
         ['_timeout'] = mathMax(mathFloor(timeout * 1000.0), 1),
-        ['_onTimer'] = on_timer,
+        ['_onTimer'] = onTimer,
         ['_timerCount'] = 1,
     }, mt)
     mTimeout(t, t._timeout)
     return t
 end
 
-function ac.loop(timeout, on_timer)
+function ac.loop(timeout, onTimer)
     local t = setmetatable({
         ['_timeout'] = mathFloor(timeout * 1000.0),
-        ['_onTimer'] = on_timer,
+        ['_onTimer'] = onTimer,
     }, mt)
     mTimeout(t, t._timeout)
     return t
 end
 
-function ac.timer(timeout, count, on_timer)
+function ac.timer(timeout, count, onTimer)
     if count == 0 then
-        return ac.loop(timeout, on_timer)
+        return ac.loop(timeout, onTimer)
     end
     local t = setmetatable({
         ['_timeout'] = mathFloor(timeout * 1000.0),
-        ['_onTimer'] = on_timer,
+        ['_onTimer'] = onTimer,
         ['_timerCount'] = count,
     }, mt)
     mTimeout(t, t._timeout)
@@ -240,23 +244,23 @@ local function utimer_initialize(u)
     end)
 end
 
-function ac.uwait(u, timeout, on_timer)
+function ac.uwait(u, timeout, onTimer)
     utimer_initialize(u)
-    local t = ac.wait(timeout, on_timer)
+    local t = ac.wait(timeout, onTimer)
     tableInsert(u._timers, t)
     return t
 end
 
-function ac.uloop(u, timeout, on_timer)
+function ac.uloop(u, timeout, onTimer)
     utimer_initialize(u)
-    local t = ac.loop(timeout, on_timer)
+    local t = ac.loop(timeout, onTimer)
     tableInsert(u._timers, t)
     return t
 end
 
-function ac.utimer(u, timeout, count, on_timer)
+function ac.utimer(u, timeout, count, onTimer)
     utimer_initialize(u)
-    local t = ac.timer(timeout, count, on_timer)
+    local t = ac.timer(timeout, count, onTimer)
     tableInsert(u._timers, t)
     return t
 end

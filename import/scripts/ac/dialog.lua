@@ -117,6 +117,10 @@ return function (player, data)
     if type(data) ~= 'table' then
         return nil
     end
+    if ac.clock() == 0.0 then
+        log.error('对话框不能在初始化时创建')
+        return nil
+    end
     if not player._dialog then
         player._dialog = {}
     end

@@ -12,8 +12,16 @@ function ac.isPlayer(obj)
     return type(obj) == 'table' and obj.type == 'player'
 end
 
+function ac.isTimer(obj)
+    return type(obj) == 'table' and obj.type == 'timer'
+end
+
 function ac.isNumber(obj)
     return type(obj) == 'number'
+end
+
+function ac.isTable(obj)
+    return type(obj) == 'table'
 end
 
 function ac.isInteger(obj)
