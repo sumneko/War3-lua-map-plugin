@@ -1,4 +1,5 @@
 local jass = require 'jass.common'
+local japi = require 'jass.japi'
 local unit = require 'ac.unit'
 
 local MIN_ID = 1
@@ -112,6 +113,42 @@ function mt:message(...)
     else
         local text, time = ...
         jass.DisplayTimedTextToPlayer(self._handle, 0.0, 0.0, ac.toNumber(time, 10000.0) / 1000.0, tostring(text))
+    end
+end
+
+function mt:chat(...)
+    if self ~= ac.localPlayer() then
+        return
+    end
+    local source, text, tp
+    if type(...) == 'table' then
+        local data = ...
+        source = data.source
+        text = ac.formatText(data.text, data.data, data.color)
+        tp = data.type
+    else
+        source, text, tp = ...
+        text = tostring(text)
+    end
+    if tp == '所有人' then
+        tp = 0
+    elseif tp == '盟友' then
+        tp = 1
+    elseif tp == '观看者' then
+        tp = 2
+    elseif tp == '所有人' then
+        tp = 3
+    else
+        tp = 3
+    end
+    if ac.isPlayer(source) then
+        japi.EXDisplayChat(source._handle, tp, text)
+    else
+        local dummyPlayer = ac.player(15)
+        local name = jass.GetPlayerName(dummyPlayer._handle)
+        jass.SetPlayerName(dummyPlayer._handle, ('|cffffffff%s|r'):format(source))
+        japi.EXDisplayChat(dummyPlayer._handle, tp, text)
+        jass.SetPlayerName(dummyPlayer._handle, name)
     end
 end
 

@@ -65,6 +65,24 @@ player:message {
 }
 ```
 
+### chat
+```lua
+player:chat(source: player/string, text: string, type: string('私人的'))
+player:chat {
+    source = '系统',
+    text = '这是字符串{red:s}，这是整数{int:d}，这是保留三位小数的{number:.3f}',
+    data = {
+        red = '红色',
+        int = 10,
+        number = 3.1415926,
+    },
+    color = {
+        red = 'ff1111',
+    },
+    type = '私人的',
+}
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)
