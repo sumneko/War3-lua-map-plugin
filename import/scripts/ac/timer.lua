@@ -205,7 +205,7 @@ function ac.timer(timeout, count, on_timer)
         return ac.loop(timeout, on_timer)
     end
     local t = setmetatable({
-        ['_timeout'] = mathFloor(timeout),
+        ['_timeout'] = mathFloor(timeout * 1000.0),
         ['_onTimer'] = on_timer,
         ['_timerCount'] = count,
     }, mt)
