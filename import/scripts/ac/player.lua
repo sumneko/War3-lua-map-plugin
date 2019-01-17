@@ -172,6 +172,36 @@ function mt:moveCamera(point, time)
     end
 end
 
+function mt:controller()
+    local state = jass.GetPlayerController()
+    if state == 0 then
+        return '用户'
+    elseif state == 1 then
+        return '电脑'
+    elseif state == 2 then
+        return '可营救'
+    elseif state == 3 then
+        return '中立'
+    elseif state == 4 then
+        return '野怪'
+    elseif state == 5 then
+        return '空位'
+    else
+        return '未知'
+    end
+end
+
+function mt:gameState()
+    local state = jass.GetPlayerSlotState()
+    if state == 0 then
+        return '空位'
+    elseif state == 1 then
+        return '在线'
+    elseif state == 2 then
+        return '离线'
+    end
+end
+
 function ac.player(id)
     if not All then
         init()

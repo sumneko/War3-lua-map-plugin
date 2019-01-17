@@ -105,6 +105,31 @@ player:dialog {
 player:moveCamera(point[, duration: number])
 ```
 
+### controller
+```lua
+player:controller()
+    -> controller: string
+
+control: string
+    | '用户'
+    | '电脑'
+    | '可营救'
+    | '中立'
+    | '野怪'
+    | '空位'
+```
+
+### gameState
+```lua
+player:gameState()
+    -> state: string
+
+state: string
+    | '空位'
+    | '在线'
+    | '离线'
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)
