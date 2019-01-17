@@ -1,6 +1,7 @@
 local jass = require 'jass.common'
 local japi = require 'jass.japi'
 local unit = require 'ac.unit'
+local dialog = require 'ac.dialog'
 
 local MIN_ID = 1
 local MAX_ID = 16
@@ -136,7 +137,7 @@ function mt:chat(...)
         tp = 1
     elseif tp == '观看者' then
         tp = 2
-    elseif tp == '所有人' then
+    elseif tp == '私人的' then
         tp = 3
     else
         tp = 3
@@ -150,6 +151,10 @@ function mt:chat(...)
         japi.EXDisplayChat(dummyPlayer._handle, tp, text)
         jass.SetPlayerName(dummyPlayer._handle, name)
     end
+end
+
+function mt:dialog(data)
+    return dialog(self, data)
 end
 
 function ac.player(id)

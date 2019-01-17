@@ -81,6 +81,23 @@ player:chat {
     },
     type = '私人的',
 }
+type: string
+    | '所有人'
+    | '盟友'
+    | '观看者'
+    | '私人的'
+```
+
+### dialog
+```lua
+player:dialog {
+    '对话框标题',
+    {'选项1', 'Q'},
+    {'选项2', 'W'},
+    {'选项3', 'E'},
+    {'关闭', 'ESC'},
+}
+    -> dialog
 ```
 
 ### ac.player
