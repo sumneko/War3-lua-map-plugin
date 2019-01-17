@@ -44,13 +44,12 @@ local function selectHero()
     LastSelectClock = ac.clock()
 end
 
-local function canControl()
-    local player = ac.localPlayer()
-    local selected = getSelect()
-    if not selected then
+local function canControl(unit)
+    if not unit then
         return false
     end
-    local otherPlayer = selected:getOwner()
+    local player = ac.localPlayer()
+    local otherPlayer = unit:getOwner()
     return jass.GetPlayerAlliance(otherPlayer._handle, player._handle, 6)
 end
 
@@ -58,7 +57,7 @@ local function checkSelectHero()
     if getSelect() == localHero() then
         return
     end
-    if canControl() then
+    if canControl(getSelect()) then
         return
     end
     selectHero()
@@ -120,6 +119,19 @@ local function instantCommand(cmd)
     end
 end
 
+local function findSkillByHotkey(unit, code)
+    if not unit then
+        return nil
+    end
+    for skill in unit:eachSkill() do
+        local hotkey = skill.hotkey
+        if KEYBORD[hotkey] == code then
+            return skill
+        end
+    end
+    return nil
+end
+
 local function onKeyDown(msg)
     -- 空格
     if msg.code == 32 then
@@ -128,28 +140,46 @@ local function onKeyDown(msg)
         return false
     end
 
-    checkSelectHero()
-
+    -- 基础命令
     if msg.code == COMMAND['攻击'] then
+        checkSelectHero()
         waitCommand '攻击'
         return false
     elseif msg.code == COMMAND['移动'] then
+        checkSelectHero()
         waitCommand '移动'
         return false
     elseif msg.code == COMMAND['巡逻'] then
+        checkSelectHero()
         waitCommand '巡逻'
         return false
     elseif msg.code == COMMAND['保持'] then
+        checkSelectHero()
         instantCommand '保持'
         return false
     elseif msg.code == COMMAND['停止'] then
+        checkSelectHero()
         instantCommand '停止'
         return false
     elseif msg.code == COMMAND['休眠'] then
+        checkSelectHero()
         instantCommand '休眠'
         return false
     elseif msg.code == COMMAND['警戒'] then
+        checkSelectHero()
         instantCommand '警戒'
+        return false
+    end
+
+    -- 技能
+    local unit = getSelect()
+    local skill
+    if canControl(unit) then
+        skill = findSkillByHotkey(unit, msg.code)
+    elseif canControl(localHero()) then
+        skill = findSkillByHotkey(localHero(), msg.code)
+        selectHero()
+        pressKey(skill.hotkey)
         return false
     end
 
