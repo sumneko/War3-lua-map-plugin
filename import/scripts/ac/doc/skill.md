@@ -45,3 +45,57 @@ skill:getOrder()
 skill:getTarget()
     -> unit/point
 ```
+
+### onAdd
+```lua
+function skill:onAdd()
+end
+```
+
+### onRemove
+```lua
+function skill:onRemove()
+end
+```
+
+### onUpgrade
+```lua
+function skill:onUpgrade()
+end
+```
+
+### onCastStart
+```lua
+function skill:onCastStart()
+end
+```
+
+### onCastChannel
+```lua
+function skill:onCastChannel()
+end
+```
+
+### onCastShot
+```lua
+function skill:onCastShot()
+end
+```
+
+### onCastFinish
+```lua
+function skill:onCastFinish()
+end
+```
+
+### onCastStop
+```lua
+function skill:onCastStop()
+end
+```
+
+### onCastBreak
+```lua
+function skill:onCastBreak()
+end
+```
