@@ -100,6 +100,11 @@ player:dialog {
     -> dialog
 ```
 
+### moveCamera
+```lua
+player:moveCamera(point[, duration: number])
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)
