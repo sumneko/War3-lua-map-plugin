@@ -181,6 +181,10 @@ function mt:restart()
     mTimeout(self, self._timeout)
 end
 
+function mt:onTimer()
+    self:_onTimer()
+end
+
 function ac.wait(timeout, on_timer)
     local t = setmetatable({
         ['_timeout'] = mathMax(mathFloor(timeout * 1000.0), 1),

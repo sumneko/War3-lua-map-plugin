@@ -26,6 +26,11 @@ timer:resume()
 timer:restart()
 ```
 
+### onTimer
+```lua
+timer:onTimer()
+```
+
 ### ac.wait
 ```lua
 ac.wait(timeout: number, callback: function)

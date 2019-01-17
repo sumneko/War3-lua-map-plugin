@@ -4,6 +4,15 @@ local hotkey = require 'ac.war3.hotkey'
 local DialogHandle = {}
 
 local function onClick(dialog, btn)
+    if not dialog.onClick then
+        return
+    end
+    for _, button in ipairs(dialog._button) do
+        if button._handle == btn then
+            dialog:onClick(button.name)
+            break
+        end
+    end
 end
 
 local function getDialogHandle(player)
@@ -15,6 +24,10 @@ local function getDialogHandle(player)
     jass.TriggerRegisterDialogEvent(trg, handle)
     jass.TriggerAddCondition(trg, jass.Condition(function ()
         local btn = jass.GetClickedButton()
+        local dialog = player._dialog[1]
+        if dialog then
+            onClick(dialog, btn)
+        end
     end))
 
     DialogHandle[player] = handle
@@ -34,6 +47,9 @@ function mt:setTitle(title)
         return
     end
     self._title = title
+    if self:isVisible() then
+        jass.DialogSetMessage(self._handle, self._title)
+    end
 end
 
 function mt:addButton(name, key, description)
@@ -53,19 +69,44 @@ function mt:addButton(name, key, description)
 end
 
 function mt:refresh()
+    if not self:isVisible() then
+        return
+    end
     jass.DialogClear(self._handle)
     jass.DialogSetMessage(self._handle, self._title)
     for _, button in ipairs(self._button) do
-        jass.DialogAddButton(self._handle, button.description, hotkey[button.hotkey] or 0)
+        button._handle = jass.DialogAddButton(self._handle, button.description, hotkey[button.hotkey] or 0)
     end
 end
 
+function mt:isVisible()
+    return self._owner._dialog[1] == self
+end
+
 function mt:show()
+    for i, dl in ipairs(self._owner._dialog) do
+        if dl == self then
+            table.remove(self._owner._dialog, i)
+            break
+        end
+    end
+    table.insert(self._owner._dialog, 1, self)
+    self:refresh()
     jass.DialogDisplay(self._owner._handle, self._handle, true)
 end
 
 function mt:hide()
-    jass.DialogDisplay(self._owner._handle, self._handle, false)
+    for i, dl in ipairs(self._owner._dialog) do
+        if dl == self then
+            table.remove(self._owner._dialog, i)
+            break
+        end
+    end
+    if #self._owner._dialog == 0 then
+        jass.DialogDisplay(self._owner._handle, self._handle, false)
+    else
+        self._owner._dialog[1]:show()
+    end
 end
 
 return function (player, data)
@@ -74,6 +115,9 @@ return function (player, data)
     end
     if type(data) ~= 'table' then
         return nil
+    end
+    if not player._dialog then
+        player._dialog = {}
     end
     local handle = getDialogHandle(player)
 
@@ -89,7 +133,6 @@ return function (player, data)
             dialog:addButton(info[1], info[2], info[3])
         end
     end
-    dialog:refresh()
     dialog:show()
 
     return dialog
