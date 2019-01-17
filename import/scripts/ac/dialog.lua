@@ -4,6 +4,7 @@ local hotkey = require 'ac.war3.hotkey'
 local DialogHandle = {}
 
 local function onClick(dialog, btn)
+    dialog:hide()
     if not dialog.onClick then
         return
     end
