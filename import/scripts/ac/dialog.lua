@@ -40,7 +40,7 @@ mt.__index = mt
 mt.type = 'dialog'
 
 function mt:__tostring()
-    return ('{dialog|%s}'):format(self._handle)
+    return ('{dialog|%s|%s}'):format(self._handle, self._title)
 end
 
 function mt:setTitle(title)
@@ -126,9 +126,10 @@ return function (player, data)
         _owner = player,
         _handle = handle,
         _button = {},
+        _title = '',
     }, mt)
 
-    dialog:setTitle(dialog, data[1])
+    dialog:setTitle(data[1])
     for _, info in ipairs(data) do
         if type(info) == 'table' then
             dialog:addButton(info[1], info[2], info[3])
