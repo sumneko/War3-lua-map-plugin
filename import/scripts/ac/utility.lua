@@ -113,3 +113,38 @@ function ac.list()
         list = {},
     }, mt)
 end
+
+local function formatText(text, data, color)
+    return text:gsub('%{(.-)%}', function (pat)
+        local id, fmt
+        local pos = pat:find(':', 1, true)
+        if pos then
+            id = pat:sub(1, pos-1)
+            fmt = pat:sub(pos+1)
+        else
+            id = pat
+            fmt = 's'
+        end
+        if not id then
+            return
+        end
+        local str = ('%'..fmt):format(data[id])
+        if color[id] then
+            str = ('|cff%s%s|r'):format(color[id], str)
+        end
+        return str
+    end)
+end
+
+function ac.formatText(text, data, color)
+    text = tostring(text)
+    if not data and not color then
+        return text
+    end
+    local suc, res = pcall(formatText, text, data, color)
+    if suc then
+        return res
+    else
+        return text
+    end
+end

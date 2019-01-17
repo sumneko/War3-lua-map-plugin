@@ -95,6 +95,26 @@ function mt:eventNotify(name, ...)
     ac.game:eventNotify(name, ...)
 end
 
+function mt:message(...)
+    if type(...) == 'table' then
+        local data = ...
+        local x, y
+        if data.position then
+            x = ac.toNumber(data.position[1])
+            y = ac.toNumber(data.position[2])
+        else
+            x = 0.0
+            y = 0.0
+        end
+        local text = ac.formatText(data.text, data.data, data.color)
+        local time = ac.toNumber(data.time, 10000.0)
+        jass.DisplayTimedTextToPlayer(self._handle, x, y, time / 1000.0, text)
+    else
+        local text, time = ...
+        jass.DisplayTimedTextToPlayer(self._handle, 0.0, 0.0, ac.toNumber(time, 10000.0) / 1000.0, tostring(text))
+    end
+end
+
 function ac.player(id)
     if not All then
         init()
