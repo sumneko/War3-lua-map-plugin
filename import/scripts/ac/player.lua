@@ -2,6 +2,7 @@ local jass = require 'jass.common'
 local japi = require 'jass.japi'
 local unit = require 'ac.unit'
 local dialog = require 'ac.dialog'
+local timerDialog = require 'ac.timerdialog'
 
 local MIN_ID = 1
 local MAX_ID = 16
@@ -173,7 +174,7 @@ function mt:moveCamera(point, time)
 end
 
 function mt:controller()
-    local state = jass.GetPlayerController()
+    local state = jass.GetPlayerController(self._handle)
     if state == 0 then
         return '用户'
     elseif state == 1 then
@@ -192,14 +193,20 @@ function mt:controller()
 end
 
 function mt:gameState()
-    local state = jass.GetPlayerSlotState()
+    local state = jass.GetPlayerSlotState(self._handle)
     if state == 0 then
         return '空位'
     elseif state == 1 then
         return '在线'
     elseif state == 2 then
         return '离线'
+    else
+        return '未知'
     end
+end
+
+function mt:timerDialog(...)
+    return timerDialog(self, ...)
 end
 
 function ac.player(id)

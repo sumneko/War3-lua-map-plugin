@@ -110,7 +110,7 @@ player:moveCamera(point[, duration: number])
 player:controller()
     -> controller: string
 
-control: string
+controller: string
     | '用户'
     | '电脑'
     | '可营救'
@@ -128,6 +128,11 @@ state: string
     | '空位'
     | '在线'
     | '离线'
+```
+
+### timerDialog
+```lua
+player:timerDialog()
 ```
 
 ### ac.player
