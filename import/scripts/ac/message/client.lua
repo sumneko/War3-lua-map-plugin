@@ -178,8 +178,10 @@ local function onKeyDown(msg)
         skill = findSkillByHotkey(unit, msg.code)
     elseif canControl(localHero()) then
         skill = findSkillByHotkey(localHero(), msg.code)
-        selectHero()
-        pressKey(skill.hotkey)
+        if skill then
+            selectHero()
+            pressKey(skill.hotkey)
+        end
         return false
     end
 
