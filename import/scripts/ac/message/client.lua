@@ -79,7 +79,7 @@ end
 local function pressKey(key)
     if ac.clock() == LastSelectClock then
         -- 刚选中新的单位，强制按键会短暂失效，要多试几次
-        ac.timer(10, 5, function ()
+        ac.timer(0.01, 5, function ()
             jass.ForceUIKey(key)
         end)
     else
@@ -128,32 +128,27 @@ local function onKeyDown(msg)
         return false
     end
 
+    checkSelectHero()
+
     if msg.code == COMMAND['攻击'] then
-        checkSelectHero()
         waitCommand '攻击'
         return false
     elseif msg.code == COMMAND['移动'] then
-        checkSelectHero()
         waitCommand '移动'
         return false
     elseif msg.code == COMMAND['巡逻'] then
-        checkSelectHero()
         waitCommand '巡逻'
         return false
     elseif msg.code == COMMAND['保持'] then
-        checkSelectHero()
         instantCommand '保持'
         return false
     elseif msg.code == COMMAND['停止'] then
-        checkSelectHero()
         instantCommand '停止'
         return false
     elseif msg.code == COMMAND['休眠'] then
-        checkSelectHero()
         instantCommand '休眠'
         return false
     elseif msg.code == COMMAND['警戒'] then
-        checkSelectHero()
         instantCommand '警戒'
         return false
     end
@@ -176,6 +171,11 @@ local function onLeftClick()
     return true
 end
 
+local function onRightClick()
+    checkSelectHero()
+    return true
+end
+
 local function onClickAbility(msg)
     local order = msg.order
     if order == CMD_ORDER then
@@ -195,6 +195,8 @@ function message.hook(msg)
     elseif msg.type == 'mouse_down' then
         if msg.code == 1 then
             return onLeftClick()
+        elseif msg.code == 4 then
+            return onRightClick()
         end
     elseif msg.type == 'mouse_ability' then
         if msg.code == 1 then
