@@ -47,6 +47,8 @@ ac.math.randomFloat(min: number, max: number)
 ac.math.includedAngle(angle1: number, angle2: number)
     -> angle: number, rate: integer
 ```
+第一个返回值为2个角度的夹角，取值范围为`[0, 180)`。
+第二个返回值为旋转方向，`1`表示角度1顺时针旋转为角度2，`-1`表示角度1逆时针旋转位角度2，即满足`angle1 + angle * rate == angle2`
 
 # utility
 
@@ -62,6 +64,18 @@ ac.isPoint(any)
     -> boolean
 ```
 
+### isPlayer
+```lua
+ac.isPlayer(any)
+    -> boolean
+```
+
+### isTimer
+```lua
+ac.isTimer(any)
+    -> boolean
+```
+
 ### isNumber
 ```lua
 ac.isNumber(any)
@@ -72,6 +86,11 @@ ac.isNumber(any)
 ```lua
 ac.isInteger(any)
     -> boolean
+```
+
+### isTable
+```lua
+ac.isTable(any)
 ```
 
 ### toNumber

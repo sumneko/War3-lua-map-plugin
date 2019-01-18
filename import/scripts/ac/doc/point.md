@@ -30,19 +30,19 @@ point:angle(other: point)
     -> number
 ```
 
-### __sub
+### 极坐标
 ```lua
 point - {angle: number, distance: number}
     -> point
 ```
 
-### __mul
+### 求距离
 ```lua
 point * point
     -> distance: number
 ```
 
-### __div
+### 求方向
 ```lua
 point / point
     -> angle: number

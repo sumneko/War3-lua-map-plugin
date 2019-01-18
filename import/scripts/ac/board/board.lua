@@ -93,8 +93,8 @@ function mt:remove()
     end
     self._removed = true
     for row = 1, self._row do
-        for col = 1, self._row do
-            self[row][col]:remove()
+        for col = 1, self._col do
+            self[row][col]:_remove()
         end
     end
     jass.DestroyMultiboard(self._handle)

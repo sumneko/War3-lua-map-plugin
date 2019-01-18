@@ -43,7 +43,7 @@ function mt:style(showValue, showIcon, filter)
     end
 end
 
-function mt:remove()
+function mt:_remove()
     if self._removed then
         return
     end

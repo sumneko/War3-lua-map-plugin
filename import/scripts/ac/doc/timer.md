@@ -32,7 +32,7 @@ timer:remaining()
     -> number
 ```
 
-### __call
+### 立即执行一次
 ```lua
 timer()
 ```

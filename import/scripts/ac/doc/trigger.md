@@ -16,7 +16,7 @@ trigger:isEnable()
     -> boolean
 ```
 
-### __call
+### 立即执行一次
 ```lua
 trigger(...)
     -> any

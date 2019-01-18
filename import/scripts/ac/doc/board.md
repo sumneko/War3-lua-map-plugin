@@ -26,6 +26,12 @@ local board = ac.player(1):board(1, 1)
 board:show()
 ```
 
+### board item
+```lua
+board[row][col]
+    -> board item
+```
+
 ### show
 ```lua
 board:show([async: function])

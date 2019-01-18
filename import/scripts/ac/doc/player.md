@@ -133,7 +133,7 @@ state: string
 ### timerDialog
 ```lua
 player:timerDialog(title: string[, timer/number])
-    -> timerDialog
+    -> timer dialog
 ```
 
 ### board

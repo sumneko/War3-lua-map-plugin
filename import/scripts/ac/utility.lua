@@ -20,12 +20,12 @@ function ac.isNumber(obj)
     return type(obj) == 'number'
 end
 
-function ac.isTable(obj)
-    return type(obj) == 'table'
-end
-
 function ac.isInteger(obj)
     return math.tointeger(obj) ~= nil
+end
+
+function ac.isTable(obj)
+    return type(obj) == 'table'
 end
 
 function ac.toNumber(obj, default)
