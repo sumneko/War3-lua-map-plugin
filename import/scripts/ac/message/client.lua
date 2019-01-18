@@ -181,8 +181,8 @@ local function onKeyDown(msg)
         if skill then
             selectHero()
             pressKey(skill.hotkey)
+            return false
         end
-        return false
     end
 
     return true
