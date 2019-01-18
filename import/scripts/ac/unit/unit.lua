@@ -167,7 +167,7 @@ function ac.unit(handle)
         -- 初始化行为限制
         u._restriction = restriction(u, u._data.restriction)
 
-        ac.game:eventNotify('单位-初始化', u)
+        u:eventNotify('单位-初始化', u)
 
         -- 初始化攻击
         u._attack = attack(u, u._data.attack)
@@ -180,7 +180,7 @@ function ac.unit(handle)
             u._owner:addHero(u)
         end
 
-        ac.game:eventNotify('单位-创建', u)
+        u:eventNotify('单位-创建', u)
     elseif class == '弹道' then
         jass.UnitAddAbility(handle, ac.id.Aloc)
     end
@@ -517,6 +517,7 @@ function mt:reborn(point, showEffect)
         local mana = self:get '魔法'
         self:set('魔法', 0.0)
         self:set('魔法', mana)
+        self:eventNotify('单位-复活', self)
     end
     return suc
 end
