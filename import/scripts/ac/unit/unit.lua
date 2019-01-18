@@ -40,7 +40,7 @@ local function update(delta)
                 goto CONTINUE
             end
         end
-        if u.class == '生物' then
+        if u.class == '生物' and not u._dead then
             local life = delta * u:get '生命恢复'
             if life > 0 then
                 u:add('生命', life)
@@ -277,6 +277,7 @@ function mt:kill(target)
     target._lastPoint = target:getPoint()
     target._dead = true
     jass.KillUnit(handle)
+    self:set('生命', 0)
     target:eventNotify('单位-死亡', self)
 end
 
@@ -509,7 +510,15 @@ function mt:reborn(point, showEffect)
         return false
     end
     local x, y = point:getXY()
-    return jass.ReviveHero(self._handle, x, y, ac.toBoolean(showEffect))
+    local suc = jass.ReviveHero(self._handle, x, y, ac.toBoolean(showEffect))
+    if suc then
+        self._dead = false
+        self:set('生命', self:get '生命上限')
+        local mana = self:get '魔法'
+        self:set('魔法', 0.0)
+        self:set('魔法', mana)
+    end
+    return suc
 end
 
 return {
