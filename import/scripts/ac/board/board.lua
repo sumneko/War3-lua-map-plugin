@@ -108,6 +108,10 @@ return function (filter, row, col, title)
     if not ac.isInteger(col) then
         return nil
     end
+    if ac.clock() == 0.0 then
+        log.error('不能在初始化时创建多面板')
+        return nil
+    end
     local handle = jass.CreateMultiboard()
     jass.MultiboardSetRowCount(handle, row)
     jass.MultiboardSetColumnCount(handle, col)
