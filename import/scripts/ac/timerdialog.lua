@@ -50,6 +50,9 @@ end
 
 mt.__index = mt
 mt.type = 'timer dialog'
+function mt:__tostring()
+    return ('{timer dialog|%s|%s}'):format(self._handle, self._title)
+end
 
 function mt:setTitle(title)
     if self._removed then
@@ -60,6 +63,7 @@ function mt:setTitle(title)
     else
         title = tostring(title)
     end
+    self._title = title
     jass.TimerDialogSetTitle(self._handle, title)
 end
 

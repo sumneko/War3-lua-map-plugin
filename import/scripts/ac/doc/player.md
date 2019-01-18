@@ -138,10 +138,7 @@ player:timerDialog(title: string[, timer/number])
 
 ### board
 ```lua
-player:board('多面板标题', [[
-         玩家              击杀    死亡    分数
-<player>{头像} {玩家名字} {击杀}  {死亡}  {分数}
-]])
+player:board(row: integer, col: integer[, title: string])
     -> board
 ```
 

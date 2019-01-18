@@ -51,7 +51,7 @@ function mt:maximize(filter)
     end
 end
 
-function mt:maximize(filter)
+function mt:minimize(filter)
     if self:_check(filter) then
         jass.MultiboardMinimize(self._handle, false)
     end
@@ -101,7 +101,13 @@ function mt:remove()
     self._handle = 0
 end
 
-return function (filter, title, row, col)
+return function (filter, row, col, title)
+    if not ac.isInteger(row) then
+        return nil
+    end
+    if not ac.isInteger(col) then
+        return nil
+    end
     local handle = jass.CreateMultiboard()
     jass.MultiboardSetRowCount(handle, row)
     jass.MultiboardSetColumnCount(handle, col)

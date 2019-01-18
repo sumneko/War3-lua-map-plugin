@@ -4,7 +4,7 @@ mt.__index = mt
 mt.type = 'board item'
 
 function mt:__tostring()
-    return ('{boardItem|%s|%s|%s}'):format(self._handle, self._row, self._col)
+    return ('{board item|%s|%s|%s}'):format(self._handle, self._row, self._col)
 end
 
 function mt:text(text, filter)

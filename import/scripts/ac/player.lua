@@ -3,6 +3,7 @@ local japi = require 'jass.japi'
 local unit = require 'ac.unit'
 local dialog = require 'ac.dialog'
 local timerDialog = require 'ac.timerdialog'
+local board = require 'ac.board'
 
 local MIN_ID = 1
 local MAX_ID = 16
@@ -207,6 +208,10 @@ end
 
 function mt:timerDialog(...)
     return timerDialog(self, ...)
+end
+
+function mt:board(...)
+    return board(...)
 end
 
 function ac.player(id)

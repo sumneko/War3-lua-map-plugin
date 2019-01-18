@@ -1,4 +1,13 @@
 # timer dialog
+```lua
+ac.game:timerDialog(title: string[, timer/number])
+    -> timerDialog
+```
+
+```lua
+player:timerDialog(title: string[, timer/number])
+    -> timerDialog
+```
 
 ### setTitle
 ```lua
