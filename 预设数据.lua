@@ -2,7 +2,7 @@ local mt = {}
 
 mt.info = {
     name = '预设数据',
-    version = 1.1,
+    version = 1.2,
     author = '最萌小汐',
     description = '将物编数据设置为标准值。'
 }
@@ -281,6 +281,8 @@ local function unitDefault(w2l)
         unit.regentype = 'none'
         -- 魔法回复
         unit.regenmana = 0
+        -- 武器类型
+        unit.weaptp1 = 'instant'
         -- 攻击骰子数量
         unit.dice1 = 1
         -- 攻击骰子面数
