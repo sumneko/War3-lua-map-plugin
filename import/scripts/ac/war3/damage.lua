@@ -19,10 +19,9 @@ local function createTrigger()
     end
     Trg = jass.CreateTrigger()
     jass.TriggerAddCondition(Trg, Condition)
-    -- key是整数，遍历顺序是固定的
-    for handle in pairs(unit.all) do
-        if jass.GetUnitAbilityLevel(handle, ac.id.Aloc) == 0 then
-            jass.TriggerRegisterUnitEvent(Trg, handle, 52) -- EVENT_UNIT_DAMAGED
+    for u in unit.list:pairs() do
+        if jass.GetUnitAbilityLevel(u._handle, ac.id.Aloc) == 0 then
+            jass.TriggerRegisterUnitEvent(Trg, u._handle, 52) -- EVENT_UNIT_DAMAGED
         end
     end
 end
@@ -33,6 +32,6 @@ return function ()
         createTrigger()
     end)
     ac.game:event('单位-初始化', function (_, u)
-        jass.TriggerRegisterUnitEvent(Trg, u.handle, 52) -- EVENT_UNIT_DAMAGED
+        jass.TriggerRegisterUnitEvent(Trg, u._handle, 52) -- EVENT_UNIT_DAMAGED
     end)
 end

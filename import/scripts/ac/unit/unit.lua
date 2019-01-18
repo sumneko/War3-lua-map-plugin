@@ -523,7 +523,7 @@ function mt:reborn(point, showEffect)
 end
 
 return {
-    all = All,
+    list = UNIT_LIST,
     update = update,
     create = create,
 }
