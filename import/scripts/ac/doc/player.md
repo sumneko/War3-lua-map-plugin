@@ -136,6 +136,15 @@ player:timerDialog(title: string[, timer/number])
     -> timerDialog
 ```
 
+### board
+```lua
+player:board {
+    '标题',
+    {}
+}
+    -> board
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)

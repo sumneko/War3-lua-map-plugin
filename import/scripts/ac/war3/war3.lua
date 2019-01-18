@@ -2,6 +2,7 @@ local jass = require 'jass.common'
 local dbg = require 'jass.debug'
 
 local initDamage = require 'ac.war3.damage'
+local initEvent = require 'ac.war3.event'
 
 local FRAME = 0.01
 
@@ -43,6 +44,8 @@ local function start()
     searchPresetUnits()
     -- 注册任意单位受伤事件
     initDamage()
+    -- 分发war3事件
+    initEvent()
     -- 启动计时器，开始tick
     startTimer()
 end

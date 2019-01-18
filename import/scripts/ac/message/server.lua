@@ -12,8 +12,6 @@ local EVENT = {
     PointOrder  = jass.EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER,
     TargetOrder = jass.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER,
     CastStart   = jass.EVENT_PLAYER_UNIT_SPELL_CHANNEL,
-    Selected    = jass.EVENT_PLAYER_UNIT_SELECTED,
-    Deselected  = jass.EVENT_PLAYER_UNIT_DESELECTED,
 }
 
 for i = 0, 15 do
@@ -137,14 +135,6 @@ local function onCastStart(unit)
     end
 end
 
-local function onSelected(unit, player)
-    player:eventNotify('玩家-选中单位', player, unit)
-end
-
-local function onDeselected(unit, player)
-    player:eventNotify('玩家-取消选中', player, unit)
-end
-
 jass.TriggerAddCondition(TRG, jass.Condition(function ()
     local eventId = jass.GetTriggerEventId()
     local unit = ac.unit(jass.GetTriggerUnit())
@@ -160,11 +150,5 @@ jass.TriggerAddCondition(TRG, jass.Condition(function ()
         end
     elseif eventId == EVENT.CastStart then
         onCastStart(unit)
-    elseif eventId == EVENT.Selected then
-        local player = ac.player(jass.GetTriggerPlayer())
-        onSelected(unit, player)
-    elseif eventId == EVENT.Deselected then
-        local player = ac.player(jass.GetTriggerPlayer())
-        onDeselected(unit, player)
     end
 end))
