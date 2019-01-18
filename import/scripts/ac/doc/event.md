@@ -34,7 +34,7 @@ end)
 
 ### 单位-死亡
 ```lua
-unit:event('单位-死亡', function (trg, unit)
+unit:event('单位-死亡', function (trg, unit, killer)
 end)
 ```
 

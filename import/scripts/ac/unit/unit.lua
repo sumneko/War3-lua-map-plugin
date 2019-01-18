@@ -278,7 +278,7 @@ function mt:kill(target)
     target._dead = true
     jass.KillUnit(handle)
     self:set('生命', 0)
-    target:eventNotify('单位-死亡', self)
+    target:eventNotify('单位-死亡', target, self)
 end
 
 function mt:remove()
