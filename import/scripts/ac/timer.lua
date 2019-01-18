@@ -134,6 +134,12 @@ function mt:__tostring()
     return '[table:timer]'
 end
 
+function mt:__call()
+    if self._onTimer then
+        self:_onTimer()
+    end
+end
+
 function mt:remove()
     self._removed = true
 end
@@ -183,10 +189,8 @@ function mt:restart()
     mTimeout(self, self._timeout)
 end
 
-function mt:onTimer()
-    if self._onTimer then
-        self:_onTimer()
-    end
+function mt:remaining()
+    return getRemaining(self) / 1000.0
 end
 
 function ac.wait(timeout, onTimer)

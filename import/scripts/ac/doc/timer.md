@@ -26,9 +26,15 @@ timer:resume()
 timer:restart()
 ```
 
-### onTimer
+### remaining
 ```lua
-timer:onTimer()
+timer:remaining()
+    -> number
+```
+
+### __call
+```lua
+timer()
 ```
 
 ### ac.wait
