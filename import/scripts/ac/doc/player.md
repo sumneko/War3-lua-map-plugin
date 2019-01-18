@@ -142,6 +142,12 @@ player:board(row: integer, col: integer[, title: string])
     -> board
 ```
 
+### id
+```lua
+player:id()
+    -> integer
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)

@@ -214,6 +214,10 @@ function mt:board(...)
     return board(...)
 end
 
+function mt:id()
+    return self._id
+end
+
 function ac.player(id)
     if not All then
         init()
