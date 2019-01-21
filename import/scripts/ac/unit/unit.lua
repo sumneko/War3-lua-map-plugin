@@ -522,6 +522,10 @@ function mt:reborn(point, showEffect)
     return suc
 end
 
+function mt:slk(key)
+    return self._slk[key]
+end
+
 return {
     list = UNIT_LIST,
     update = update,

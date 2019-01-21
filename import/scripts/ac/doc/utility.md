@@ -91,16 +91,23 @@ ac.isInteger(any)
 ### isTable
 ```lua
 ac.isTable(any)
+    -> boolean
+```
+
+### isString
+```lua
+ac.isString(any)
+    -> boolean
 ```
 
 ### toNumber
 ```lua
-ac.toNumber(any, default: number)
+ac.toNumber(any[, default: number])
     -> number
 ```
 
 ### toInteger
 ```lua
-ac.toInteger(any, default: integer)
+ac.toInteger(any[, default: integer])
     -> integer
 ```

@@ -148,6 +148,12 @@ player:id()
     -> integer
 ```
 
+### name
+```lua
+player:name([newName: string])
+    -> [name: string]
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)

@@ -218,6 +218,14 @@ function mt:id()
     return self._id
 end
 
+function mt:name(name)
+    if ac.isString(name) then
+        jass.SetPlayerName(self._handle, name)
+    else
+        return jass.GetPlayerName(self._handle)
+    end
+end
+
 function ac.player(id)
     if not All then
         init()

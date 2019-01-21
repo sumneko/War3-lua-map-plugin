@@ -298,3 +298,9 @@ unit:blink(point)
 unit:reborn(point, showEffect: boolean)
     -> boolean
 ```
+
+### slk
+```lua
+unit:slk(key: string)
+    -> any
+```
