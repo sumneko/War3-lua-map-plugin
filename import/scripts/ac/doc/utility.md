@@ -100,6 +100,12 @@ ac.isString(any)
     -> boolean
 ```
 
+### isBoolean
+```lua
+ac.isBoolean(any)
+    -> boolean
+```
+
 ### toNumber
 ```lua
 ac.toNumber(any[, default: number])

@@ -154,6 +154,24 @@ player:name([newName: string])
     -> [name: string]
 ```
 
+### alliance
+```lua
+player:alliance(other: player, type: string[, flag: boolean])
+    -> [flag: boolean]
+
+type: string
+    | '结盟'
+    | '请求'
+    | '回应'
+    | '经验'
+    | '技能'
+    | '视野'
+    | '控制'
+    | '高级控制'
+    | '救援'
+    | '队伍视野'
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)

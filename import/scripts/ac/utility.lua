@@ -32,6 +32,10 @@ function ac.isString(obj)
     return type(obj) == 'string'
 end
 
+function ac.isBoolean(obj)
+    return type(obj) == 'boolean'
+end
+
 function ac.toNumber(obj, default)
     return type(obj) == 'number' and obj or default or 0.0
 end

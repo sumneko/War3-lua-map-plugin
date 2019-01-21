@@ -226,6 +226,42 @@ function mt:name(name)
     end
 end
 
+function mt:alliance(dest, tp, flag)
+    if not ac.isPlayer(dest) then
+        log.error('必须是玩家')
+        return nil
+    end
+    if tp == '结盟' then
+        tp = 0
+    elseif tp == '请求' then
+        tp = 1
+    elseif tp == '回应' then
+        tp = 2
+    elseif tp == '经验' then
+        tp = 3
+    elseif tp == '技能' then
+        tp = 4
+    elseif tp == '视野' then
+        tp = 5
+    elseif tp == '控制' then
+        tp = 6
+    elseif tp == '高级控制' then
+        tp = 7
+    elseif tp == '救援' then
+        tp = 8
+    elseif tp == '队伍视野' then
+        tp = 9
+    else
+        log.error('结盟类型不正确')
+        return nil
+    end
+    if ac.isBoolean(flag) then
+        jass.SetPlayerAlliance(self._handle, dest._handle, tp, flag)
+    else
+        return jass.GetPlayerAlliance(self._handle, dest._handle, tp)
+    end
+end
+
 function ac.player(id)
     if not All then
         init()
