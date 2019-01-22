@@ -40,12 +40,12 @@ ac.id = setmetatable({}, {__index = function (self, id)
 end})
 
 local function start()
+    -- 分发war3事件
+    initEvent()
     -- 根据unit表注册地图上的预设单位
     searchPresetUnits()
     -- 注册任意单位受伤事件
     initDamage()
-    -- 分发war3事件
-    initEvent()
     -- 启动计时器，开始tick
     startTimer()
 end

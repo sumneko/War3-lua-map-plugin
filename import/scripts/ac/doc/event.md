@@ -44,6 +44,18 @@ unit:event('单位-复活', function (trg, unit)
 end)
 ```
 
+### 单位-升级
+```lua
+unit:event('单位-升级', function (trg, unit)
+end)
+```
+
+### 单位-降级
+```lua
+unit:event('单位-降级', function (trg, unit)
+end)
+```
+
 # player
 
 ### 玩家-选中单位

@@ -151,6 +151,7 @@ function ac.unit(handle)
         _name = name,
         _data = data,
         _slk = slkUnit,
+        _level = jass.GetUnitLevel(handle),
         _owner = ac.player(jass.GetOwningPlayer(handle)),
         _collision = ac.toNumber(slkUnit.collision),
     }, mt)
@@ -526,11 +527,36 @@ function mt:slk(key)
     return self._slk[key]
 end
 
+function mt:_onLevel()
+    while true do
+        local newLevel = jass.GetUnitLevel(self._handle)
+        if self._level < newLevel then
+            self._level = self._level + 1
+            self:eventNotify('单位-升级', self)
+        else
+            break
+        end
+    end
+end
+
 function mt:level(lv, show)
     if ac.isInteger(lv) then
-        jass.SetHeroLevel(self._handle, lv, ac.toBoolean(show))
+        if lv > self._level then
+            jass.SetHeroLevel(self._handle, lv, ac.toBoolean(show))
+        elseif lv < self._level then
+            jass.UnitStripHeroLevel(self._handle, self._level - lv)
+            while true do
+                local newLevel = jass.GetUnitLevel(self._handle)
+                if self._level > newLevel then
+                    self._level = self._level - 1
+                    self:eventNotify('单位-降级', self)
+                else
+                    break
+                end
+            end
+        end
     else
-        return jass.GetUnitLevel(self._handle)
+        return self._level
     end
 end
 
