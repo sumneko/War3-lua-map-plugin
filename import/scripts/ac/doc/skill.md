@@ -46,6 +46,14 @@ skill:getTarget()
     -> unit/point
 ```
 
+### isCast
+```lua
+skill:isCast()
+    -> boolean
+```
+
+## event
+
 ### onAdd
 ```lua
 function skill:onAdd()

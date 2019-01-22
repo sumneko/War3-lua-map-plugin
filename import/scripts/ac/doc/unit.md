@@ -321,3 +321,9 @@ unit:exp([exp: integer, showEffect: boolean])
 ```lua
 unit:addExp(exp: integer, showEffect: boolean)
 ```
+
+### currentSkill
+```lua
+unit:currentSkill()
+    -> skill
+```

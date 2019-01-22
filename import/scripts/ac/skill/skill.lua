@@ -30,6 +30,13 @@ local METHOD = {
 local DefinedData = {}
 local DefinedDual = {}
 local mt = {}
+function mt:__tostring()
+    if self._parent then
+        return ('{cast|%s} -> %s'):format(self:getName(), self:getOwner())
+    else
+        return ('{skill|%s} -> %s'):format(self:getName(), self:getOwner())
+    end
+end
 
 local function callMethod(skill, name, ...)
     local method = skill[name]
@@ -175,6 +182,7 @@ local castmt = {
         end
         return v
     end,
+    __tostring = mt.__tostring,
 }
 
 local function createCast(skill)
@@ -267,6 +275,7 @@ local function addSkill(mgr, name, tp, slot)
     skill._type = tp
     skill._slot = slot
     skill._cost = computeCost(skill)
+    skill._mgr = mgr
     skill.level = 0
     for _ = 1, ac.toInteger(skill.initLevel, 1) do
         upgradeSkill(skill)
@@ -380,6 +389,10 @@ local function eachSkill(mgr, tp)
     end
 end
 
+local function currentSkill(mgr)
+    return mgr._currentSkill
+end
+
 local function loadString(skill, str)
     return str:gsub('${(.-)}', function (pat)
         local pos = pat:find(':', 1, true)
@@ -395,22 +408,26 @@ local function loadString(skill, str)
     end)
 end
 
-local function onCastStop(cast)
-    local unit = cast._owner
-
+local function destroyCast(cast)
     if cast._stun then
         cast._stun()
     end
+    if cast._timer then
+        cast._timer:remove()
+    end
+    cast._mgr._currentSkill = nil
+end
+
+local function onCastStop(cast)
+    cast._step = 'stop'
+    destroyCast(cast)
 
     callMethod(cast, 'onCastStop')
 end
 
 local function onCastBreak(cast)
-    local unit = cast._owner
-
-    if cast._stun then
-        cast._stun()
-    end
+    cast._step = 'break'
+    destroyCast(cast)
 
     callMethod(cast, 'onCastBreak')
 end
@@ -418,11 +435,13 @@ end
 local function onCastFinish(cast)
     local unit = cast._owner
 
+    cast._step = 'finish'
+
     callMethod(cast, 'onCastFinish')
 
     local time = ac.toNumber(cast.castFinishTime)
     if time > 0 then
-        ac.wait(time, function ()
+        cast._timer = ac.wait(time, function ()
             onCastStop(cast)
         end)
     else
@@ -433,11 +452,13 @@ end
 local function onCastShot(cast)
     local unit = cast._owner
 
+    cast._step = 'shot'
+
     callMethod(cast, 'onCastShot')
 
     local time = ac.toNumber(cast.castShotTime)
     if time > 0 then
-        ac.wait(time, function ()
+        cast._timer = ac.wait(time, function ()
             onCastFinish(cast)
         end)
     else
@@ -450,16 +471,17 @@ local function onCastChannel(cast)
     local mana = unit:get '魔法'
     if mana >= cast._cost then
         unit:add('魔法', - cast._cost)
-        onCastBreak(cast)
     else
         return
     end
+
+    cast._step = 'channel'
 
     callMethod(cast, 'onCastChannel')
 
     local time = ac.toNumber(cast.castChannelTime)
     if time > 0 then
-        ac.wait(time, function ()
+        cast._timer = ac.wait(time, function ()
             onCastShot(cast)
         end)
     else
@@ -471,13 +493,15 @@ local function onCastStart(cast)
     local unit = cast._owner
 
     unit:stopCast()
+    cast._mgr._currentSkill = cast
     cast._stun = unit:addRestriction '硬直'
+    cast._step = 'start'
 
     callMethod(cast, 'onCastStart')
 
     local time = ac.toNumber(cast.castStartTime)
     if time > 0 then
-        ac.wait(time, function ()
+        cast._timer = ac.wait(time, function ()
             onCastChannel(cast)
         end)
     else
@@ -488,11 +512,18 @@ end
 mt.__index = mt
 mt.type = 'skill'
 
-function mt:__tostring()
-    if self._parent then
-        return ('{cast|%s} -> %s'):format(self:getName(), self:getOwner())
-    else
-        return ('{skill|%s} -> %s'):format(self:getName(), self:getOwner())
+function mt:_stop()
+    if not self:isCast() then
+        return
+    end
+    if self._step == 'start' then
+        onCastBreak(self)
+    elseif self._step == 'channel' then
+        onCastStop(self)
+    elseif self._step == 'shot' then
+        onCastStop(self)
+    elseif self._step == 'finish' then
+        onCastStop(self)
     end
 end
 
@@ -583,6 +614,14 @@ function mt:getTarget()
     end
 end
 
+function mt:isCast()
+    if self._parent then
+        return true
+    else
+        return false
+    end
+end
+
 ac.skill = setmetatable({}, {
     __index = function (self, name)
         local skill = createDefine(name)
@@ -605,5 +644,6 @@ return function (unit)
         addSkill  = addSkill,
         findSkill = findSkill,
         eachSkill = eachSkill,
+        currentSkill = currentSkill,
     }
 end

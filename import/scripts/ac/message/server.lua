@@ -27,7 +27,7 @@ local function stackCommand(cmd)
     StackedCommand = cmd
 end
 
-local function getStackedCommand(cmd)
+local function getStackedCommand()
     return StackedCommand
 end
 
@@ -53,6 +53,7 @@ end
 local function onProto(unit, id, arg)
     if id == PROTO['休眠'] then
         pointOrder(unit, 'AImove', unit:getPoint() - {unit:getFacing(), 1})
+        unit:_stopCastByClient()
     elseif id == PROTO['攻击'] then
         stackCommand '攻击'
     elseif id == PROTO['移动'] then
@@ -72,18 +73,24 @@ local function onCommand(unit, target)
     if target then
         if cmd == '攻击' then
             targetOrder(unit, 'attack', target)
+            unit:_stopCastByClient()
         elseif cmd == '移动' then
             targetOrder(unit, 'move', target)
+            unit:_stopCastByClient()
         elseif cmd == '巡逻' then
             targetOrder(unit, 'patrol', target)
+            unit:_stopCastByClient()
         end
     else
         if cmd == '攻击' then
             pointOrder(unit, 'attack', x, y)
+            unit:_stopCastByClient()
         elseif cmd == '移动' then
             pointOrder(unit, 'move', x, y)
+            unit:_stopCastByClient()
         elseif cmd == '巡逻' then
             pointOrder(unit, 'patrol', x, y)
+            unit:_stopCastByClient()
         end
     end
 end
@@ -122,6 +129,7 @@ local function onCastStart(unit)
     local id = jass.GetSpellAbilityId()
     if id == ac.id['@CMD'] then
         order(unit, 'stop')
+        unit:_stopCastByClient()
     else
         -- 检查发动技能
         local skill = searchAbilityId(unit, ac.id[id])

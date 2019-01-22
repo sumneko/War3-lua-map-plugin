@@ -430,6 +430,9 @@ end
 function mt:stopCast()
 end
 
+function mt:_stopCastByClient()
+end
+
 function mt:event(name, f)
     return ac.eventRegister(self, name, f)
 end
@@ -572,6 +575,13 @@ function mt:addExp(exp, show)
     if ac.isInteger(exp) then
         jass.AddHeroXP(self._handle, exp, ac.toBoolean(show))
     end
+end
+
+function mt:currentSkill()
+    if not self._skill then
+        return nil
+    end
+    return self._skill:currentSkill()
 end
 
 return {
