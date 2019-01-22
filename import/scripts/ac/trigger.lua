@@ -40,7 +40,10 @@ function mt:__call(...)
         return
     end
     if self._enable then
-        return self:_callback(...)
+        local suc, a, b, c = xpcall(self._callback, log.error, self, ...)
+        if suc then
+            return a, b, c
+        end
     end
 end
 
