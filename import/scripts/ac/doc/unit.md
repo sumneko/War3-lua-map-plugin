@@ -304,3 +304,20 @@ unit:reborn(point, showEffect: boolean)
 unit:slk(key: string)
     -> any
 ```
+
+### level
+```lua
+unit:level([level: integer, showEffect: boolean])
+    -> [level: integer]
+```
+
+### exp
+```lua
+unit:exp([exp: integer, showEffect: boolean])
+    -> [exp: integer]
+```
+
+### addExp
+```lua
+unit:addExp(exp: integer, showEffect: boolean)
+```

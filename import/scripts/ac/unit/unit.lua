@@ -526,6 +526,28 @@ function mt:slk(key)
     return self._slk[key]
 end
 
+function mt:level(lv, show)
+    if ac.isInteger(lv) then
+        jass.SetHeroLevel(self._handle, lv, ac.toBoolean(show))
+    else
+        return jass.GetUnitLevel(self._handle)
+    end
+end
+
+function mt:exp(exp, show)
+    if ac.isInteger(exp) then
+        jass.SetHeroXP(self._handle, exp, ac.toBoolean(show))
+    else
+        return jass.GetHeroXP(self._handle)
+    end
+end
+
+function mt:addExp(exp, show)
+    if ac.isInteger(exp) then
+        jass.AddHeroXP(self._handle, exp, ac.toBoolean(show))
+    end
+end
+
 return {
     list = UNIT_LIST,
     update = update,
