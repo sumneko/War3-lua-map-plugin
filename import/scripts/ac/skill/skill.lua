@@ -5,6 +5,7 @@ local getmetatable = getmetatable
 local setmetatable = setmetatable
 local tostring = tostring
 local pcall = pcall
+local xpcall = xpcall
 
 local METHOD = {
     ['onAdd']         = '技能-获得',

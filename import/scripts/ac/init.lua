@@ -1,7 +1,7 @@
 ac = {}
 ac.game = {}
 
-ac.test = pcall(require, 'currentpath')
+ac.test = pcall(require, '_currentpath')
 
 require 'ac.runtime'
 require 'ac.log'

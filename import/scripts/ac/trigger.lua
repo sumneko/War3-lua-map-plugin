@@ -1,6 +1,7 @@
 
 local setmetatable = setmetatable
 local table = table
+local xpcall = xpcall
 local Map = setmetatable({}, { __mode = 'kv' })
 
 local mt = {}
