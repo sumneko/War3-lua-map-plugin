@@ -327,3 +327,9 @@ unit:addExp(exp: integer, showEffect: boolean)
 unit:currentSkill()
     -> skill
 ```
+
+### isInRange
+```lua
+unit:isInRange(point, radius: number)
+    -> boolean
+```

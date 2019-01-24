@@ -584,6 +584,16 @@ function mt:currentSkill()
     return self._skill:currentSkill()
 end
 
+function mt:isInRange(point, radius)
+    if not ac.isPoint(point) then
+        return
+    end
+    if not ac.isNumber(radius) then
+        return
+    end
+    return self:getPoint() * point <= self._slk.collision + radius
+end
+
 return {
     list = UNIT_LIST,
     update = update,
