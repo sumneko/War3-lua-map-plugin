@@ -56,6 +56,22 @@ function mt:remove(k)
     end
 end
 
+function mt:has(k)
+    if self[k] and self[k] > 0 then
+        return true
+    else
+        return false
+    end
+end
+
+function mt:get(k)
+    if self[k] then
+        return self[k]
+    else
+        return 0
+    end
+end
+
 return function (unit, restriction)
     local obj = setmetatable({
         _unit = unit,

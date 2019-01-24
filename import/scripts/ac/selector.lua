@@ -1,7 +1,6 @@
 local jass = require 'jass.common'
 
 local GROUP = jass.CreateGroup()
-local DUMMY = {}
 
 local function selectInRange(point, radius)
     local units = {}
@@ -72,66 +71,67 @@ local function selectInLine(point, angle, length, width)
     return units
 end
 
-local function checkFilter(units, filters)
+local function checkFilter(unit, filters)
     if not filters then
-        return
+        return true
     end
-    if #DUMMY > 0 then
-        for i = 1, #DUMMY do
-            DUMMY[i] = nil
+    for j = 1, #filters do
+        if not filters[j](unit) then
+            return false
         end
     end
-    for i = 1, #units do
-        local unit = units[i]
-        units[i] = nil
-        for j = 1, #filters do
-            if filters[j](unit) then
-                DUMMY[#DUMMY+1] = unit
-            end
-        end
-    end
-    for i = 1, #DUMMY do
-        units[i] = DUMMY[i]
-    end
+    return true
 end
 
-local function checkType(units, ofType, ofNotType)
-    if not ofType and not ofNotType then
-        return
+local function checkOf(unit, of)
+    if not of then
+        return true
     end
-    if #DUMMY > 0 then
-        for i = 1, #DUMMY do
-            DUMMY[i] = nil
+    local types = unit._type
+    for tp in next, of do
+        if types and types[tp] then
+            return true
         end
     end
+    return false
+end
+
+local function checkOfNot(unit, ofNot)
+    if not ofNot then
+        return true
+    end
+    local types = unit._type
+    for tp in next, ofNot do
+        if types and types[tp] then
+            return false
+        end
+    end
+    return true
+end
+
+local function checkAllow(unit, dead, god)
+    if not dead and not unit:isAlive() then
+        return false
+    end
+    if not god and unit:hasRestriction '无敌' then
+        return false
+    end
+    return true
+end
+
+local function filter(units, selector)
+    local passed = {}
     for i = 1, #units do
         local unit = units[i]
-        units[i] = nil
-        local types = unit._type
-        if ofType then
-            local ok = false
-            for tp in next, ofType do
-                if not types or not types[tp] then
-                    ok = true
-                end
-            end
-            if not ok then
-                goto CONTINUE
-            end
+        if checkAllow(unit, selector._dead, selector._god) and
+           checkOf(unit, selector._of) and
+           checkOfNot(unit, selector._ofNot) and
+           checkFilter(unit, selector._filters)
+        then
+            passed[#passed+1] = unit
         end
-        if ofNotType then
-            for tp in next, ofNotType do
-                if types and types[tp] then
-                    goto CONTINUE
-                end
-            end
-        end
-        DUMMY[#DUMMY+1] = unit
-        ::CONTINUE::
     end
-    for i = 1, #DUMMY do
-        units[i] = DUMMY[i]
-    end
+    return passed
 end
 
 local mt = {}
@@ -201,10 +201,24 @@ function mt:ofVisible(who)
     end)
 end
 
+function mt:ofIllusion()
+    return self:addFilter(function (u)
+        return u:isIllusion()
+    end)
+end
+
 function mt:ofNotIllusion()
     return self:addFilter(function (u)
         return not u:isIllusion()
     end)
+end
+
+function mt:allowDead()
+    self._dead = true
+end
+
+function mt:allowGod()
+    self._god = true
 end
 
 function mt:of(data)
@@ -249,8 +263,7 @@ function mt:get()
         units = selectInLine(self._point, self._angle, self._length, self._width)
     end
 
-    checkFilter(units, self._filters)
-    checkType(units, self._of, self._ofNot)
+    units = filter(units, self)
 
     return units
 end
