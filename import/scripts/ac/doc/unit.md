@@ -1,5 +1,74 @@
 # unit
 
+## unit.ini
+
+### id
+单位在物编中的4位id
+
+```lua
+id = 'E000'
+```
+
+### class
+类别
+
+```lua
+class = '生物'
+class = '弹道'
+```
+
+### attribute
+单位的初始属性，不填的部分为0。
+
+```lua
+attribute = {
+    '生命上限' = 1000,
+    '攻击' = 100,
+}
+```
+
+### type
+单位的类型，用于选取器等判断。
+
+```lua
+type = {'英雄', '生物'}
+```
+
+### restriction
+限制
+
+```lua
+restriction = {'无敌'}
+```
+
+### attack
+攻击
+
+```lua
+attack = {
+    type = '立即',
+    range = 100,
+}
+attack = {
+    type = '弹道',
+    range = 500,
+    mover = {
+        model = [[Abilities\Weapons\AncientProtectorMissile\AncientProtectorMissile.mdl]],
+        speed = 1000,
+        startHeight = 200,
+    }
+}
+```
+
+### hitHeight
+受击高度
+
+```lua
+hitHeight = 60
+```
+
+## method
+
 ### getName
 ```lua
 unit:getName()

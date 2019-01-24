@@ -1,5 +1,110 @@
 # skill
 
+## skill.ini
+
+### maxLevel
+等级上限
+
+```lua
+maxLevel = 3
+```
+
+### initLevel
+初始等级
+
+```lua
+initLevel = 1
+```
+
+### title
+标题
+
+```lua
+title = '测试技能 - 等级 ${level}'
+```
+
+### description
+描述
+
+```lua
+description = '技能描述'
+```
+
+### icon
+图标
+
+```lua
+icon = [[ReplaceableTextures\CommandButtons\BTNInvisibility.blp]]
+```
+
+### range
+施法范围
+
+```lua
+range = 500
+```
+
+### targetType
+目标类型
+
+```lua
+targetType = '无'
+targetType = '点'
+targetType = '单位'
+targetType = '单位或点'
+```
+
+### cool
+冷却
+
+```lua
+cool = 1
+```
+
+### cost
+消耗
+
+```lua
+cost = 100
+```
+
+### hotkey
+快捷键
+
+```lua
+hotkey = 'Q'
+```
+
+### castStartTime
+施法开始时间
+
+```lua
+castStartTime = 1
+```
+
+### castChannelTime
+施法引导时间
+
+```lua
+castChannelTime = 1
+```
+
+### castShotTime
+施法出手时间
+
+```lua
+castShotTime = 1
+```
+
+### castFinishTime
+施法完成时间
+
+```lua
+castFinishTime = 1
+```
+
+## method
+
 ### getOwner
 ```lua
 skill:getOwner()
