@@ -109,10 +109,14 @@ local function checkType(units, ofType, ofNotType)
         units[i] = nil
         local types = unit._type
         if ofType then
+            local ok = false
             for tp in next, ofType do
                 if not types or not types[tp] then
-                    goto CONTINUE
+                    ok = true
                 end
+            end
+            if not ok then
+                goto CONTINUE
             end
         end
         if ofNotType then
@@ -203,7 +207,7 @@ function mt:ofNotIllusion()
     end)
 end
 
-function mt:ofType(data)
+function mt:of(data)
     if not self._ofType then
         self._ofType = {}
     end
@@ -219,7 +223,7 @@ function mt:ofType(data)
     return self
 end
 
-function mt:ofNotType(data)
+function mt:ofNot(data)
     if not self._ofNotType then
         self._ofNotType = {}
     end
