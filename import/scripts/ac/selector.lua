@@ -169,7 +169,7 @@ function mt:inLine(point, angle, length, width)
     return self
 end
 
-function mt:addFilter(f)
+function mt:filter(f)
     if not self._filters then
         self._filters = {}
     end
@@ -178,47 +178,49 @@ function mt:addFilter(f)
 end
 
 function mt:isNot(who)
-    return self:addFilter(function (u)
+    return self:filter(function (u)
         return who ~= u
     end)
 end
 
 function mt:isEnemy(who)
-    return self:addFilter(function (u)
+    return self:filter(function (u)
         return who:isEnemy(u)
     end)
 end
 
 function mt:isAlly(who)
-    return self:addFilter(function (u)
+    return self:filter(function (u)
         return who:isAlly(u)
     end)
 end
 
-function mt:ofVisible(who)
-    return self:addFilter(function (u)
+function mt:isVisible(who)
+    return self:filter(function (u)
         return who:isVisible(u)
     end)
 end
 
 function mt:ofIllusion()
-    return self:addFilter(function (u)
+    return self:filter(function (u)
         return u:isIllusion()
     end)
 end
 
 function mt:ofNotIllusion()
-    return self:addFilter(function (u)
+    return self:filter(function (u)
         return not u:isIllusion()
     end)
 end
 
 function mt:allowDead()
     self._dead = true
+    return self
 end
 
 function mt:allowGod()
     self._god = true
+    return self
 end
 
 function mt:of(data)
