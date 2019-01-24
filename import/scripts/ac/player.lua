@@ -262,6 +262,24 @@ function mt:alliance(dest, tp, flag)
     end
 end
 
+function mt:isEnemy(other)
+    if ac.isPlayer(other) then
+        return jass.IsPlayerEnemy(self._handle, other._handle)
+    elseif ac.isUnit(other) then
+        return jass.IsPlayerEnemy(self._handle, other._owner._handle)
+    end
+    return false
+end
+
+function mt:isAlly(other)
+    if ac.isPlayer(other) then
+        return jass.IsPlayerAlly(self._handle, other._handle)
+    elseif ac.isUnit(other) then
+        return jass.IsPlayerAlly(self._handle, other._owner._handle)
+    end
+    return false
+end
+
 function ac.player(id)
     if not All then
         init()

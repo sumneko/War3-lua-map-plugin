@@ -172,6 +172,18 @@ type: string
     | '队伍视野'
 ```
 
+### isEnemy
+```lua
+unit:isEnemy(other: unit/player)
+    -> boolean
+```
+
+### isAlly
+```lua
+unit:isAlly(other: unit/player)
+    -> boolean
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)

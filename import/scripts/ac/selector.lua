@@ -108,6 +108,29 @@ function mt:inLine(point, angle, length, width)
     return self
 end
 
+function mt:addFilter(f)
+    self._filters[#self._filters+1] = f
+    return self
+end
+
+function mt:isNot(who)
+    return self:addFilter(function (u)
+        return who ~= u
+    end)
+end
+
+function mt:isEnemy(who)
+    return self:addFilter(function (u)
+        return who:isEnemy(u)
+    end)
+end
+
+function mt:isAlly(who)
+    return self:addFilter(function (u)
+        return who:isAlly(u)
+    end)
+end
+
 function mt:get()
     local units
     if self._selectType == 'range' then

@@ -333,3 +333,27 @@ unit:currentSkill()
 unit:isInRange(point, radius: number)
     -> boolean
 ```
+
+### isEnemy
+```lua
+unit:isEnemy(other: unit/player)
+    -> boolean
+```
+
+### isAlly
+```lua
+unit:isAlly(other: unit/player)
+    -> boolean
+```
+
+### isBuilding
+```lua
+unit:isBuilding()
+    -> boolean
+```
+
+### isIllusion
+```lua
+unit:isIllusion()
+    -> boolean
+```

@@ -261,10 +261,13 @@ function mt:isAlive()
 end
 
 function mt:isHero()
-    -- 通过检查单位id的第一个字母是否为大写决定是否是英雄
-    local char = self._id:sub(1, 1)
-    local code = char:byte()
-    return code >= 65 and code <= 90
+    if self._hero == nil then
+        -- 通过检查单位id的第一个字母是否为大写决定是否是英雄
+        local char = self._id:sub(1, 1)
+        local code = char:byte()
+        self._hero = code >= 65 and code <= 90
+    end
+    return self._hero
 end
 
 function mt:kill(target)
@@ -592,6 +595,32 @@ function mt:isInRange(point, radius)
         return
     end
     return self:getPoint() * point <= self._slk.collision + radius
+end
+
+function mt:isEnemy(other)
+    if ac.isPlayer(other) then
+        return jass.IsPlayerEnemy(self._owner._handle, other._handle)
+    elseif ac.isUnit(other) then
+        return jass.IsPlayerEnemy(self._owner._handle, other._owner._handle)
+    end
+    return false
+end
+
+function mt:isAlly(other)
+    if ac.isPlayer(other) then
+        return jass.IsPlayerEnemy(self._owner._handle, other._handle)
+    elseif ac.isUnit(other) then
+        return jass.IsPlayerEnemy(self._owner._handle, other._owner._handle)
+    end
+    return false
+end
+
+function mt:isBuilding()
+    return self._slk.isbldg == 1
+end
+
+function mt:isIllusion()
+    return jass.IsUnitIllusion(self._handle)
 end
 
 return {
