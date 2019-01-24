@@ -373,3 +373,9 @@ unit:addType(name: string)
 ```lua
 unit:removeType(name: string)
 ```
+
+### isVisible
+```lua
+unit:isVisible(other: unit)
+    -> boolean
+```

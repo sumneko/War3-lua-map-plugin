@@ -668,6 +668,14 @@ function mt:removeType(name)
     end
 end
 
+function mt:isVisible(other)
+    if ac.isUnit(other) then
+        return jass.IsUnitVisible(other._handle, self._owner._handle)
+    else
+        return false
+    end
+end
+
 return {
     list = UNIT_LIST,
     update = update,

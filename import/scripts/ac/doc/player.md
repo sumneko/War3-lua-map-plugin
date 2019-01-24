@@ -174,13 +174,19 @@ type: string
 
 ### isEnemy
 ```lua
-unit:isEnemy(other: unit/player)
+player:isEnemy(other: unit/player)
     -> boolean
 ```
 
 ### isAlly
 ```lua
-unit:isAlly(other: unit/player)
+player:isAlly(other: unit/player)
+    -> boolean
+```
+
+### isVisible
+```lua
+player:isVisible(other: unit)
     -> boolean
 ```
 

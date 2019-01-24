@@ -1,8 +1,7 @@
 local jass = require 'jass.common'
-local slk = require 'jass.slk'
 
-local MAX_COLLISION = slk.misc.MaxCollisionRadius
 local GROUP = jass.CreateGroup()
+local DUMMY = {}
 
 local function selectInRange(point, radius)
     local units = {}
@@ -73,6 +72,64 @@ local function selectInLine(point, angle, length, width)
     return units
 end
 
+local function checkFilter(units, filters)
+    if not filters then
+        return
+    end
+    if #DUMMY > 0 then
+        for i = 1, #DUMMY do
+            DUMMY[i] = nil
+        end
+    end
+    for i = 1, #units do
+        local unit = units[i]
+        units[i] = nil
+        for j = 1, #filters do
+            if filters[j](unit) then
+                DUMMY[#DUMMY+1] = unit
+            end
+        end
+    end
+    for i = 1, #DUMMY do
+        units[i] = DUMMY[i]
+    end
+end
+
+local function checkType(units, ofType, ofNotType)
+    if not ofType and not ofNotType then
+        return
+    end
+    if #DUMMY > 0 then
+        for i = 1, #DUMMY do
+            DUMMY[i] = nil
+        end
+    end
+    for i = 1, #units do
+        local unit = units[i]
+        units[i] = nil
+        local types = unit._type
+        if ofType then
+            for tp in next, ofType do
+                if not types or not types[tp] then
+                    goto CONTINUE
+                end
+            end
+        end
+        if ofNotType then
+            for tp in next, ofNotType do
+                if types and types[tp] then
+                    goto CONTINUE
+                end
+            end
+        end
+        DUMMY[#DUMMY+1] = unit
+        ::CONTINUE::
+    end
+    for i = 1, #DUMMY do
+        units[i] = DUMMY[i]
+    end
+end
+
 local mt = {}
 mt.__index = mt
 
@@ -109,6 +166,9 @@ function mt:inLine(point, angle, length, width)
 end
 
 function mt:addFilter(f)
+    if not self._filters then
+        self._filters = {}
+    end
     self._filters[#self._filters+1] = f
     return self
 end
@@ -131,6 +191,50 @@ function mt:isAlly(who)
     end)
 end
 
+function mt:ofVisible(who)
+    return self:addFilter(function (u)
+        return who:isVisible(u)
+    end)
+end
+
+function mt:ofNotIllusion()
+    return self:addFilter(function (u)
+        return not u:isIllusion()
+    end)
+end
+
+function mt:ofType(data)
+    if not self._ofType then
+        self._ofType = {}
+    end
+    if ac.isString(data) then
+        self._ofType[data] = true
+    elseif ac.isTable(data) then
+        for _, tp in ipairs(data) do
+            if ac.isString(tp) then
+                self._ofType[tp] = true
+            end
+        end
+    end
+    return self
+end
+
+function mt:ofNotType(data)
+    if not self._ofNotType then
+        self._ofNotType = {}
+    end
+    if ac.isString(data) then
+        self._ofNotType[data] = true
+    elseif ac.isTable(data) then
+        for _, tp in ipairs(data) do
+            if ac.isString(tp) then
+                self._ofNotType[tp] = true
+            end
+        end
+    end
+    return self
+end
+
 function mt:get()
     local units
     if self._selectType == 'range' then
@@ -140,6 +244,10 @@ function mt:get()
     elseif self._selectType == 'line' then
         units = selectInLine(self._point, self._angle, self._length, self._width)
     end
+
+    checkFilter(units, self._filters)
+    checkType(units, self._ofType, self._ofNotType)
+
     return units
 end
 
@@ -155,7 +263,5 @@ function mt:random()
 end
 
 function ac.selector()
-    return setmetatable({
-        _filters = {},
-    }, mt)
+    return setmetatable({}, mt)
 end

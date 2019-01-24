@@ -280,6 +280,14 @@ function mt:isAlly(other)
     return false
 end
 
+function mt:isVisible(other)
+    if ac.isUnit(other) then
+        return jass.IsUnitVisible(other._handle, self._handle)
+    else
+        return false
+    end
+end
+
 function ac.player(id)
     if not All then
         init()
