@@ -357,3 +357,19 @@ unit:isBuilding()
 unit:isIllusion()
     -> boolean
 ```
+
+### isType
+```lua
+unit:isType(name: string)
+    -> boolean
+```
+
+### addType
+```lua
+unit:addType(name: string)
+```
+
+### removeType
+```lua
+unit:removeType(name: string)
+```

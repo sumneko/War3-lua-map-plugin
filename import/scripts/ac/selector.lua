@@ -65,7 +65,7 @@ local function selectInLine(point, angle, length, width)
         if unit then
             local x0, y0 = unit:getPoint():getXY()
             local d = math.abs(a * x0 + b * y0 + c) / l
-            if d <= w + unit:slk 'collision' then
+            if d <= w + unit._collision then
                 units[#units+1] = unit
             end
         end

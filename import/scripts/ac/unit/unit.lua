@@ -97,6 +97,20 @@ local function onRemove(unit)
     end
 end
 
+local function initType(data)
+    local types = {}
+    if ac.isString(data) then
+        types[data] = true
+    elseif ac.isTable(data) then
+        for _, tp in ipairs(data) do
+            if ac.isString(tp) then
+                types[tp] = true
+            end
+        end
+    end
+    return types
+end
+
 local function create(player, name, point, face)
     local data = ac.table.unit[name]
     if not data then
@@ -167,6 +181,8 @@ function ac.unit(handle)
         u._attribute = attribute(u, u._data.attribute)
         -- 初始化行为限制
         u._restriction = restriction(u, u._data.restriction)
+        -- 初始化单位类型
+        u._type = initType(u._data.type)
 
         u:eventNotify('单位-初始化', u)
 
@@ -594,7 +610,7 @@ function mt:isInRange(point, radius)
     if not ac.isNumber(radius) then
         return
     end
-    return self:getPoint() * point <= self._slk.collision + radius
+    return self:getPoint() * point <= self._collision + radius
 end
 
 function mt:isEnemy(other)
@@ -621,6 +637,35 @@ end
 
 function mt:isIllusion()
     return jass.IsUnitIllusion(self._handle)
+end
+
+function mt:isType(name)
+    if not self._type then
+        return false
+    end
+    if self._type[name] then
+        return true
+    else
+        return false
+    end
+end
+
+function mt:addType(name)
+    if not self._type then
+        return
+    end
+    if ac.isString(name) then
+        self._type[name] = true
+    end
+end
+
+function mt:removeType(name)
+    if not self._type then
+        return
+    end
+    if name ~= nil then
+        self._type[name] = nil
+    end
 end
 
 return {
