@@ -208,15 +208,15 @@ function mt:ofNotIllusion()
 end
 
 function mt:of(data)
-    if not self._ofType then
-        self._ofType = {}
+    if not self._of then
+        self._of = {}
     end
     if ac.isString(data) then
-        self._ofType[data] = true
+        self._of[data] = true
     elseif ac.isTable(data) then
         for _, tp in ipairs(data) do
             if ac.isString(tp) then
-                self._ofType[tp] = true
+                self._of[tp] = true
             end
         end
     end
@@ -224,15 +224,15 @@ function mt:of(data)
 end
 
 function mt:ofNot(data)
-    if not self._ofNotType then
-        self._ofNotType = {}
+    if not self._ofNot then
+        self._ofNot = {}
     end
     if ac.isString(data) then
-        self._ofNotType[data] = true
+        self._ofNot[data] = true
     elseif ac.isTable(data) then
         for _, tp in ipairs(data) do
             if ac.isString(tp) then
-                self._ofNotType[tp] = true
+                self._ofNot[tp] = true
             end
         end
     end
@@ -250,7 +250,7 @@ function mt:get()
     end
 
     checkFilter(units, self._filters)
-    checkType(units, self._ofType, self._ofNotType)
+    checkType(units, self._of, self._ofNot)
 
     return units
 end
