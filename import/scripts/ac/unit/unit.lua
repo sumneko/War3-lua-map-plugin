@@ -8,6 +8,7 @@ local attack = require 'ac.attack'
 local mover = require 'ac.mover'
 local skill = require 'ac.skill'
 local damage = require 'ac.damage'
+local item = require 'ac.item'
 local ORDER = require 'ac.war3.order'
 
 local All = {}
@@ -686,6 +687,10 @@ function mt:damage(data)
     data.source = self
     local dmg = damage.create(data)
     damage.dispatch(dmg)
+end
+
+function mt:createItem(name)
+    return item.create(name, self)
 end
 
 return {

@@ -15,6 +15,7 @@ local METHOD = {
 local mt = {}
 mt.__index = mt
 mt.type = 'item'
+mt._handle = 0
 
 function mt:__tostring()
     return ('{item|%s}'):format(self._name)
@@ -67,6 +68,51 @@ local function eventNotify(item, name, ...)
     callMethod(item, name, ...)
 end
 
+local function isBagFull(unit)
+    for i = 1, SLOT_MAX do
+        if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
+            return false
+        end
+    end
+    return true
+end
+
+local function findFirstEmptyInBag(unit)
+    for i = 1, SLOT_MAX do
+        if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
+            return i
+        end
+    end
+    return 0
+end
+
+local function addToUnit(item, unit)
+    if isBagFull(unit) then
+        return false
+    end
+    item._owner = unit
+    local id = item._id
+    local handle = item._handle
+    item._handle = 0
+    item._id = nil
+    if handle ~= 0 then
+        Items[handle] = nil
+        jass.RemoveItem(handle)
+    end
+    poolAdd(id)
+
+    local skillName = item._data.skill
+    if skillName then
+        local slot = findFirstEmptyInBag(unit)
+        local skill = unit:addSkill(skillName, '物品', slot)
+        if skill then
+            skill._item = item
+        end
+    end
+
+    eventNotify(item, 'onAdd')
+end
+
 local function create(name, target)
     init()
 
@@ -81,32 +127,32 @@ local function create(name, target)
         return nil
     end
 
-    local handle
-    if ac.isPoint(target) then
-        local x, y = target:getXY()
-        handle = jass.CreateItem(ac.id[id], x, y)
-        if handle == 0 then
-            poolAdd(id)
-            return nil
-        end
-    end
-
     if not Cache[id] then
         Cache[id] = {}
     end
 
     local self = setmetatable({
         _id = id,
-        _handle = handle,
         _name = name,
         _data = data,
         _slk = slk.item[id],
         _cache = Cache[id],
     }, data)
 
-    self:updateAll()
-
-    Items[handle] = self
+    if ac.isPoint(target) then
+        local x, y = target:getXY()
+        self._handle = jass.CreateItem(ac.id[id], x, y)
+        if self._handle == 0 then
+            poolAdd(id)
+            return nil
+        end
+        self:updateAll()
+        Items[self._handle] = self
+    elseif ac.isUnit(target) then
+        addToUnit(self, target)
+    else
+        return nil
+    end
 
     return self
 end
@@ -126,24 +172,6 @@ local function createDefine(name)
     return define
 end
 
-local function isBagFull(unit)
-    for i = 1, SLOT_MAX do
-        if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
-            return false
-        end
-    end
-    return true
-end
-
-local function findFirstEmptyInBag(unit)
-    for i = 1, SLOT_MAX do
-        if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
-            return i
-        end
-    end
-    return 0
-end
-
 local function onLootOrder(unit, handle)
     local item = Items[handle]
     if not item then
@@ -160,28 +188,7 @@ local function onPickUp(unit, handle)
         return
     end
 
-    if isBagFull(unit) then
-    end
-
-    local id = item._id
-    item._handle = 0
-    item._id = nil
-    Items[handle] = nil
-    jass.RemoveItem(handle)
-    poolAdd(id)
-
-    item._owner = unit
-
-    local skillName = item._data.skill
-    if skillName then
-        local slot = findFirstEmptyInBag(unit)
-        local skill = unit:addSkill(skillName, '物品', slot)
-        if skill then
-            skill._item = item
-        end
-    end
-
-    eventNotify(item, 'onAdd')
+    addToUnit(item, unit)
 end
 
 local function onDrop(unit, handle)

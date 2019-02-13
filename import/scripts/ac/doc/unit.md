@@ -472,3 +472,9 @@ unit:damage {
     skill = skill / attack,
 }
 ```
+
+### createItem
+```lua
+unit:createItem(name: string)
+    -> item
+```

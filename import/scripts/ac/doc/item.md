@@ -2,6 +2,9 @@
 ```lua
 point:createItem(name: string)
     -> item
+
+unit:createItem(name: string)
+    -> item
 ```
 
 ## item.ini
