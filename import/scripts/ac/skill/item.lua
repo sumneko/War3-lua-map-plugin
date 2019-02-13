@@ -6,6 +6,7 @@ local SLOT_MIN = 1
 local SLOT_MAX = 6
 
 local Pool
+local Cache = {}
 
 local function poolAdd(id)
     Pool[#Pool+1] = id
@@ -96,6 +97,106 @@ function mt:remove()
     releaseId(self)
 end
 
+function mt:handle()
+    local unit = self._skill._owner
+    local id = self._ability
+    return japi.EXGetUnitAbility(unit._handle, ac.id[id])
+end
+
+function mt:updateTitle()
+    local skill = self._skill
+    local title = skill.title or skill.name or skill._name
+    title = skill:loadString(title)
+    if title == self._cache.title then
+        return
+    end
+    self._cache.title = title
+    japi.EXSetItemDataString(ac.id[self._id], 4, title)
+end
+
+function mt:updateDescription()
+    local skill = self._skill
+    local desc = skill.description
+    desc = skill:loadString(desc)
+    if desc == self._cache.description then
+        return
+    end
+    self._cache.description = desc
+    japi.EXSetItemDataString(ac.id[self._id], 3, desc)
+end
+
+function mt:updateIcon()
+    local skill = self._skill
+    local icon = skill.icon
+    if icon == self._cache.icon then
+        return
+    end
+    self._cache.icon = icon
+    japi.EXSetItemDataString(ac.id[self._id], 1, icon)
+end
+
+function mt:updateHotkey()
+end
+
+function mt:updateRange()
+    local skill = self._skill
+    local range = ac.toNumber(skill.range)
+    if range == self._cache.range then
+        return
+    end
+    self._cache.range = range
+    japi.EXSetAbilityDataReal(self:handle(), 1, 0x6B, range)
+end
+
+function mt:updateTargetType()
+    local skill = self._skill
+    local targetType = skill.targetType
+    if self._cache.targetType == targetType then
+        return
+    end
+    self._cache.targetType = targetType
+    if targetType == '单位' then
+        japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 1)
+    elseif targetType == '点' then
+        japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 2)
+    elseif targetType == '单位或点' then
+        japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 3)
+    else
+        japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 0)
+    end
+    -- 刷新一下
+    self:refresh()
+end
+
+function mt:updateCost()
+    local skill = self._skill
+    local cost = ac.toInteger(skill._cost)
+    if cost == self._cache.cost then
+        return
+    end
+    self._cache.cost = cost
+    japi.EXSetAbilityDataInteger(self:handle(), 1, 0x68, cost)
+end
+
+function mt:refresh()
+    local skill = self._skill
+    local unit = skill._owner
+    local id = self._ability
+    jass.SetUnitAbilityLevel(unit._handle, ac.id[id], 2)
+    jass.SetUnitAbilityLevel(unit._handle, ac.id[id], 1)
+end
+
+function mt:updateAll()
+    self:updateTitle()
+    self:updateTitle()
+    self:updateDescription()
+    self:updateIcon()
+    self:updateHotkey()
+    self:updateRange()
+    self:updateTargetType()
+    self:updateCost()
+end
+
 return function (skill)
     init()
 
@@ -104,9 +205,14 @@ return function (skill)
         return nil
     end
 
+    if not Cache[id] then
+        Cache[id] = {}
+    end
+
     local icon = setmetatable({
         _id = id,
         _skill = skill,
+        _cache = Cache[id],
         _slk = slk.item[id],
     }, mt)
 
@@ -115,6 +221,8 @@ return function (skill)
         releaseId(icon)
         return nil
     end
+
+    icon:updateAll()
 
     return icon
 end

@@ -187,14 +187,6 @@ function mt:updateTargetType()
     self:refresh()
 end
 
-function mt:refresh()
-    local skill = self._skill
-    local unit = skill._owner
-    local id = self._id
-    jass.SetUnitAbilityLevel(unit._handle, ac.id[id], 2)
-    jass.SetUnitAbilityLevel(unit._handle, ac.id[id], 1)
-end
-
 function mt:updateCost()
     local skill = self._skill
     local cost = ac.toInteger(skill._cost)
@@ -203,6 +195,14 @@ function mt:updateCost()
     end
     self._cache.cost = cost
     japi.EXSetAbilityDataInteger(self:handle(), 1, 0x68, cost)
+end
+
+function mt:refresh()
+    local skill = self._skill
+    local unit = skill._owner
+    local id = self._id
+    jass.SetUnitAbilityLevel(unit._handle, ac.id[id], 2)
+    jass.SetUnitAbilityLevel(unit._handle, ac.id[id], 1)
 end
 
 function mt:updateAll()
