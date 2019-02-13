@@ -29,7 +29,7 @@ local function init()
     Pool = {}
     for id, item in pairs(slk.item) do
         local name = item.Name
-        if name and name:sub(1, 1) == '@' then
+        if name and name:sub(1, 7) == '@物品' then
             poolAdd(id)
         end
     end
@@ -202,6 +202,7 @@ return function (skill)
 
     local id = poolGet()
     if not id then
+        log.error('无法为技能分配物品图标')
         return nil
     end
 
