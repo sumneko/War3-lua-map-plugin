@@ -7,9 +7,18 @@ local Cache = {}
 local Items = {}
 local SLOT_MAX = 6
 
+local METHOD = {
+    ['onAdd']    = '物品-获得',
+    ['onRemove'] = '物品-失去',
+}
+
 local mt = {}
 mt.__index = mt
 mt.type = 'item'
+
+function mt:__tostring()
+    return ('{item|%s}'):format(self._name)
+end
 
 local function poolAdd(id)
     Pool[#Pool+1] = id
@@ -36,6 +45,26 @@ local function init()
             poolAdd(id)
         end
     end
+end
+
+local function callMethod(item, name, ...)
+    local method = item[name]
+    if not method then
+        return
+    end
+    local suc, res = xpcall(method, log.error, item, ...)
+    if suc then
+        return res
+    end
+end
+
+local function eventNotify(item, name, ...)
+    local event = METHOD[name]
+    if event then
+        ac.eventNotify(item, event, item, ...)
+        item:getOwner():eventNotify(event, item, ...)
+    end
+    callMethod(item, name, ...)
 end
 
 local function create(name, target)
@@ -73,7 +102,7 @@ local function create(name, target)
         _data = data,
         _slk = slk.item[id],
         _cache = Cache[id],
-    }, mt)
+    }, data)
 
     self:updateAll()
 
@@ -88,7 +117,13 @@ local function createDefine(name)
         log.error(('物品[%s]不存在'):format(name))
         return nil
     end
-    return setmetatable({}, { __index = data })
+    local define = setmetatable({}, mt)
+    define.__index = define
+    define.__tostring = mt.__tostring
+    for k, v in pairs(data) do
+        define[k] = v
+    end
+    return define
 end
 
 local function isBagFull(unit)
@@ -135,6 +170,8 @@ local function onPickUp(unit, handle)
     jass.RemoveItem(handle)
     poolAdd(id)
 
+    item._owner = unit
+
     local skillName = item._data.skill
     if skillName then
         local slot = findFirstEmptyInBag(unit)
@@ -143,6 +180,8 @@ local function onPickUp(unit, handle)
             skill._item = item
         end
     end
+
+    eventNotify(item, 'onAdd')
 end
 
 local function onDrop(unit, handle)
@@ -176,6 +215,7 @@ local function onDrop(unit, handle)
     item:updateAll()
 
     Items[item._handle] = item
+    eventNotify(item, 'onRemove')
 
     return item
 end
@@ -203,6 +243,10 @@ end
 function mt:updateAll()
     self:updateTitle()
     self:updateDescription()
+end
+
+function mt:getOwner()
+    return self._owner
 end
 
 function mt:remove()
