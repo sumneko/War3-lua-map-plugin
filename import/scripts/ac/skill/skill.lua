@@ -1,4 +1,5 @@
 local ability = require 'ac.skill.ability'
+local item = require 'ac.skill.item'
 local type = type
 local rawget = rawget
 local getmetatable = getmetatable
@@ -219,6 +220,7 @@ local function updateIcon(skill)
         if skill._type == '技能' then
             skill._icon = ability(skill)
         elseif skill._type == '物品' then
+            skill._icon = item(skill)
         end
     end
 end
