@@ -4,6 +4,7 @@ local japi = require 'jass.japi'
 
 local Pool
 local Cache = {}
+local Items = {}
 
 local mt = {}
 mt.__index = mt
@@ -75,6 +76,8 @@ local function create(name, target)
 
     self:updateAll()
 
+    Items[handle] = self
+
     return self
 end
 
@@ -85,6 +88,9 @@ local function createDefine(name)
         return nil
     end
     return setmetatable({}, { __index = data })
+end
+
+local function onLootOrder(unit, handle)
 end
 
 function mt:updateTitle()
@@ -112,6 +118,19 @@ function mt:updateAll()
     self:updateDescription()
 end
 
+function mt:remove()
+    if self._removed then
+        return
+    end
+    self._removed = true
+    local handle = self._handle
+    self._handle = 0
+    self._id = 0
+
+    Items[handle] = nil
+    jass.RemoveItem(handle)
+end
+
 ac.item = setmetatable({}, {
     __index = function (self, name)
         local item = createDefine(name)
@@ -126,4 +145,5 @@ ac.item = setmetatable({}, {
 
 return {
     create = create,
+    onLootOrder = onLootOrder,
 }

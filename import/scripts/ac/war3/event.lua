@@ -1,10 +1,13 @@
 local jass = require 'jass.common'
+local item = require 'ac.item'
+local ORDER = require 'ac.war3.order'
 
 local EVENT = {
     Selected    = jass.EVENT_PLAYER_UNIT_SELECTED,
     Deselected  = jass.EVENT_PLAYER_UNIT_DESELECTED,
     Chat        = 96,
     Level       = jass.EVENT_PLAYER_HERO_LEVEL,
+    TargetOrder = jass.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER,
 }
 local CallBack = {
     [EVENT.Selected] = function ()
@@ -34,6 +37,16 @@ local CallBack = {
             unit:_onLevel()
         end
     end,
+    [EVENT.TargetOrder] = function ()
+        local unit = ac.unit(jass.GetTriggerUnit())
+        local handle = jass.GetOrderTargetItem()
+        if handle ~= 0 then
+            local order = jass.GetIssuedOrderId()
+            if order == ORDER['smart'] then
+                item.onLootOrder(unit, handle)
+            end
+        end
+    end,
 }
 
 return function ()
@@ -43,6 +56,7 @@ return function ()
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.Deselected, nil)
         jass.TriggerRegisterPlayerChatEvent(trg, jass.Player(i), '', false)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.Level, nil)
+        jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.TargetOrder, nil)
     end
     jass.TriggerAddCondition(trg, jass.Condition(function ()
         local eventId = jass.GetTriggerEventId()
