@@ -118,7 +118,7 @@ end
 
 local function searchAbilityId(unit, id)
     for skill in unit:eachSkill() do
-        if skill._icon and skill._icon._id == id then
+        if skill._icon and skill._icon._ability == id then
             return skill
         end
     end

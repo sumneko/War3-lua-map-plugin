@@ -93,6 +93,7 @@ function mt:remove()
         return
     end
     self._removed = true
+    self._ability = nil
     removeItem(self)
     releaseId(self)
 end
