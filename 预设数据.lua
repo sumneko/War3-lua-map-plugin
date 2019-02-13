@@ -2,7 +2,7 @@ local mt = {}
 
 mt.info = {
     name = '预设数据',
-    version = 1.2,
+    version = 1.3,
     author = '最萌小汐',
     description = '将物编数据设置为标准值。'
 }
@@ -330,6 +330,39 @@ local function unitDefault(w2l)
     end
 end
 
+local function miscDefault(w2l)
+    -- 英雄属性 - 每点敏捷攻击速度奖励
+    w2l.slk.misc.Misc.agiattackspeedbonus = 0.0000
+    -- 英雄属性 -基础防御补正
+    w2l.slk.misc.Misc.agidefensebase = 0.0000
+    -- 英雄属性 - 每点敏捷防御奖励
+    w2l.slk.misc.Misc.agidefensebonus = 0.0000
+    -- 英雄属性 - 每点智力魔法值奖励
+    w2l.slk.misc.Misc.intmanabonus = 0.0000
+    -- 英雄属性 - 每点智力魔法回复奖励
+    w2l.slk.misc.Misc.intregenbonus = 0.0000
+    -- 英雄属性 - 每点主属性攻击奖励
+    w2l.slk.misc.Misc.strattackbonus = 0.0000
+    -- 英雄属性 - 每点力量生命值奖励
+    w2l.slk.misc.Misc.strhitpointbonus = 0.0000
+    -- 英雄属性 - 每点力量生命回复奖励
+    w2l.slk.misc.Misc.strregenbonus = 0.0000
+    -- 战斗 - 伤害奖励列表 - 混乱
+    w2l.slk.misc.Misc.damagebonuschaos = "0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00"
+    -- 战斗 - 伤害奖励列表 - 英雄
+    w2l.slk.misc.Misc.damagebonushero = "0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00"
+    -- 战斗 - 伤害奖励列表 - 魔法
+    w2l.slk.misc.Misc.damagebonusmagic = "0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00"
+    -- 战斗 - 伤害奖励列表 - 普通
+    w2l.slk.misc.Misc.damagebonusnormal = "0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00"
+    -- 战斗 - 伤害奖励列表 - 穿刺
+    w2l.slk.misc.Misc.damagebonuspierce = "0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00"
+    -- 战斗 - 伤害奖励列表 - 攻城
+    w2l.slk.misc.Misc.damagebonussiege = "0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00"
+    -- 战斗 - 伤害奖励列表 - 法术
+    w2l.slk.misc.Misc.damagebonusspells = "0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00"
+end
+
 local function isOpenByYDWE(w2l)
     if w2l.input_mode ~= 'lni' then
         return false
@@ -359,6 +392,7 @@ function mt:on_full(w2l)
     itemInsert(w2l)
 
     unitDefault(w2l)
+    miscDefault(w2l)
 end
 
 return mt
