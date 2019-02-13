@@ -3,6 +3,8 @@ local jass = require 'jass.common'
 local japi = require 'jass.japi'
 
 local Pool
+local Cache = {}
+
 local mt = {}
 mt.__index = mt
 mt.type = 'item'
@@ -58,11 +60,20 @@ local function create(name, target)
         end
     end
 
+    if not Cache[id] then
+        Cache[id] = {}
+    end
+
     local self = setmetatable({
         _id = id,
         _handle = handle,
         _name = name,
+        _data = data,
+        _slk = slk.item[id],
+        _cache = Cache[id],
     }, mt)
+
+    self:updateAll()
 
     return self
 end
@@ -74,6 +85,31 @@ local function createDefine(name)
         return nil
     end
     return setmetatable({}, { __index = data })
+end
+
+function mt:updateTitle()
+    local item = self._data
+    local title = item.title or item.name or item._name
+    if title == self._cache.title then
+        return
+    end
+    self._cache.title = title
+    japi.EXSetItemDataString(ac.id[self._id], 4, title)
+end
+
+function mt:updateDescription()
+    local item = self._data
+    local desc = item.description
+    if desc == self._cache.description then
+        return
+    end
+    self._cache.description = desc
+    japi.EXSetItemDataString(ac.id[self._id], 5, desc)
+end
+
+function mt:updateAll()
+    self:updateTitle()
+    self:updateDescription()
 end
 
 ac.item = setmetatable({}, {

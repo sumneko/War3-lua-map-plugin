@@ -188,7 +188,6 @@ end
 
 function mt:updateAll()
     self:updateTitle()
-    self:updateTitle()
     self:updateDescription()
     self:updateIcon()
     self:updateHotkey()
