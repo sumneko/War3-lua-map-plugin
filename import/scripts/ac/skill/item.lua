@@ -216,6 +216,10 @@ return function (skill)
         _slk = slk.item[id],
     }, mt)
 
+    local dummy = jass.CreateItem(ac.id[id], 0, 0)
+    icon:updateIcon()
+    jass.RemoveItem(dummy)
+
     local ok = addItem(icon)
     if not ok then
         releaseId(icon)
