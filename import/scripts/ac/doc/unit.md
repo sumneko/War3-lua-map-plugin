@@ -92,6 +92,9 @@ attributeName: string
     | '攻击速度'
     | '冷却缩减'
     | '减耗'
+    | '力量'
+    | '智力'
+    | '敏捷'
 ```
 
 ### get
@@ -112,6 +115,9 @@ attributeName: string
     | '攻击速度'
     | '冷却缩减'
     | '减耗'
+    | '力量'
+    | '智力'
+    | '敏捷'
 ```
 
 ### add
@@ -132,6 +138,9 @@ attributeName: string
     | '攻击速度'
     | '冷却缩减'
     | '减耗'
+    | '力量'
+    | '智力'
+    | '敏捷'
 ```
 
 ### addRestriction
