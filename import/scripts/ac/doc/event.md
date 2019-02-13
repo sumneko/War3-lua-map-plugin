@@ -20,6 +20,12 @@ unit:event('单位-受到伤害', function (trg, unit, damage)
 end)
 ```
 
+### 单位-攻击出手
+```lua
+unit:event('单位-攻击出手', function (trg, unit, target, damage, mover)
+end)
+```
+
 ### 单位-初始化
 ```lua
 unit:event('单位-初始化', function (trg, unit)

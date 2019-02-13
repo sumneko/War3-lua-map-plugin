@@ -13,6 +13,7 @@ function mt:shotInstant(target)
         skill  = self,
         damage = self._owner:get '攻击',
     }
+    self._owner:eventNotify('单位-攻击出手', self._owner, target, dmg)
     damage.dispatch(dmg)
 end
 
@@ -43,6 +44,8 @@ function mt:shotMissile(target)
     function mover:onFinish()
         damage.dispatch(dmg)
     end
+
+    self._owner:eventNotify('单位-攻击出手', self._owner, target, dmg, mover)
 end
 
 function mt:dispatch(target)
