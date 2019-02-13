@@ -48,6 +48,12 @@ point / point
     -> angle: number
 ```
 
+### createItem
+```lua
+point:createItem(name: string)
+    -> item
+```
+
 ### ac.point
 ```lua
 ac.point(x: number, y: number)
