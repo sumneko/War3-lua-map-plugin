@@ -463,3 +463,12 @@ unit:removeType(name: string)
 unit:isVisible(other: unit)
     -> boolean
 ```
+
+### damage
+```lua
+unit:damage {
+    target = unit,
+    damage = number,
+    skill = skill / attack,
+}
+```
