@@ -297,7 +297,7 @@ local function itemInsert(w2l)
         }
         newObject(w2l.slk.item, nextId(), 'ches') {
             Name = '@物品-' .. tostring(i),
-            usabel = 1,
+            usable = 1,
             abilList = abilityId,
         }
     end
