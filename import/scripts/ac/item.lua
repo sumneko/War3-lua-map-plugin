@@ -131,6 +131,7 @@ local function onPickUp(unit, handle)
     local id = item._id
     item._handle = 0
     item._id = nil
+    Items[handle] = nil
     jass.RemoveItem(handle)
     poolAdd(id)
 
@@ -142,6 +143,41 @@ local function onPickUp(unit, handle)
             skill._item = item
         end
     end
+end
+
+local function onDrop(unit, handle)
+    local x = jass.GetItemX(handle)
+    local y = jass.GetItemY(handle)
+    local item
+    for skill in unit:eachSkill '物品' do
+        if skill._icon and skill._icon._handle == handle then
+            item = skill._item
+            skill:remove()
+            break
+        end
+    end
+    if not item then
+        return nil
+    end
+
+    local id = poolGet()
+    if not id then
+        log.error('无法分配新的物品')
+        return nil
+    end
+
+    item._id = id
+    item._handle = jass.CreateItem(ac.id[id], x, y)
+    if item._handle == 0 then
+        item:remove()
+        return nil
+    end
+
+    item:updateAll()
+
+    Items[item._handle] = item
+
+    return item
 end
 
 function mt:updateTitle()
@@ -200,4 +236,5 @@ return {
     create = create,
     onLootOrder = onLootOrder,
     onPickUp = onPickUp,
+    onDrop = onDrop,
 }

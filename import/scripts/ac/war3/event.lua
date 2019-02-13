@@ -9,6 +9,7 @@ local EVENT = {
     Level       = jass.EVENT_PLAYER_HERO_LEVEL,
     TargetOrder = jass.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER,
     PickUpItem  = jass.EVENT_PLAYER_UNIT_PICKUP_ITEM,
+    DropItem    = jass.EVENT_PLAYER_UNIT_DROP_ITEM,
 }
 local CallBack = {
     [EVENT.Selected] = function ()
@@ -53,6 +54,13 @@ local CallBack = {
         local handle = jass.GetManipulatedItem()
         item.onPickUp(unit, handle)
     end,
+    [EVENT.DropItem] = function ()
+        local unit = ac.unit(jass.GetTriggerUnit())
+        local handle = jass.GetManipulatedItem()
+        ac.wait(0, function ()
+            item.onDrop(unit, handle)
+        end)
+    end,
 }
 
 return function ()
@@ -64,6 +72,7 @@ return function ()
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.Level, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.TargetOrder, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PickUpItem, nil)
+        jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.DropItem, nil)
     end
     jass.TriggerAddCondition(trg, jass.Condition(function ()
         local eventId = jass.GetTriggerEventId()
