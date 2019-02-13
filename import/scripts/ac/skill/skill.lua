@@ -391,6 +391,28 @@ local function eachSkill(mgr, tp)
     end
 end
 
+local function removeSkillByName(mgr, name)
+    for skill in mgr['技能']:pairs() do
+        if skill._name == name then
+            skill:remove()
+            return true
+        end
+    end
+    for skill in mgr['物品']:pairs() do
+        if skill._name == name then
+            skill:remove()
+            return true
+        end
+    end
+    for skill in mgr['隐藏']:pairs() do
+        if skill._name == name then
+            skill:remove()
+            return true
+        end
+    end
+    return false
+end
+
 local function currentSkill(mgr)
     return mgr._currentSkill
 end
@@ -646,6 +668,7 @@ return function (unit)
         addSkill  = addSkill,
         findSkill = findSkill,
         eachSkill = eachSkill,
+        removeSkillByName = removeSkillByName,
         currentSkill = currentSkill,
     }
 end

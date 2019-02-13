@@ -448,6 +448,13 @@ function mt:eachSkill(tp)
     return self._skill:eachSkill(tp)
 end
 
+function mt:removeSkill(name)
+    if not self._skill then
+        return false
+    end
+    return self._skill:removeSkillByName(name)
+end
+
 function mt:stopCast()
 end
 

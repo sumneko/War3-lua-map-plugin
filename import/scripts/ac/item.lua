@@ -111,6 +111,7 @@ local function addToUnit(item, unit)
     end
 
     eventNotify(item, 'onAdd')
+    return true
 end
 
 local function create(name, target)
@@ -149,7 +150,9 @@ local function create(name, target)
         self:updateAll()
         Items[self._handle] = self
     elseif ac.isUnit(target) then
-        addToUnit(self, target)
+        if not addToUnit(self, target) then
+            return nil
+        end
     else
         return nil
     end

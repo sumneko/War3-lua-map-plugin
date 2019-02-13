@@ -296,6 +296,12 @@ type: string
     | '隐藏'
 ```
 
+### removeSkill
+```lua
+unit:removeSkill(name: string)
+    -> boolean
+```
+
 ### event
 ```lua
 unit:event(name: string, callback: function)

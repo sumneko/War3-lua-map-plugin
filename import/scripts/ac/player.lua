@@ -4,6 +4,7 @@ local unit = require 'ac.unit'
 local dialog = require 'ac.dialog'
 local timerDialog = require 'ac.timerdialog'
 local board = require 'ac.board'
+local shop = require 'ac.shop'
 
 local MIN_ID = 1
 local MAX_ID = 16
@@ -76,6 +77,12 @@ end
 
 function mt:createUnit(name, point, face)
     return unit.create(self, name, point, face)
+end
+
+function mt:createShop(name, point, face)
+    local unit = unit.create(self, name, point, face)
+    local shp = shop(unit)
+    return shp
 end
 
 function mt:event(name, f)
