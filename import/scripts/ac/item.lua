@@ -5,6 +5,7 @@ local japi = require 'jass.japi'
 local Pool
 local Cache = {}
 local Items = {}
+local SLOT_MAX = 6
 
 local mt = {}
 mt.__index = mt
@@ -90,7 +91,57 @@ local function createDefine(name)
     return setmetatable({}, { __index = data })
 end
 
+local function isBagFull(unit)
+    for i = 1, SLOT_MAX do
+        if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
+            return false
+        end
+    end
+    return true
+end
+
+local function findFirstEmptyInBag(unit)
+    for i = 1, SLOT_MAX do
+        if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
+            return i
+        end
+    end
+    return 0
+end
+
 local function onLootOrder(unit, handle)
+    local item = Items[handle]
+    if not item then
+        return
+    end
+    if isBagFull(unit) then
+        unit:stop()
+    end
+end
+
+local function onPickUp(unit, handle)
+    local item = Items[handle]
+    if not item then
+        return
+    end
+
+    if isBagFull(unit) then
+    end
+
+    local id = item._id
+    item._handle = 0
+    item._id = nil
+    jass.RemoveItem(handle)
+    poolAdd(id)
+
+    local skillName = item._data.skill
+    if skillName then
+        local slot = findFirstEmptyInBag(unit)
+        local skill = unit:addSkill(skillName, '物品', slot)
+        if skill then
+            skill._item = item
+        end
+    end
 end
 
 function mt:updateTitle()
@@ -124,11 +175,13 @@ function mt:remove()
     end
     self._removed = true
     local handle = self._handle
+    local id = self._id
     self._handle = 0
-    self._id = 0
+    self._id = nil
 
     Items[handle] = nil
     jass.RemoveItem(handle)
+    poolAdd(id)
 end
 
 ac.item = setmetatable({}, {
@@ -146,4 +199,5 @@ ac.item = setmetatable({}, {
 return {
     create = create,
     onLootOrder = onLootOrder,
+    onPickUp = onPickUp,
 }

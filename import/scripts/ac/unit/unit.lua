@@ -525,6 +525,11 @@ function mt:attack(target)
     return false
 end
 
+function mt:stop()
+    local x, y = (self:getPoint() - {self:getFacing(), 1}):getXY()
+    return jass.IssuePointOrderById(self._handle, ORDER['move'], x, y)
+end
+
 function mt:reborn(point, showEffect)
     if not self:isHero() then
         return false

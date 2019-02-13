@@ -365,6 +365,12 @@ unit:attack(point/unit)
     -> boolean
 ```
 
+### stop
+```lua
+unit:stop()
+    -> boolean
+```
+
 ### blink
 ```lua
 unit:blink(point)

@@ -8,6 +8,7 @@ local EVENT = {
     Chat        = 96,
     Level       = jass.EVENT_PLAYER_HERO_LEVEL,
     TargetOrder = jass.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER,
+    PickUpItem  = jass.EVENT_PLAYER_UNIT_PICKUP_ITEM,
 }
 local CallBack = {
     [EVENT.Selected] = function ()
@@ -47,6 +48,11 @@ local CallBack = {
             end
         end
     end,
+    [EVENT.PickUpItem] = function ()
+        local unit = ac.unit(jass.GetTriggerUnit())
+        local handle = jass.GetManipulatedItem()
+        item.onPickUp(unit, handle)
+    end,
 }
 
 return function ()
@@ -57,6 +63,7 @@ return function ()
         jass.TriggerRegisterPlayerChatEvent(trg, jass.Player(i), '', false)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.Level, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.TargetOrder, nil)
+        jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PickUpItem, nil)
     end
     jass.TriggerAddCondition(trg, jass.Condition(function ()
         local eventId = jass.GetTriggerEventId()
