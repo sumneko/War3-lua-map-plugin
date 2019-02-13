@@ -274,6 +274,34 @@ local function abilityInsert(w2l)
     end
 end
 
+local function itemInsert(w2l)
+    -- 分配ID
+    local nextId = IdCreator '%'
+    for i = 1, 100 do
+        local abilityId = nextId()
+        newObject(w2l.slk.ability, abilityId, 'ANcl', 2) {
+            Name = '@物品技能-' .. tostring(i),
+            EffectArt = '',
+            TargetArt = '',
+            Targetattach = '',
+            Animnames = '',
+            CasterArt = '',
+            hero = 0,
+            levels = 2,
+            DataA = {0, 0},
+            DataB = {3, 3},
+            DataC = {1, 1},
+            DataD = {0, 0},
+            DataE = {0, 0},
+            Rng = {0, 0},
+        }
+        newObject(w2l.slk.item, nextId(), 'ches') {
+            usabel = 1,
+            abilList = abilityId,
+        }
+    end
+end
+
 local function unitDefault(w2l)
     -- 设置所有单位的默认数据
     for _, unit in pairs(w2l.slk.unit) do
@@ -320,6 +348,7 @@ function mt:on_full(w2l)
 
     unitInsert(w2l)
     abilityInsert(w2l)
+    itemInsert(w2l)
 
     unitDefault(w2l)
 end

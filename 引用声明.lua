@@ -22,7 +22,7 @@ function mt:on_mark(w2l)
             mergeLni(list, lni)
         end
         for id in pairs(w2l.slk[type]) do
-            if id:sub(1, 1) == '@' or id:sub(1, 1) == '$' then
+            if id:find('%W') then
                 list[id] = true
             end
         end
