@@ -145,7 +145,7 @@ function mt:add(k, v)
     if ext == '%' then
         k = k:sub(1, -2)
         local wait = self:onSet(k)
-        self._rate[k] = self._rate[k] + v
+        self._rate[k] = (self._rate[k] or 0.0) + v
         if wait then
             if wait() == false then
                 return
@@ -154,7 +154,7 @@ function mt:add(k, v)
         self:onShow(k)
     else
         local wait = self:onSet(k)
-        self._base[k] = self._base[k] + v
+        self._base[k] = (self._base[k] or 0.0) + v
         if wait then
             if wait() == false then
                 return
