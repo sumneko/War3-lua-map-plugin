@@ -8,6 +8,17 @@ function mt:__tostring()
     return ('{shop|%s}'):format(self._unit:getName())
 end
 
+function mt:setItem(index, name)
+    local unit = self._unit
+    local data = ac.table.item[name]
+    if not data then
+        log.error(('物品[%s]不存在'):format(name))
+        return false
+    end
+    local skill = unit:findSkill(index, '技能') or unit:addSkill('@物品', '技能', index)
+    skill:setOption('title', data.title)
+end
+
 return function (unit)
     local shop = setmetatable({
         _unit = unit,

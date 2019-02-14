@@ -646,6 +646,15 @@ function mt:isCast()
     end
 end
 
+function mt:setOption(name, value)
+    self:set(name, value)
+    if name == 'title' then
+        if self._icon then
+            self._icon:updateTitle()
+        end
+    end
+end
+
 ac.skill = setmetatable({}, {
     __index = function (self, name)
         local skill = createDefine(name)

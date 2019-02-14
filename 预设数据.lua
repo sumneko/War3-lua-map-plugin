@@ -225,8 +225,8 @@ local function abilityInsert(w2l)
     -- 分配ID
     local nextId = IdCreator '$'
 
-    -- 为每个格子分配50个技能，共600个
-    local SIZE = 50
+    -- 为每个格子分配100个技能，共1200个
+    local SIZE = 100
     local i = 0
     local slot = 0
     for y = 2, 0, -1 do
@@ -251,7 +251,7 @@ local function abilityInsert(w2l)
                     hero = 0,
                     levels = 2,
                     DataA = {0, 0},
-                    DataB = {3, 3},
+                    DataB = {0, 0},
                     DataC = {1, 1},
                     DataD = {0, 0},
                     DataE = {0, 0},

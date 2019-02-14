@@ -54,6 +54,13 @@ targetType = '单位'
 targetType = '单位或点'
 ```
 
+### passive
+被动技能
+
+```lua
+passive = 1
+```
+
 ### cool
 冷却
 
