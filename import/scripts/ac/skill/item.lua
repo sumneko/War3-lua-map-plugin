@@ -2,9 +2,6 @@ local slk = require 'jass.slk'
 local jass = require 'jass.common'
 local japi = require 'jass.japi'
 
-local SLOT_MIN = 1
-local SLOT_MAX = 6
-
 local Pool
 local Cache = {}
 
@@ -44,6 +41,10 @@ local function releaseId(icon)
     poolAdd(id)
 end
 
+local function getSlotMax(unit)
+    return jass.UnitInventorySize(unit._handle)
+end
+
 local function addItem(icon)
     local id = icon._id
     if not id then
@@ -53,7 +54,7 @@ local function addItem(icon)
     local unit = skill._owner
 
     local slot = ac.toInteger(skill._slot)
-    if not slot or slot < SLOT_MIN or slot > SLOT_MAX then
+    if not slot or slot < 1 or slot > getSlotMax(unit) then
         return false
     end
     if jass.UnitItemInSlot(unit._handle, slot-1) ~= 0 then

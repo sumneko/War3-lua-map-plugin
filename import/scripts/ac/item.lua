@@ -5,7 +5,6 @@ local japi = require 'jass.japi'
 local Pool
 local Cache = {}
 local Items = {}
-local SLOT_MAX = 6
 
 local METHOD = {
     ['onAdd']    = '物品-获得',
@@ -69,7 +68,7 @@ local function eventNotify(item, name, ...)
 end
 
 local function isBagFull(unit)
-    for i = 1, SLOT_MAX do
+    for i = 1, jass.UnitInventorySize(unit._handle) do
         if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
             return false
         end
@@ -78,7 +77,7 @@ local function isBagFull(unit)
 end
 
 local function findFirstEmptyInBag(unit)
-    for i = 1, SLOT_MAX do
+    for i = 1, jass.UnitInventorySize(unit._handle) do
         if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
             return i
         end
