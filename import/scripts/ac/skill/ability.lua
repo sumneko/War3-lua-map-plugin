@@ -121,6 +121,7 @@ function mt:updateTitle()
     end
     self._cache.title = title
     japi.EXSetAbilityString(ac.id[self._id], 1, 0xD7, title)
+    self:needRefreshAbility()
 end
 
 function mt:updateDescription()
@@ -132,6 +133,7 @@ function mt:updateDescription()
     end
     self._cache.description = desc
     japi.EXSetAbilityString(ac.id[self._id], 1, 0xDA, desc)
+    self:needRefreshAbility()
 end
 
 function mt:updateIcon()
@@ -142,6 +144,7 @@ function mt:updateIcon()
     end
     self._cache.icon = icon
     japi.EXSetAbilityString(ac.id[self._id], 1, 0xCC, icon)
+    self:needRefreshAbility()
 end
 
 function mt:updateHotkey()
@@ -218,6 +221,13 @@ end
 
 function mt:getOrder()
     return self._slk.DataF
+end
+
+function mt:needRefreshAbility()
+    local skill = self._skill
+    local unit = skill._owner
+    local mgr = unit._skill
+    mgr._needRefreshAbility = true
 end
 
 return function (skill)

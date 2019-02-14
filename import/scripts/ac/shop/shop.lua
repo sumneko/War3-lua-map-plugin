@@ -15,8 +15,9 @@ function mt:setItem(index, name)
         log.error(('物品[%s]不存在'):format(name))
         return false
     end
-    local skill = unit:findSkill(index, '技能') or unit:addSkill('@物品', '技能', index)
-    skill:setOption('title', data.title)
+    local skill = unit:findSkill(index, '技能') or unit:addSkill('@商店物品', '技能', index)
+    skill.item = data
+    skill:update()
 end
 
 return function (unit)

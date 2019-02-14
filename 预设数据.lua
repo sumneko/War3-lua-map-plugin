@@ -205,6 +205,10 @@ local function abilityInsert(w2l)
         -- 等级
         levels = 2,
     }
+    newObject(w2l.slk.ability, '@RFR', 'Amgl') {
+        Requires = '',
+        checkDep = 0,
+    }
 
     -- 通魔使用的命令字符串（共需要12个）
     local orderList = {

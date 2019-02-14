@@ -1,3 +1,4 @@
+local jass = require 'jass.common'
 local ability = require 'ac.skill.ability'
 local item = require 'ac.skill.item'
 local type = type
@@ -417,6 +418,15 @@ local function currentSkill(mgr)
     return mgr._currentSkill
 end
 
+local function update(mgr)
+    if mgr._needRefreshAbility then
+        mgr._needRefreshAbility = nil
+        print(mgr._owner)
+        jass.UnitAddAbility(mgr._owner._handle, ac.id['@RFR'])
+        jass.UnitRemoveAbility(mgr._owner._handle, ac.id['@RFR'])
+    end
+end
+
 local function loadString(skill, str)
     return str:gsub('${(.-)}', function (pat)
         local pos = pat:find(':', 1, true)
@@ -652,6 +662,14 @@ function mt:setOption(name, value)
         if self._icon then
             self._icon:updateTitle()
         end
+    elseif name == 'description' then
+        if self._icon then
+            self._icon:updateDescription()
+        end
+    elseif name == 'icon' then
+        if self._icon then
+            self._icon:updateIcon()
+        end
     end
 end
 
@@ -679,5 +697,6 @@ return function (unit)
         eachSkill = eachSkill,
         removeSkillByName = removeSkillByName,
         currentSkill = currentSkill,
+        update = update,
     }
 end
