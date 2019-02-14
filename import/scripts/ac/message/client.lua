@@ -54,10 +54,11 @@ local function canControl(unit)
 end
 
 local function checkSelectHero()
-    if getSelect() == localHero() then
+    local selecting = getSelect()
+    if selecting == localHero() then
         return
     end
-    if canControl(getSelect()) then
+    if canControl(selecting) and selecting:findSkill('@命令') then
         return
     end
     selectHero()
