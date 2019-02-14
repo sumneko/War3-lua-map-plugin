@@ -1,13 +1,17 @@
 local mt = ac.skill['@商店物品']
 
 function mt:onAdd()
-    self.timer = ac.loop(1, function ()
-        self:update()
-    end)
+    if self:getOwner():getOwner() == ac.localPlayer() then
+        self.timer = ac.loop(1, function ()
+            self:update()
+        end)
+    end
 end
 
 function mt:onRemove()
-    self.timer:remove()
+    if self.timer then
+        self.timer:remove()
+    end
 end
 
 function mt:update()

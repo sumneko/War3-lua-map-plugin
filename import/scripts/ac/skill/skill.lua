@@ -1,6 +1,7 @@
 local jass = require 'jass.common'
 local ability = require 'ac.skill.ability'
 local item = require 'ac.skill.item'
+local message = require 'jass.message'
 local type = type
 local rawget = rawget
 local getmetatable = getmetatable
@@ -418,13 +419,27 @@ local function currentSkill(mgr)
     return mgr._currentSkill
 end
 
-local function update(mgr)
-    if mgr._needRefreshAbility then
-        mgr._needRefreshAbility = nil
-        print(mgr._owner)
-        jass.UnitAddAbility(mgr._owner._handle, ac.id['@RFR'])
-        jass.UnitRemoveAbility(mgr._owner._handle, ac.id['@RFR'])
+local function checkRefreshAbility(mgr)
+    if not mgr._needRefreshAbility then
+        return
     end
+    local selecting = ac.unit(message.selection())
+    if selecting ~= mgr._owner then
+        return
+    end
+    -- 检查右下角是不是取消键（判断是否处于目标选择状态）
+    local _, order = message.button(3, 2)
+    if order == 0xD000B then
+        return
+    end
+    print('refresh')
+    mgr._needRefreshAbility = nil
+    --jass.SelectUnit(selecting._handle, false)
+    jass.SelectUnit(selecting._handle, true)
+end
+
+local function update(mgr)
+    checkRefreshAbility(mgr)
 end
 
 local function loadString(skill, str)
