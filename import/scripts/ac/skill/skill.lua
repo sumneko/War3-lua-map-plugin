@@ -434,7 +434,6 @@ local function checkRefreshAbility(mgr)
     end
     print('refresh')
     mgr._needRefreshAbility = nil
-    --jass.SelectUnit(selecting._handle, false)
     jass.SelectUnit(selecting._handle, true)
 end
 
