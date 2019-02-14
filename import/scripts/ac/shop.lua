@@ -25,7 +25,7 @@ return function (unit)
     }, mt)
     unit:removeSkill('@命令')
     unit:addHeight(100000)
-    jass.UnitAddAbility(unit._handle, ac.id['@INV'])
+    jass.UnitAddAbility(unit._handle, ac.id['AInv'])
     if unit:getOwner() == ac.localPlayer() then
         unit:addHeight(-100000)
     end

@@ -276,7 +276,6 @@ end
 
 local function itemInsert(w2l)
     newObject(w2l.slk.item, '@CHE', 'ches') {}
-    newObject(w2l.slk.ability, '@INV', 'AInv') {}
     local nextId = IdCreator '%'
     for i = 1, 300 do
         local abilityId = nextId()
