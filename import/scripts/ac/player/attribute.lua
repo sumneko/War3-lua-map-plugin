@@ -96,12 +96,9 @@ function mt:onShow(k)
     if v == s then
         return
     end
-    local unit = self._unit
-    if unit._removed then
-        return
-    end
+    local player = self._player
     self._show[k] = v
-    Show[k](unit, v)
+    Show[k](player, v)
 end
 
 function mt:onSet(k)
