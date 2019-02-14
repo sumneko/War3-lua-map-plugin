@@ -5,6 +5,7 @@ local dialog = require 'ac.dialog'
 local timerDialog = require 'ac.timerdialog'
 local board = require 'ac.board'
 local shop = require 'ac.shop'
+local attribute = require 'ac.player.attribute'
 
 local MIN_ID = 1
 local MAX_ID = 16
@@ -19,8 +20,9 @@ local function init()
         local player = setmetatable({
             _handle = handle,
             _id = id,
-            _hero = {}
+            _hero = {},
         }, mt)
+        player._attribute = attribute(player)
         All[id] = player
         All[handle] = player
     end
@@ -293,6 +295,27 @@ function mt:isVisible(other)
     else
         return false
     end
+end
+
+function mt:set(k, v)
+    if not self._attribute then
+        return
+    end
+    self._attribute:set(k, v)
+end
+
+function mt:get(k)
+    if not self._attribute then
+        return 0.0
+    end
+    return self._attribute:get(k)
+end
+
+function mt:add(k, v)
+    if not self._attribute then
+        return
+    end
+    return self._attribute:add(k, v)
 end
 
 function ac.player(id)

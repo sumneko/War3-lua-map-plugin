@@ -190,6 +190,41 @@ player:isVisible(other: unit)
     -> boolean
 ```
 
+### set
+```lua
+player:set(attributeName: string, attributeValue: number)
+
+attributeName: string
+    | '金币'
+    | '木材'
+    | '食物'
+    | '食物上限'
+```
+
+### get
+```lua
+player:get(attributeName: string)
+    -> value: number
+
+attributeName: string
+    | '金币'
+    | '木材'
+    | '食物'
+    | '食物上限'
+```
+
+### add
+```lua
+player:add(attributeName: string, attributeValue: number)
+    -> destructor: function
+
+attributeName: string
+    | '金币'
+    | '木材'
+    | '食物'
+    | '食物上限'
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)
