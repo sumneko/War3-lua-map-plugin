@@ -1,52 +1,29 @@
 local jass = require 'jass.common'
 
-local mt = {}
-mt.__index = mt
-mt.type = 'shop'
-mt.range = 9999999
-
-function mt:__tostring()
-    return ('{shop|%s}'):format(self._unit:getName())
-end
-
-function mt:setItem(index, name)
-    local unit = self._unit
-    local data = ac.table.item[name]
-    if not data then
-        log.error(('物品[%s]不存在'):format(name))
-        return false
-    end
-    local skill = unit:findSkill(index, '技能') or unit:addSkill('@商店物品', '技能', index)
-    skill.item = data
-    skill.itemName = name
-    skill.shop = self
-    skill:update()
-end
-
-function mt:canBuy(buyer)
+local function canBuy(shop, buyer)
     if not ac.isUnit(buyer) then
         return false, '没有购买者'
     end
     if not buyer:isAlive() then
         return false, '购买者已经死亡'
     end
-    local unit = self._unit
+    local unit = shop._unit
     local range = unit:getPoint() * buyer:getPoint()
-    if range > self.range then
+    if range > shop.range then
         return false, '购买者距离太远'
     end
     return true
 end
 
-function mt:checkBuyer(player, buyer)
+local function checkBuyer(shop, player, buyer)
     if buyer then
-        local suc, err = self:canBuy(buyer)
+        local suc, err = canBuy(shop, buyer)
         if not suc then
             return nil, err
         end
     else
         for hero in player:eachHero() do
-            if self:canBuy(hero) then
+            if canBuy(shop, hero) then
                 buyer = hero
                 break
             end
@@ -58,7 +35,7 @@ function mt:checkBuyer(player, buyer)
     return buyer
 end
 
-function mt:checkItemPrice(player, item)
+local function checkItemPrice(player, item)
     if type(item.price) == 'table' then
         for _, data in ipairs(item.price) do
             local left = player:get(data.type) - data.value
@@ -70,7 +47,7 @@ function mt:checkItemPrice(player, item)
     return true
 end
 
-function mt:costPrice(player, item)
+local function costPrice(player, item)
     if type(item.price) == 'table' then
         for _, data in ipairs(item.price) do
             player:add(data.type, - data.value)
@@ -78,10 +55,34 @@ function mt:costPrice(player, item)
     end
 end
 
-function mt:checkBag(buyer, item)
+local function checkBag(buyer)
     if buyer:isBagFull() then
         return false, '购买者物品栏已满'
     end
+    return true
+end
+
+local mt = {}
+mt.__index = mt
+mt.type = 'shop'
+mt.range = 9999999
+
+function mt:__tostring()
+    return ('{shop|%s}'):format(self._unit:getName())
+end
+
+function mt:setItem(name, index)
+    local unit = self._unit
+    local data = ac.table.item[name]
+    if not data then
+        log.error(('物品[%s]不存在'):format(name))
+        return false
+    end
+    local skill = unit:findSkill(index, '技能') or unit:addSkill('@商店物品', '技能', index)
+    skill.item = data
+    skill.itemName = name
+    skill.shop = self
+    skill:update()
     return true
 end
 
@@ -94,17 +95,17 @@ function mt:buyItem(name, buyer)
         return nil, '物品不存在'
     end
 
-    buyer, err = self:checkBuyer(player, buyer)
+    buyer, err = checkBuyer(self, player, buyer)
     if not buyer then
         return nil, err
     end
 
-    suc, err = self:checkBag(buyer, data)
+    suc, err = checkBag(buyer)
     if not suc then
         return nil, err
     end
 
-    suc, err = self:checkItemPrice(player, data)
+    suc, err = checkItemPrice(player, data)
     if not suc then
         return nil, err
     end
@@ -114,7 +115,7 @@ function mt:buyItem(name, buyer)
         return nil, '购买失败'
     end
 
-    self:costPrice(player, item)
+    costPrice(player, item)
 
     return item
 end
