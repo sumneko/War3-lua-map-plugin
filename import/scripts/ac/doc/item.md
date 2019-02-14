@@ -37,6 +37,15 @@ description = '物品描述'
 icon = [[ReplaceableTextures\CommandButtons\BTNInvisibility.blp]]
 ```
 
+### price
+售价
+
+```lua
+[[.price]]
+type = '金币'
+value = 1000
+```
+
 ## method
 
 ### getOwner
