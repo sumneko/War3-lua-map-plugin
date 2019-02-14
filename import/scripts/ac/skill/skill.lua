@@ -432,7 +432,6 @@ local function checkRefreshAbility(mgr)
     if order == 0xD000B then
         return
     end
-    print('refresh')
     mgr._needRefreshAbility = nil
     jass.SelectUnit(selecting._handle, true)
 end

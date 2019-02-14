@@ -14,6 +14,21 @@ function mt:onRemove()
     end
 end
 
+function mt:onCastShot()
+    local item, err = self.shop:buyItem(self.itemName)
+    if not item then
+        self:getOwner():getOwner():message {
+            text = '{err}',
+            data = {
+                err = err,
+            },
+            color = {
+                err = 'ffff11',
+            }
+        }
+    end
+end
+
 function mt:update()
     local item = self.item
     self:setOption('title', item.title)

@@ -703,6 +703,15 @@ function mt:createItem(name)
     return item.create(name, self)
 end
 
+function mt:isBagFull()
+    for i = 1, jass.UnitInventorySize(self._handle) do
+        if jass.UnitItemInSlot(self._handle, i-1) == 0 then
+            return false
+        end
+    end
+    return true
+end
+
 return {
     list = UNIT_LIST,
     update = update,

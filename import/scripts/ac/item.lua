@@ -67,15 +67,6 @@ local function eventNotify(item, name, ...)
     callMethod(item, name, ...)
 end
 
-local function isBagFull(unit)
-    for i = 1, jass.UnitInventorySize(unit._handle) do
-        if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
-            return false
-        end
-    end
-    return true
-end
-
 local function findFirstEmptyInBag(unit)
     for i = 1, jass.UnitInventorySize(unit._handle) do
         if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
@@ -86,7 +77,7 @@ local function findFirstEmptyInBag(unit)
 end
 
 local function addToUnit(item, unit)
-    if isBagFull(unit) then
+    if unit:isBagFull() then
         return false
     end
     item._owner = unit
@@ -179,7 +170,7 @@ local function onLootOrder(unit, handle)
     if not item then
         return
     end
-    if isBagFull(unit) then
+    if unit:isBagFull() then
         unit:stop()
     end
 end

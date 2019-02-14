@@ -484,3 +484,9 @@ unit:damage {
 unit:createItem(name: string)
     -> item
 ```
+
+### isBagFull
+```lua
+unit:isBagFull()
+    -> boolean
+```

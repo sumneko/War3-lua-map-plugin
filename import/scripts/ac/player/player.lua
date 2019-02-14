@@ -70,6 +70,20 @@ function mt:getHero(n)
     return nil
 end
 
+function mt:eachHero()
+    local list = {}
+    for _, hero in ipairs(self._hero) do
+        if hero._owner == self then
+            list[#list+1] = hero
+        end
+    end
+    local i = 0
+    return function ()
+        i = i + 1
+        return list[i]
+    end
+end
+
 function mt:selectUnit(unit)
     if self == ac.localPlayer() then
         jass.ClearSelection()
@@ -83,7 +97,7 @@ end
 
 function mt:createShop(name, point, face)
     local unit = unit.create(self, name, point, face)
-    local shp = shop(unit)
+    local shp = shop.create(unit)
     return shp
 end
 
