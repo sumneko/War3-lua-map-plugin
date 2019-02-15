@@ -12,6 +12,15 @@ local function updateSelect()
     if selecting._skill and selecting._skill:checkRefreshAbility() then
         jass.SelectUnit(selecting._handle, true)
     end
+
+    if selecting._shop then
+        for private in selecting._shop._private:pairs() do
+            if private:getOwner() == ac.localPlayer() then
+                jass.ClearSelection()
+                jass.SelectUnit(private._handle, true)
+            end
+        end
+    end
 end
 
 local Tick = 0

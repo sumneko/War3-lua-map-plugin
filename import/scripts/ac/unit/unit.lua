@@ -194,6 +194,8 @@ function ac.unit(handle)
         u._skill = skill(u)
         -- 添加命令图标
         u:addSkill('@命令', '技能')
+        -- 添加协议技能
+        jass.UnitAddAbility(handle, ac.id['@PRT'])
         -- 设置为玩家的英雄
         if u:isHero() then
             u._owner:addHero(u)

@@ -97,7 +97,7 @@ end
 
 local function onPointOrder(unit)
     local orderId = jass.GetIssuedOrderId()
-    if orderId == ORDER['AImove'] then
+    if orderId == ORDER['channel'] then
         local id = jass.GetOrderPointX()
         local arg = jass.GetOrderPointY()
         onProto(unit, id, arg)

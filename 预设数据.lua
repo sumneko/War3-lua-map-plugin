@@ -30,7 +30,6 @@ local function newObject(slk, id, parent, level)
             new[k:lower()] = v
         end
 
-
         if level then
             for _, v in pairs(new) do
                 if type(v) == 'table' then
@@ -205,9 +204,35 @@ local function insertAbility(w2l)
         -- 等级
         levels = 2,
     }
-    newObject(w2l.slk.ability, '@RFR', 'Amgl') {
-        Requires = '',
-        checkDep = 0,
+    newObject(w2l.slk.ability, '@PRT', 'ANcl') {
+        -- 效果 - 施法动作
+        Animnames = "",
+        -- 效果 - 施法者
+        CasterArt = "",
+        -- 施法持续时间
+        DataA = {0.0000},
+        -- 目标类型
+        DataB = {2},
+        -- 动作持续时间
+        DataD = {0.0000},
+        -- 使其他技能无效
+        DataE = {0},
+        -- 基础命令ID
+        DataF = {"channel"},
+        -- 效果 - 目标点
+        EffectArt = "",
+        -- 名字
+        Name = "CMD",
+        -- 施法距离
+        Rng = {999999},
+        -- 效果 - 目标
+        TargetArt = "",
+        -- 效果 - 目标附加点1
+        Targetattach = "",
+        -- 英雄技能
+        hero = 0,
+        -- 等级
+        levels = 1,
     }
 
     -- 通魔使用的命令字符串（共需要12个）

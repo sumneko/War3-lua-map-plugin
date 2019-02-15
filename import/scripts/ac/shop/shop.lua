@@ -128,18 +128,27 @@ end
 local function create(unit, point)
     local shop = setmetatable({
         _unit = unit,
+        _private = ac.list()
     }, mt)
     unit:removeSkill('@命令')
-    jass.UnitAddAbility(unit._handle, ac.id['AInv'])
     jass.UnitAddAbility(unit._handle, ac.id['Avul'])
-    japi.EXSetUnitMoveType(unit._handle, 0x04)
-    if unit:getOwner() ~= ac.localPlayer() then
-        jass.SetUnitScale(unit._handle, 0, 0, 0)
-    end
     jass.UnitRemoveAbility(unit._handle, ac.id['Amov'])
 
-    local x, y = point:getXY()
-    jass.SetUnitPosition(unit._handle, x, y)
+    unit._shop = shop
+
+    for player in ac.eachPlayer() do
+        if player:controller() == '用户' or player:controller() == '电脑' then
+            --local private = player:createUnit('@私有商店', point, 0)
+            --shop._private:insert(private)
+            --private:removeSkill('@命令')
+            --private:set('生命上限', unit:get '生命上限')
+            --private:set('魔法上限', unit:get '魔法上限')
+            --private:set('生命', unit:get '生命')
+            --private:set('魔法', unit:get '魔法')
+            --jass.UnitAddAbility(private._handle, ac.id['Avul'])
+            --jass.UnitRemoveAbility(private._handle, ac.id['Amov'])
+        end
+    end
     return shop
 end
 

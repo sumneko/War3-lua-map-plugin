@@ -225,6 +225,12 @@ attributeName: string
     | '食物上限'
 ```
 
+### eachPlayer
+```lua
+for player in ac.eachPlayer() do
+end
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)

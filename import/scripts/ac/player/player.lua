@@ -332,6 +332,14 @@ function mt:add(k, v)
     return self._attribute:add(k, v)
 end
 
+function ac.eachPlayer()
+    local i = 0
+    return function ()
+        i = i + 1
+        return ac.player(i)
+    end
+end
+
 function ac.player(id)
     if not All then
         init()

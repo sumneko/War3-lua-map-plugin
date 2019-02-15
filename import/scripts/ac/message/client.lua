@@ -91,7 +91,7 @@ local function proto(id, arg)
     if arg == nil then
         arg = 0
     end
-    message.order_target(ORDER['AImove'], id, arg, 0, FLAG['瞬发'])
+    message.order_target(ORDER['channel'], id, arg, 0, FLAG['瞬发'])
 end
 
 local function stackCommand(cmd)
