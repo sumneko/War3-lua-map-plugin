@@ -51,7 +51,7 @@ local function newObject(slk, id, parent, level)
     end
 end
 
-local function unitInsert(w2l)
+local function insertUnit(w2l)
     newObject(w2l.slk.unit, '@DMY', 'ewsp') {
         -- 可建造建筑
         Builds = "",
@@ -155,7 +155,7 @@ local function unitInsert(w2l)
     }
 end
 
-local function IdCreator(head)
+local function idCreator(head)
     local chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     local index = -1
     return function ()
@@ -167,7 +167,7 @@ local function IdCreator(head)
     end
 end
 
-local function abilityInsert(w2l)
+local function insertAbility(w2l)
     newObject(w2l.slk.ability, '@CMD', 'ANcl', 2) {
         -- 效果 - 施法动作
         Animnames = "",
@@ -227,7 +227,7 @@ local function abilityInsert(w2l)
     }
 
     -- 分配ID
-    local nextId = IdCreator '$'
+    local nextId = idCreator '$'
 
     -- 为每个格子分配100个技能，共1200个
     local SIZE = 100
@@ -278,9 +278,9 @@ local function abilityInsert(w2l)
     end
 end
 
-local function itemInsert(w2l)
+local function insertItem(w2l)
     newObject(w2l.slk.item, '@CHE', 'ches') {}
-    local nextId = IdCreator '%'
+    local nextId = idCreator '%'
     for i = 1, 300 do
         local abilityId = nextId()
         newObject(w2l.slk.ability, abilityId, 'ANcl', 2) {
@@ -314,7 +314,7 @@ local function itemInsert(w2l)
     end
 end
 
-local function unitDefault(w2l)
+local function defaultUnit(w2l)
     -- 设置所有单位的默认数据
     for _, unit in pairs(w2l.slk.unit) do
         -- 生命回复类型
@@ -336,7 +336,7 @@ local function unitDefault(w2l)
     end
 end
 
-local function miscDefault(w2l)
+local function defaultMisc(w2l)
     -- 英雄属性 - 每点敏捷攻击速度奖励
     w2l.slk.misc.Misc.agiattackspeedbonus = 0.0000
     -- 英雄属性 -基础防御补正
@@ -393,12 +393,12 @@ function mt:on_full(w2l)
         return
     end
 
-    unitInsert(w2l)
-    abilityInsert(w2l)
-    itemInsert(w2l)
+    insertUnit(w2l)
+    insertAbility(w2l)
+    insertItem(w2l)
 
-    unitDefault(w2l)
-    miscDefault(w2l)
+    defaultUnit(w2l)
+    defaultMisc(w2l)
 end
 
 return mt

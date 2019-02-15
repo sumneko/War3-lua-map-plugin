@@ -421,23 +421,15 @@ end
 
 local function checkRefreshAbility(mgr)
     if not mgr._needRefreshAbility then
-        return
-    end
-    local selecting = ac.unit(message.selection())
-    if selecting ~= mgr._owner then
-        return
+        return false
     end
     -- 检查右下角是不是取消键（判断是否处于目标选择状态）
     local _, order = message.button(3, 2)
     if order == 0xD000B then
-        return
+        return false
     end
     mgr._needRefreshAbility = nil
-    jass.SelectUnit(selecting._handle, true)
-end
-
-local function update(mgr)
-    checkRefreshAbility(mgr)
+    return true
 end
 
 local function loadString(skill, str)
@@ -710,6 +702,6 @@ return function (unit)
         eachSkill = eachSkill,
         removeSkillByName = removeSkillByName,
         currentSkill = currentSkill,
-        update = update,
+        checkRefreshAbility = checkRefreshAbility,
     }
 end

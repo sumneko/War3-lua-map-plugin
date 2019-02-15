@@ -51,9 +51,6 @@ local function update(delta)
             if mana > 0 then
                 u:add('魔法', mana)
             end
-            if u._skill then
-                u._skill:update()
-            end
         end
         ::CONTINUE::
     end
