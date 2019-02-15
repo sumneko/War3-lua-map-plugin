@@ -332,7 +332,7 @@ local function defaultUnit(w2l)
         -- 魔法施放回复
         unit.castbsw = 0
         -- 投射物
-        unit.missileart = ''
+        unit.missileart_1 = ''
     end
 end
 
