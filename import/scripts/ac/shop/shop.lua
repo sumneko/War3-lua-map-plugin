@@ -1,4 +1,5 @@
 local jass = require 'jass.common'
+local japi = require 'jass.japi'
 
 local function canBuy(shop, buyer)
     if not ac.isUnit(buyer) then
@@ -124,17 +125,21 @@ function mt:setBuyRange(n)
     self.range = n
 end
 
-local function create(unit)
+local function create(unit, point)
     local shop = setmetatable({
         _unit = unit,
     }, mt)
     unit:removeSkill('@命令')
-    unit:addHeight(100000)
     jass.UnitAddAbility(unit._handle, ac.id['AInv'])
-    if unit:getOwner() == ac.localPlayer() then
-        unit:addHeight(-100000)
+    jass.UnitAddAbility(unit._handle, ac.id['Avul'])
+    japi.EXSetUnitMoveType(unit._handle, 0x04)
+    if unit:getOwner() ~= ac.localPlayer() then
+        jass.SetUnitScale(unit._handle, 0, 0, 0)
     end
     jass.UnitRemoveAbility(unit._handle, ac.id['Amov'])
+
+    local x, y = point:getXY()
+    jass.SetUnitPosition(unit._handle, x, y)
     return shop
 end
 

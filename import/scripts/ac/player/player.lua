@@ -97,7 +97,7 @@ end
 
 function mt:createShop(name, point, face)
     local unit = unit.create(self, name, point, face)
-    local shp = shop.create(unit)
+    local shp = shop.create(unit, point)
     return shp
 end
 
