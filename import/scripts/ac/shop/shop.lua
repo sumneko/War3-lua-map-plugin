@@ -132,23 +132,11 @@ local function create(unit, point)
     }, mt)
     unit:removeSkill('@命令')
     jass.UnitAddAbility(unit._handle, ac.id['Avul'])
+    jass.UnitAddAbility(unit._handle, ac.id['@SLC'])
     jass.UnitRemoveAbility(unit._handle, ac.id['Amov'])
 
     unit._shop = shop
 
-    for player in ac.eachPlayer() do
-        if player:controller() == '用户' or player:controller() == '电脑' then
-            --local private = player:createUnit('@私有商店', point, 0)
-            --shop._private:insert(private)
-            --private:removeSkill('@命令')
-            --private:set('生命上限', unit:get '生命上限')
-            --private:set('魔法上限', unit:get '魔法上限')
-            --private:set('生命', unit:get '生命')
-            --private:set('魔法', unit:get '魔法')
-            --jass.UnitAddAbility(private._handle, ac.id['Avul'])
-            --jass.UnitRemoveAbility(private._handle, ac.id['Amov'])
-        end
-    end
     return shop
 end
 

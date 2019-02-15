@@ -1,11 +1,9 @@
 local mt = ac.skill['@商店物品']
 
 function mt:onAdd()
-    if self:getOwner():getOwner() == ac.localPlayer() then
-        self.timer = ac.loop(1, function ()
-            self:update()
-        end)
-    end
+    self.timer = ac.loop(1, function ()
+        self:update()
+    end)
 end
 
 function mt:onRemove()
@@ -34,7 +32,7 @@ function mt:update()
     self:setOption('title', item.title)
     self:setOption('icon', item.icon)
 
-    local player = self:getOwner():getOwner()
+    local player = ac.localPlayer()
     local priceDescription = {}
     if type(item.price) == 'table' then
         for _, data in ipairs(item.price) do

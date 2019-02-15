@@ -234,6 +234,10 @@ local function insertAbility(w2l)
         -- 等级
         levels = 1,
     }
+    newObject(w2l.slk.ability, '@SLC', 'Ane2') {
+        DataA = {999999},
+        DataB = {4},
+    }
 
     -- 通魔使用的命令字符串（共需要12个）
     local orderList = {
