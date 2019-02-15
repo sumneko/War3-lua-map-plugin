@@ -83,10 +83,8 @@ local Set = {
             local max = attribute:get '生命上限'
             if life > max then
                 attribute:set('生命', max)
-                return false
             elseif life < 0 then
                 attribute:set('生命', 0)
-                return false
             end
         end
     end,
@@ -96,10 +94,8 @@ local Set = {
             local max = attribute:get '魔法上限'
             if mana > max then
                 attribute:set('魔法', max)
-                return false
             elseif mana < 0 then
                 attribute:set('魔法', 0)
-                return false
             end
         end
     end,
@@ -122,12 +118,10 @@ function mt:set(k, v)
     local wait = self:onSet(k)
     self._base[k] = v
     self._rate[k] = 0.0
-    if wait then
-        if wait() == false then
-            return
-        end
-    end
     self:onShow(k)
+    if wait then
+        wait()
+    end
 end
 
 function mt:get(k)
@@ -146,21 +140,17 @@ function mt:add(k, v)
         k = k:sub(1, -2)
         local wait = self:onSet(k)
         self._rate[k] = (self._rate[k] or 0.0) + v
-        if wait then
-            if wait() == false then
-                return
-            end
-        end
         self:onShow(k)
+        if wait then
+            wait()
+        end
     else
         local wait = self:onSet(k)
         self._base[k] = (self._base[k] or 0.0) + v
-        if wait then
-            if wait() == false then
-                return
-            end
-        end
         self:onShow(k)
+        if wait then
+            wait()
+        end
     end
     local used
     return function ()
