@@ -51,6 +51,10 @@ local function order(unit, order)
 end
 
 local function onProto(unit, id, arg)
+    if unit._shop then
+        unit._shop:buyItemByClient(math.floor(id), ac.player(arg))
+        return
+    end
     if id == PROTO['休眠'] then
         pointOrder(unit, 'AImove', unit:getPoint() - {unit:getFacing(), 1})
         unit:_stopCastByClient()

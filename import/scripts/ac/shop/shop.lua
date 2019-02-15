@@ -83,6 +83,7 @@ function mt:setItem(name, index)
     skill.item = data
     skill.itemName = name
     skill.shop = self
+    skill.index = index
     skill:update()
     return true
 end
@@ -123,6 +124,10 @@ end
 
 function mt:setBuyRange(n)
     self.range = n
+end
+
+function mt:buyItemByClient(index, player)
+    print(index, player)
 end
 
 local function create(unit, point)

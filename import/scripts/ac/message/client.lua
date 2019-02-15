@@ -133,6 +133,33 @@ local function findSkillByHotkey(unit, code)
     return nil
 end
 
+local function findSkillByAbility(unit, ability)
+    if not unit then
+        return nil
+    end
+    for skill in unit:eachSkill '技能' do
+        local id = skill._icon and skill._icon._id
+        if ac.id[id] == ability then
+            return skill
+        end
+    end
+    return nil
+end
+
+local function checkShop(msg)
+    local unit = getSelect()
+    if not unit or not unit._shop then
+        return
+    end
+    local ability = msg.ability
+    local skill = findSkillByAbility(unit, ability)
+    if not skill then
+        return false
+    end
+    proto(skill.index, ac.localPlayer():id())
+    return true
+end
+
 local function onKeyDown(msg)
     -- 空格
     if msg.code == 32 then
@@ -214,6 +241,9 @@ local function onClickAbility(msg)
     if order == CMD_ORDER then
         stackCommand '攻击'
         return true
+    end
+    if checkShop(msg) then
+        return false
     end
     return true
 end

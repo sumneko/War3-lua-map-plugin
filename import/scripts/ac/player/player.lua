@@ -31,6 +31,10 @@ end
 mt.__index = mt
 mt.type = 'player'
 
+function mt:__tostring()
+    return ('{player|%d|%s}'):format(self:id(), self:name())
+end
+
 function mt:addHero(unit)
     if self._hero[unit] then
         return false
