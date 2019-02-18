@@ -9,8 +9,14 @@ local function updateSelect()
     if not selecting then
         return
     end
-    if selecting._skill and selecting._skill:checkRefreshAbility() then
-        jass.SelectUnit(selecting._handle, true)
+    if selecting._skill then
+        if selecting._skill:checkRefreshItem() then
+            jass.SelectUnit(selecting._handle, true)
+            return
+        end
+        if selecting._skill:checkRefreshAbility() then
+            jass.SelectUnit(selecting._handle, true)
+        end
     end
 
     if selecting._shop then

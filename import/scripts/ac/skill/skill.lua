@@ -420,16 +420,30 @@ local function currentSkill(mgr)
 end
 
 local function checkRefreshAbility(mgr)
-    if not mgr._needRefreshAbility then
-        return false
+    if mgr._needRefreshAbility then
+        -- 检查右下角是不是取消键（判断是否处于目标选择状态）
+        local _, order = message.button(3, 2)
+        if order == 0xD000B then
+            return false
+        end
+        mgr._needRefreshAbility = nil
+        return true
     end
-    -- 检查右下角是不是取消键（判断是否处于目标选择状态）
-    local _, order = message.button(3, 2)
-    if order == 0xD000B then
-        return false
+    return false
+end
+
+local function checkRefreshItem(mgr)
+    if mgr._needRefreshItem then
+        -- 检查右下角是不是取消键（判断是否处于目标选择状态）
+        local _, order = message.button(3, 2)
+        if order == 0xD000B then
+            return false
+        end
+        mgr._needRefreshItem = nil
+        mgr._needRefreshAbility = nil
+        return true
     end
-    mgr._needRefreshAbility = nil
-    return true
+    return false
 end
 
 local function loadString(skill, str)
@@ -703,5 +717,6 @@ return function (unit)
         removeSkillByName = removeSkillByName,
         currentSkill = currentSkill,
         checkRefreshAbility = checkRefreshAbility,
+        checkRefreshItem = checkRefreshItem,
     }
 end

@@ -43,24 +43,15 @@ local function checkBag(buyer)
     return true
 end
 
-local mt = {}
-mt.__index = mt
-mt.type = 'shop'
-mt.range = 9999999
-
-function mt:__tostring()
-    return ('{shop|%s}'):format(self._unit:getName())
-end
-
-function mt:checkBuyer(player, buyer)
+local function checkBuyer(shop, player, buyer)
     if buyer then
-        local suc, err = canBuy(self, buyer)
+        local suc, err = canBuy(shop, buyer)
         if not suc then
             return nil, err
         end
     else
         for hero in player:eachHero() do
-            if canBuy(self, hero) then
+            if canBuy(shop, hero) then
                 buyer = hero
                 break
             end
@@ -70,6 +61,27 @@ function mt:checkBuyer(player, buyer)
         end
     end
     return buyer
+end
+
+local function setItemShow(itemSkill, buyerSkill)
+    if buyerSkill then
+        itemSkill:setOption('title', buyerSkill.title)
+        itemSkill:setOption('description', buyerSkill.description)
+        itemSkill:setOption('icon', buyerSkill.icon)
+    else
+        itemSkill:setOption('title', '空')
+        itemSkill:setOption('description', '')
+        itemSkill:setOption('icon', [[ReplaceableTextures\CommandButtons\BTNPackBeast.blp]])
+    end
+end
+
+local mt = {}
+mt.__index = mt
+mt.type = 'shop'
+mt.range = 9999999
+
+function mt:__tostring()
+    return ('{shop|%s}'):format(self._unit:getName())
 end
 
 function mt:setItem(name, index)
@@ -105,7 +117,7 @@ function mt:buyItem(name, buyer)
         return nil, '物品不存在'
     end
 
-    buyer, err = self:checkBuyer(player, buyer)
+    buyer, err = checkBuyer(self, player, buyer)
     if not buyer then
         return nil, err
     end
@@ -144,6 +156,7 @@ function mt:buyItemByClient(index, player)
         err = '未找到物品'
     end
     if item then
+        self:updateItem()
         return
     end
     player:message {
@@ -155,6 +168,27 @@ function mt:buyItemByClient(index, player)
             err = 'ffff11',
         }
     }
+end
+
+function mt:updateItem()
+    local buyer = checkBuyer(self, ac.localPlayer())
+    local unit = self._unit
+    if buyer then
+        for i = 1, 6 do
+            local shopSkill = unit:findSkill(i, '物品')
+            if shopSkill then
+                local buyerSkill = buyer:findSkill(i, '物品')
+                setItemShow(shopSkill, buyerSkill)
+            end
+        end
+    else
+        for i = 1, 6 do
+            local shopSkill = unit:findSkill(i, '物品')
+            if shopSkill then
+                setItemShow(shopSkill, nil)
+            end
+        end
+    end
 end
 
 local function create(unit, point)
@@ -173,6 +207,10 @@ local function create(unit, point)
     end
 
     unit._shop = shop
+
+    shop._timer = ac.loop(1, function ()
+        shop:updateItem()
+    end)
 
     return shop
 end

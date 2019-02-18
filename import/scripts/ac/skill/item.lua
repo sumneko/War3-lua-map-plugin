@@ -114,6 +114,7 @@ function mt:updateTitle()
     end
     self._cache.title = title
     japi.EXSetItemDataString(ac.id[self._id], 4, title)
+    self:needRefreshItem()
 end
 
 function mt:updateDescription()
@@ -125,6 +126,7 @@ function mt:updateDescription()
     end
     self._cache.description = desc
     japi.EXSetItemDataString(ac.id[self._id], 3, desc)
+    self:needRefreshItem()
 end
 
 function mt:updateIcon()
@@ -135,6 +137,7 @@ function mt:updateIcon()
     end
     self._cache.icon = icon
     japi.EXSetItemDataString(ac.id[self._id], 1, icon)
+    self:needRefreshItem()
 end
 
 function mt:updateHotkey()
@@ -196,6 +199,13 @@ function mt:updateAll()
     self:updateRange()
     self:updateTargetType()
     self:updateCost()
+end
+
+function mt:needRefreshItem()
+    local skill = self._skill
+    local unit = skill._owner
+    local mgr = unit._skill
+    mgr._needRefreshItem = true
 end
 
 return function (skill)
