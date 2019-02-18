@@ -89,7 +89,15 @@ function mt:setItem(name, index)
 end
 
 function mt:buyItem(name, buyer)
-    local player = self._unit:getOwner()
+    local player
+    if ac.isPlayer(buyer) then
+        player = buyer
+        buyer = nil
+    elseif ac.isUnit(buyer) then
+        player = buyer:getOwner()
+    else
+        return nil, '没有指定购买单位或购买玩家'
+    end
     local data = ac.table.item[name]
     local suc, err
     if not data then
@@ -127,7 +135,26 @@ function mt:setBuyRange(n)
 end
 
 function mt:buyItemByClient(index, player)
-    print(index, player)
+    local unit = self._unit
+    local item, err
+    for skill in unit:eachSkill '技能' do
+        if skill.index == index then
+            item, err = self:buyItem(skill.itemName, player)
+            break
+        end
+    end
+    if item then
+        return
+    end
+    player:message {
+        text = '{err}',
+        data = {
+            err = err or '未找到物品',
+        },
+        color = {
+            err = 'ffff11',
+        }
+    }
 end
 
 local function create(unit, point)
