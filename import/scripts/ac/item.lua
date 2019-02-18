@@ -97,6 +97,9 @@ local function addToUnit(item, unit)
         local skill = unit:addSkill(skillName, '物品', slot)
         if skill then
             skill._item = item
+            if skill._icon then
+                jass.SetItemDroppable(skill._icon._handle, true)
+            end
         end
     end
 

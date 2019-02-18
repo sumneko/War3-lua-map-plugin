@@ -16,26 +16,6 @@ local function canBuy(shop, buyer)
     return true
 end
 
-local function checkBuyer(shop, player, buyer)
-    if buyer then
-        local suc, err = canBuy(shop, buyer)
-        if not suc then
-            return nil, err
-        end
-    else
-        for hero in player:eachHero() do
-            if canBuy(shop, hero) then
-                buyer = hero
-                break
-            end
-        end
-        if not buyer then
-            return nil, '附近没有购买者'
-        end
-    end
-    return buyer
-end
-
 local function checkItemPrice(player, item)
     if type(item.price) == 'table' then
         for _, data in ipairs(item.price) do
@@ -72,6 +52,26 @@ function mt:__tostring()
     return ('{shop|%s}'):format(self._unit:getName())
 end
 
+function mt:checkBuyer(player, buyer)
+    if buyer then
+        local suc, err = canBuy(self, buyer)
+        if not suc then
+            return nil, err
+        end
+    else
+        for hero in player:eachHero() do
+            if canBuy(self, hero) then
+                buyer = hero
+                break
+            end
+        end
+        if not buyer then
+            return nil, '附近没有购买者'
+        end
+    end
+    return buyer
+end
+
 function mt:setItem(name, index)
     local unit = self._unit
     local data = ac.table.item[name]
@@ -105,7 +105,7 @@ function mt:buyItem(name, buyer)
         return nil, '物品不存在'
     end
 
-    buyer, err = checkBuyer(self, player, buyer)
+    buyer, err = self:checkBuyer(player, buyer)
     if not buyer then
         return nil, err
     end
@@ -137,11 +137,11 @@ end
 function mt:buyItemByClient(index, player)
     local unit = self._unit
     local item, err
-    for skill in unit:eachSkill '技能' do
-        if skill.index == index then
-            item, err = self:buyItem(skill.itemName, player)
-            break
-        end
+    local skill = unit:findSkill(index, '技能')
+    if skill then
+        item, err = self:buyItem(skill.itemName, player)
+    else
+        err = '未找到物品'
     end
     if item then
         return
@@ -149,7 +149,7 @@ function mt:buyItemByClient(index, player)
     player:message {
         text = '{err}',
         data = {
-            err = err or '未找到物品',
+            err = err,
         },
         color = {
             err = 'ffff11',
@@ -164,8 +164,13 @@ local function create(unit, point)
     }, mt)
     unit:removeSkill('@命令')
     jass.UnitAddAbility(unit._handle, ac.id['Avul'])
+    jass.UnitAddAbility(unit._handle, ac.id['AInv'])
     jass.UnitAddAbility(unit._handle, ac.id['@SLC'])
     jass.UnitRemoveAbility(unit._handle, ac.id['Amov'])
+
+    for i = 1, 6 do
+        unit:addSkill('@商店物品栏', '物品', i)
+    end
 
     unit._shop = shop
 

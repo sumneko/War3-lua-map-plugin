@@ -322,7 +322,7 @@ local function insertItem(w2l)
             hero = 0,
             levels = 2,
             DataA = {0, 0},
-            DataB = {3, 3},
+            DataB = {0, 0},
             DataC = {1, 1},
             DataD = {0, 0},
             DataE = {0, 0},
@@ -332,6 +332,7 @@ local function insertItem(w2l)
             Name = '@物品-' .. tostring(i),
             usable = 1,
             abilList = abilityId,
+            droppable = 0,
         }
     end
 
