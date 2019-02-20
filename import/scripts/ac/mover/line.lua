@@ -29,6 +29,7 @@ local function onMove(mover, delta)
     else
         mover.mover:setPoint(me - {angle, step})
         mover:stepProcess(step / distance)
+        mover._moved = mover._moved + step
     end
 end
 

@@ -25,25 +25,27 @@ ac.selector()
 
 ### inRange
 ```lua
-selector:inRange(point, radius: number)
+selector:inRange(point/unit, radius: number)
     -> selector
 ```
 
 ### inSector
 ```lua
-selector:inSector(point, radius: number, angle: number, section: number)
+selector:inSector(point/unit, radius: number, angle: number, section: number)
     -> selector
 ```
 
 ### inLine
 ```lua
-selector:inLine(start: point, angle: number, length: number, width: number)
+selector:inLine(start: point/unit, angle: number, length: number, width: number)
     -> selector
 ```
 
 ### filter
 ```lua
-selector:filter(function(unit))
+selector:filter(function(unit)
+    return isUnitSelected
+end)
     -> selector
 ```
 
@@ -53,7 +55,7 @@ selector:isNot(unit)
     -> selector
 ```
 
-### isEnemey
+### isEnemy
 ```lua
 selector:isEnemy(unit)
     -> selector

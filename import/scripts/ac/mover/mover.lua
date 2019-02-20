@@ -11,7 +11,7 @@ mt.type = 'mover'
 mt.source = nil
 mt._process = 0.0
 mt._height = 0.0
-
+mt.hitArea = 0.0
 
 local function eventNotify(mover, name, ...)
     local method = mover[name]
@@ -38,6 +38,45 @@ local function updateMove(mover, delta)
     mover.project.onMove(mover, delta)
 end
 
+local function updateSelector(mover)
+    if not mover.hitType then
+        return
+    end
+    mover._selector = ac.selector()
+        : inRange(mover.mover, mover.hitArea)
+        : isNot(mover.source)
+        : isNot(mover.mover)
+
+    if mover.hitType == '敌方' then
+        mover._selector:isEnemy(mover.source)
+    elseif mover.hitType == '友方' then
+        mover._selector:isAlly(mover.source)
+    end
+
+    if not mover.hitSame then
+        local hited = {}
+        mover._selector:filter(function (unit)
+            if hited[unit] then
+                return false
+            end
+            hited[unit] = true
+            return true
+        end)
+    end
+end
+
+local function checkHit(mover)
+    if not mover._selector then
+        return
+    end
+    if not mover.onHit then
+        return
+    end
+    for _, unit in mover._selector:ipairs() do
+        eventNotify(mover, 'onHit', unit)
+    end
+end
+
 local function updateFinish(mover)
     if mover._finish then
         eventNotify(mover, 'onFinish')
@@ -53,6 +92,9 @@ local function update(delta)
     end
 
     -- 2. 检查碰撞
+    for mover in Movers:pairs() do
+        checkHit(mover)
+    end
 
     -- 3. 检查完成
     for mover in Movers:pairs() do
@@ -135,6 +177,7 @@ local function create(data)
 
     Movers:insert(mover)
     updateHeight(mover)
+    updateSelector(mover)
 
     return mover
 end
@@ -151,6 +194,8 @@ function mt:remove()
     if self._needDestroyParicle then
         self._needDestroyParicle()
     end
+
+    eventNotify(self, 'onRemove')
 end
 
 function mt:finish()

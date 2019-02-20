@@ -9,7 +9,7 @@ local function onCreate(mover)
         mover.angle = mover.start / mover.target:getPoint()
     end
     if not ac.isNumber(mover.maxDistance) then
-        mover.maxDistance = math.max(1000, mover.start * mover.target:getPoint())
+        mover.maxDistance = math.max(1000, mover.start * mover.target:getPoint() * 2)
     end
 
     return true

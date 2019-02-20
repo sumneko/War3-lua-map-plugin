@@ -322,7 +322,6 @@ unit:eventNotify(name, ...)
 ### moverTarget
 ```lua
 unit:moverTarget {
-    source = unit,
     target = unit,
     speed = number,
     [mover = unit/unitName: string,]
@@ -335,6 +334,9 @@ unit:moverTarget {
     [startHeight = number,]
     [finishHeight = number,]
     [middleHeight = number,]
+    [hitType = string],
+    [hitArea = number],
+    [hitSame = boolean],
 }
     -> mover
 ```
@@ -342,12 +344,11 @@ unit:moverTarget {
 ### moverLine
 ```lua
 unit:moverLine {
-    source = unit,
     speed = number,
     [mover = unit/unitName: string,]
     [model = modelPath: string,]
     [start = point,]
-    [target = unit,]
+    [target = point,]
     [angle = number,]
     [distance = number,]
     [fix = {angle: number, distance: number},]
@@ -355,6 +356,9 @@ unit:moverLine {
     [startHeight = number,]
     [finishHeight = number,]
     [middleHeight = number,]
+    [hitType = string],
+    [hitArea = number],
+    [hitSame = boolean],
 }
     -> mover
 ```
