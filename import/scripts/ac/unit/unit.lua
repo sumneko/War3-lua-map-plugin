@@ -712,11 +712,11 @@ function mt:isBagFull()
     return true
 end
 
-function mt:set(key, value)
+function mt:setData(key, value)
     self._userData[key] = self._userData[key] + value
 end
 
-function mt:get(key)
+function mt:getData(key)
     return self._userData[key]
 end
 
