@@ -61,8 +61,7 @@ end
 local function eventNotify(item, name, ...)
     local event = METHOD[name]
     if event then
-        ac.eventNotify(item, event, item, ...)
-        item:getOwner():eventNotify(event, item, ...)
+        item:eventNotify(event, item, ...)
     end
     callMethod(item, name, ...)
 end
@@ -286,6 +285,11 @@ function mt:remove()
     Items[handle] = nil
     jass.RemoveItem(handle)
     poolAdd(id)
+end
+
+function mt:eventNotify(event, ...)
+    ac.eventNotify(self, event, ...)
+    self:getOwner():eventNotify(event, ...)
 end
 
 ac.item = setmetatable({}, {

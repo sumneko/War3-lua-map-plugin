@@ -721,6 +721,23 @@ function mt:userData(key, ...)
     end
 end
 
+function mt:moveItemByClient(skill, slot)
+    if skill._slot == slot then
+        -- 原地移动物品
+        return
+    end
+    local destSkill = self:findSkill(slot, '物品')
+    if destSkill then
+        destSkill._slot = skill._slot
+        skill._slot = slot
+    else
+        skill._slot = slot
+    end
+    if skill._item then
+        skill._item:eventNotify('物品-移动', skill._item, destSkill and destSkill._item)
+    end
+end
+
 return {
     list = UNIT_LIST,
     update = update,

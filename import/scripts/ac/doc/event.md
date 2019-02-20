@@ -131,3 +131,23 @@ end)
 skill:event('技能-施法打断', function (trg, skill)
 end)
 ```
+
+# item
+
+### 物品-获得
+```lua
+item:event('物品-获得', function (trg, item)
+end)
+```
+
+### 物品-失去
+```lua
+item:event('物品-失去', function (trg, item)
+end)
+```
+
+### 物品-移动
+```lua
+item:event('物品-移动', function (trg, item[, otherItem: item])
+end)
+```

@@ -112,11 +112,25 @@ local function onPointOrder(unit)
     end
 end
 
-local function onTargetOrder(unit, target)
+local function onUnitOrder(unit, target)
     local orderId = jass.GetIssuedOrderId()
     if orderId == CMD_ORDER then
         onCommand(unit, target)
         return
+    end
+end
+
+local function onItemOrder(unit, handle)
+    local orderId = jass.GetIssuedOrderId()
+    local slot = orderId - 852001
+    if slot < 1 or slot > jass.UnitInventorySize(unit._handle) then
+        return
+    end
+    for skill in unit:eachSkill '物品' do
+        if skill._icon and skill._icon._handle == handle then
+            unit:moveItemByClient(skill, slot)
+            return
+        end
     end
 end
 
@@ -158,7 +172,13 @@ jass.TriggerAddCondition(TRG, jass.Condition(function ()
     elseif eventId == EVENT.TargetOrder then
         local target = ac.unit(jass.GetOrderTargetUnit())
         if target then
-            onTargetOrder(unit, target)
+            onUnitOrder(unit, target)
+            return
+        end
+        local handle = jass.GetOrderTargetItem()
+        if handle then
+            onItemOrder(unit, handle)
+            return
         end
     elseif eventId == EVENT.CastStart then
         onCastStart(unit)

@@ -211,6 +211,15 @@ local function create(unit, point)
     shop._timer = ac.loop(1, function ()
         shop:updateItem()
     end)
+    shop._trg1 = ac.game:event('物品-获得', function ()
+        shop:updateItem()
+    end)
+    shop._trg2 = ac.game:event('物品-失去', function ()
+        shop:updateItem()
+    end)
+    shop._trg3 = ac.game:event('物品-移动', function ()
+        shop:updateItem()
+    end)
 
     return shop
 end
