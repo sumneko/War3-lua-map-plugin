@@ -71,7 +71,7 @@ local function setItemShow(itemSkill, buyerSkill)
     else
         itemSkill:setOption('title', '空')
         itemSkill:setOption('description', '')
-        itemSkill:setOption('icon', [[ReplaceableTextures\CommandButtons\BTNPackBeast.blp]])
+        itemSkill:setOption('icon', ac.table.skill['@商店物品栏'].icon)
     end
 end
 

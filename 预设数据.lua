@@ -73,7 +73,7 @@ local function insertUnit(w2l)
         -- 高度变化 - 采样范围
         elevRad = 0.0000,
         -- 模型文件
-        file = "model\\dummy-common.mdl",
+        file = "_resource\\model\\dummy-common.mdl",
         -- 占用人口
         fused = 0,
         -- 隐藏小地图显示
@@ -124,7 +124,7 @@ local function insertUnit(w2l)
         -- 高度变化 - 采样范围
         elevRad = 0.0000,
         -- 模型文件
-        file = "model\\dummy-mover.mdl",
+        file = "_resource\\model\\dummy-mover.mdl",
         -- 占用人口
         fused = 0,
         -- 隐藏小地图显示
