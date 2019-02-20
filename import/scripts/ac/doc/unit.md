@@ -491,13 +491,10 @@ unit:isBagFull()
     -> boolean
 ```
 
-### setData
+### userData
 ```lua
-unit:setData(key: string, value: any)
-```
+unit:userData(key: string, value: any)
 
-### getData
-```lua
-unit:getData(key: string)
+unit:userData(key: string)
     -> value: any
 ```

@@ -10,6 +10,7 @@ local skill = require 'ac.skill'
 local damage = require 'ac.damage'
 local item = require 'ac.item'
 local ORDER = require 'ac.war3.order'
+local select = select
 
 local All = {}
 local UNIT_LIST = ac.list()
@@ -712,12 +713,12 @@ function mt:isBagFull()
     return true
 end
 
-function mt:setData(key, value)
-    self._userData[key] = self._userData[key] + value
-end
-
-function mt:getData(key)
-    return self._userData[key]
+function mt:userData(key, ...)
+    if select('#', ...) == 0 then
+        return self._userData[key]
+    else
+        self._userData[key] = ...
+    end
 end
 
 return {
