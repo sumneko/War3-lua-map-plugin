@@ -1,11 +1,12 @@
 local jass = require 'jass.common'
+local sqrt = math.sqrt
 
 local GROUP = jass.CreateGroup()
 
 local function selectInRange(point, radius)
     local units = {}
     local x, y = point:getXY()
-    jass.GroupEnumUnitsInRange(GROUP, x, y, radius, nil)
+    jass.GroupEnumUnitsInRange(GROUP, x, y, radius + ac.world.maxSelectedRadius, nil)
     while true do
         local u = jass.FirstOfGroup(GROUP)
         if u == 0 then
@@ -13,17 +14,97 @@ local function selectInRange(point, radius)
         end
         jass.GroupRemoveUnit(GROUP, u)
         local unit = ac.unit(u)
-        if unit then
-            units[#units+1] = unit
+        if not unit then
+            goto CONTINUE
         end
+        if not unit:isInRange(point, radius) then
+            goto CONTINUE
+        end
+        units[#units+1] = unit
+        :: CONTINUE ::
     end
     return units
 end
 
+-- https://blog.csdn.net/zaffix/article/details/25005057
+local function evaluatePointToLine(x, y, x1, y1, x2, y2)
+    local a = y2 - y1
+    local b = x1 - x2
+    local c = x2 * y1 - x1 * y2
+    return a * x + b * y + c
+end
+
+-- https://blog.csdn.net/zaffix/article/details/25160505
+local function isCircleIntersectLineSeg(x, y, r, x1, y1, x2, y2)
+    local vx1 = x - x1
+    local vy1 = y - y1
+    local vx2 = x2 - x1
+    local vy2 = y2 - y1
+
+    local len = sqrt(vx2 * vx2 + vy2 * vy2);
+
+    vx2 = vx2 / len
+    vy2 = vy2 / len
+
+    local u = vx1 * vx2 + vy1 * vy2;
+
+    local x0
+    local y0
+    if u <= 0 then
+        x0 = x1
+        y0 = y1
+    elseif u >= len then
+        x0 = x2
+        y0 = y2
+    else
+        x0 = x1 + vx2 * u
+        y0 = y1 + vy2 * u
+    end
+
+    return (x - x0) * (x - x0) + (y - y0) * (y - y0) <= r * r
+end
+
+-- https://blog.csdn.net/zaffix/article/details/25339837
+local function checkPointInSector(x, y, r, x1, y1, x2, y2, theta, radius)
+    local dx = x - x1
+    local dy = y - y1
+    local dr = r + radius
+    if dx * dx + dy * dy > dr * dr then
+        return false
+    end
+
+    local vx = x2 - x1
+    local vy = y2 - y1
+    local h = theta / 2.0
+    local c = ac.math.cos(h)
+    local s = ac.math.sin(h)
+    local x3 = x1 + (vx * c - vy * s)
+    local y3 = y1 + (vx * s + vy * c)
+    local x4 = x1 + (vx * c + vy * s)
+    local y4 = y1 + (-vx * s + vy * c)
+
+    local d1 = evaluatePointToLine(x, y, x1, y1, x3, y3)
+    local d2 = evaluatePointToLine(x, y, x4, y4, x1, y1)
+    if d1 >= 0 and d2 >= 0 then
+        return true
+    end
+
+    if isCircleIntersectLineSeg(x, y, r, x1, y1, x3, y3) then
+        return true
+    end
+    if isCircleIntersectLineSeg(x, y, r, x1, y1, x4, y4) then
+        return true
+    end
+
+    return false
+end
+
 local function selectInSector(point, radius, angle, section)
     local units = {}
-    local x, y = point:getXY()
-    jass.GroupEnumUnitsInRange(GROUP, x, y, radius, nil)
+    local x1, y1 = point:getXY()
+    local p2 = point:getPoint() - {angle, radius}
+    local x2, y2 = p2:getXY()
+    jass.GroupEnumUnitsInRange(GROUP, x1, y1, radius + ac.world.maxSelectedRadius, nil)
     while true do
         local u = jass.FirstOfGroup(GROUP)
         if u == 0 then
@@ -31,9 +112,15 @@ local function selectInSector(point, radius, angle, section)
         end
         jass.GroupRemoveUnit(GROUP, u)
         local unit = ac.unit(u)
-        if unit and ac.math.includedAngle(angle, point / unit:getPoint()) <= section then
-            units[#units+1] = unit
+        if not unit then
+            goto CONTINUE
         end
+        local x, y = unit:getXY()
+        if not checkPointInSector(x, y, unit:selectedRadius(), x1, y1, x2, y2, section, radius) then
+            goto CONTINUE
+        end
+        units[#units+1] = unit
+        :: CONTINUE ::
     end
     return units
 end

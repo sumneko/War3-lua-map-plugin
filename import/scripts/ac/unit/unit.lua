@@ -425,6 +425,17 @@ function mt:getCollision()
     return self._collision
 end
 
+function mt:selectedRadius(n)
+    if ac.isNumber(n) then
+        self._selectedRadius = n
+        if n > ac.world.maxSelectedRadius then
+            ac.world.maxSelectedRadius = n
+        end
+    else
+        return self._selectedRadius or self._collision
+    end
+end
+
 function mt:addSkill(name, type, slot)
     if self._removed then
         return nil
@@ -621,16 +632,6 @@ function mt:currentSkill()
     return self._skill:currentSkill()
 end
 
-function mt:isInRange(point, radius)
-    if not ac.isPoint(point) then
-        return
-    end
-    if not ac.isNumber(radius) then
-        return
-    end
-    return self:getPoint() * point <= self._collision + radius
-end
-
 function mt:isEnemy(other)
     if ac.isPlayer(other) then
         return jass.IsPlayerEnemy(self._owner._handle, other._handle)
@@ -740,6 +741,15 @@ end
 
 function mt:getXY()
     return jass.GetUnitX(self._handle), jass.GetUnitY(self._handle)
+end
+
+function mt:isInRange(point, range)
+    local x1, y1 = self:getXY()
+    local x2, y2 = point:getXY()
+    local dx, dy = x1 - x2, y1 - y2
+    local powerDistance = dx * dx + dy * dy
+    local checkRange = range + self:selectedRadius()
+    return powerDistance <= checkRange * checkRange
 end
 
 return {

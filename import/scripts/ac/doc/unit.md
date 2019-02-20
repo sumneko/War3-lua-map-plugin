@@ -422,12 +422,6 @@ unit:currentSkill()
     -> skill
 ```
 
-### isInRange
-```lua
-unit:isInRange(point, radius: number)
-    -> boolean
-```
-
 ### isEnemy
 ```lua
 unit:isEnemy(other: unit/player)
@@ -501,4 +495,17 @@ unit:userData(key: string, value: any)
 
 unit:userData(key: string)
     -> value: any
+```
+
+### selectedRadius
+```lua
+unit:selectedRadius(radius: number)
+
+unit:selectedRadius()
+    -> radius: number
+```
+
+### isInRange
+```lua
+unit:isInRange(point, range: number)
 ```

@@ -3,6 +3,7 @@ local mover = require 'ac.mover'
 local unit = require 'ac.unit'
 local message = require 'jass.message'
 local jass = require 'jass.common'
+local slk = require 'jass.slk'
 local Flag = {}
 local LastSelecting
 
@@ -90,4 +91,5 @@ ac.world = {
     update = update,
     tick = getTick,
     flag = flag,
+    maxSelectedRadius = slk.misc.Misc.MaxCollisionRadius,
 }
