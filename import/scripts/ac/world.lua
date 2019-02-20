@@ -23,10 +23,16 @@ local function updateSelect()
             if ac.world.flag 'ignore update select' then
                 return
             end
-            local hero = ac.localPlayer():getHero()
-            if hero then
+            local dummy
+            for hero in ac.localPlayer():eachHero() do
+                if hero ~= selecting and hero:isAlive() then
+                    dummy = hero
+                    break
+                end
+            end
+            if dummy then
                 jass.ClearSelection()
-                jass.SelectUnit(hero._handle, true)
+                jass.SelectUnit(dummy._handle, true)
                 ac.world.flag('ignore update select', true)
                 ac.wait(0.05, function ()
                     jass.ClearSelection()
