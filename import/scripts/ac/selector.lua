@@ -1,5 +1,6 @@
 local jass = require 'jass.common'
 local sqrt = math.sqrt
+local abs = math.abs
 
 local GROUP = jass.CreateGroup()
 
@@ -41,12 +42,12 @@ local function isCircleIntersectLineSeg(x, y, r, x1, y1, x2, y2)
     local vx2 = x2 - x1
     local vy2 = y2 - y1
 
-    local len = sqrt(vx2 * vx2 + vy2 * vy2);
+    local len = sqrt(vx2 * vx2 + vy2 * vy2)
 
     vx2 = vx2 / len
     vy2 = vy2 / len
 
-    local u = vx1 * vx2 + vy1 * vy2;
+    local u = vx1 * vx2 + vy1 * vy2
 
     local x0
     local y0
@@ -125,21 +126,52 @@ local function selectInSector(point, radius, angle, section)
     return units
 end
 
-local function selectInLine(point, angle, length, width)
+-- https://blog.csdn.net/zaffix/article/details/25077835
+local function distanceBetweenTwoPoints(x1, y1, x2, y2)
+    return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
+end
+
+local function distanceFromPointToLine(x, y, x1, y1, x2, y2)
+    local a = y2 - y1
+    local b = x1 - x2
+    local c = x2 * y1 - x1 * y2
+
+    return abs(a * x + b * y + c) / sqrt(a * a + b * b)
+end
+
+local function isCircleIntersectRectangle(x, y, r, x0, y0, x1, y1, x2, y2)
+    local w1 = distanceBetweenTwoPoints(x0, y0, x2, y2)
+    local h1 = distanceBetweenTwoPoints(x0, y0, x1, y1)
+    local w2 = distanceFromPointToLine(x, y, x0, y0, x1, y1)
+    local h2 = distanceFromPointToLine(x, y, x0, y0, x2, y2)
+
+    if w2 > w1 + r then
+        return false
+    end
+    if h2 > h1 + r then
+        return false
+    end
+
+    if w2 <= w1 then
+        return true
+    end
+    if h2 <= h1 then
+        return true
+    end
+
+    return (w2 - w1) * (w2 - w1) + (h2 - h1) * (h2 - h1) <= r * r
+end
+
+local function selectInLine(point, length, angle, width)
     local units = {}
     local x1, y1 = point:getXY()
-    local finish = point - {angle, length}
-    local x2, y2 = finish:getXY()
+    local x0 = x1 + length / 2.0 * ac.math.cos(angle)
+    local y0 = y1 + length / 2.0 * ac.math.sin(angle)
+    local r = math.max(length / 2.0, width / 2.0)
+    local x2 = x0 + width / 2.0 * ac.math.cos(angle + 90.0)
+    local y2 = y0 + width / 2.0 * ac.math.sin(angle + 90.0)
 
-    local a, b = y1 - y2, x2 - x1
-    local c = - a * x1 - b * y1
-    local l = (a * a + b * b) ^ 0.5
-    local w = width / 2.0
-    local r = length / 2.0
-
-    local x, y = (x1 + x2) / 2.0, (y1 + y2) / 2.0
-
-    jass.GroupEnumUnitsInRange(GROUP, x, y, r, nil)
+    jass.GroupEnumUnitsInRange(GROUP, x0, y0, r + ac.world.maxSelectedRadius, nil)
     while true do
         local u = jass.FirstOfGroup(GROUP)
         if u == 0 then
@@ -147,13 +179,17 @@ local function selectInLine(point, angle, length, width)
         end
         jass.GroupRemoveUnit(GROUP, u)
         local unit = ac.unit(u)
-        if unit then
-            local x0, y0 = unit:getPoint():getXY()
-            local d = math.abs(a * x0 + b * y0 + c) / l
-            if d <= w + unit._collision then
-                units[#units+1] = unit
-            end
+        if not unit then
+            goto CONTINUE
         end
+        local x, y = unit:getXY()
+        if not isCircleIntersectRectangle(x, y, unit:selectedRadius(), x0, y0, x1, y1, x2, y2) then
+            goto CONTINUE
+        end
+
+        units[#units+1] = unit
+
+        :: CONTINUE ::
     end
     return units
 end
@@ -247,7 +283,7 @@ function mt:inSector(point, radius, angle, section)
     return self
 end
 
-function mt:inLine(point, angle, length, width)
+function mt:inLine(point, length, angle, width)
     self._selectType = 'line'
     self._point = point
     self._angle = angle
@@ -349,7 +385,7 @@ function mt:get()
     elseif self._selectType == 'sector' then
         units = selectInSector(self._point, self._radius, self._angle, self._section)
     elseif self._selectType == 'line' then
-        units = selectInLine(self._point, self._angle, self._length, self._width)
+        units = selectInLine(self._point, self._length, self._angle, self._width)
     end
 
     units = filter(units, self)

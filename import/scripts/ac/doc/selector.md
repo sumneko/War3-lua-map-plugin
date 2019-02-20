@@ -37,7 +37,7 @@ selector:inSector(point/unit, radius: number, angle: number, section: number)
 
 ### inLine
 ```lua
-selector:inLine(start: point/unit, angle: number, length: number, width: number)
+selector:inLine(start: point/unit, length: number, angle: number, width: number)
     -> selector
 ```
 
