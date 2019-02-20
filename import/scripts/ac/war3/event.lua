@@ -50,11 +50,17 @@ local CallBack = {
         end
     end,
     [EVENT.PickUpItem] = function ()
+        if ac.world.flag 'ignore item' then
+            return
+        end
         local unit = ac.unit(jass.GetTriggerUnit())
         local handle = jass.GetManipulatedItem()
         item.onPickUp(unit, handle)
     end,
     [EVENT.DropItem] = function ()
+        if ac.world.flag 'ignore item' then
+            return
+        end
         local unit = ac.unit(jass.GetTriggerUnit())
         local handle = jass.GetManipulatedItem()
         ac.wait(0, function ()

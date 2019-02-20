@@ -89,6 +89,10 @@ local mt = {}
 mt.__index = mt
 mt.type = 'item icon'
 
+function mt:__tostring()
+    return ('{item icon|%s}'):format(self._handle)
+end
+
 function mt:remove()
     if self._removed then
         return
@@ -206,6 +210,16 @@ function mt:needRefreshItem()
     local unit = skill._owner
     local mgr = unit._skill
     mgr._needRefreshItem = true
+end
+
+function mt:forceRefresh()
+    local skill = self._skill
+    local unit = skill._owner
+    self:refresh()
+    ac.world.flag('ignore item', true)
+    jass.SetItemPosition(self._handle, 0.0, 0.0)
+    jass.UnitAddItem(unit._handle, self._handle)
+    ac.world.flag('ignore item', false)
 end
 
 return function (skill)

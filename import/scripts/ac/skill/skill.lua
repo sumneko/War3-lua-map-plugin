@@ -692,6 +692,12 @@ function mt:setOption(name, value)
     end
 end
 
+function mt:forceRefresh()
+    if self._icon then
+        self._icon:forceRefresh()
+    end
+end
+
 ac.skill = setmetatable({}, {
     __index = function (self, name)
         local skill = createDefine(name)

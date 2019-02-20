@@ -96,6 +96,10 @@ local mt = {}
 mt.__index = mt
 mt.type = 'ability icon'
 
+function mt:__tostring()
+    return ('{ability icon|%s}'):format(self._handle)
+end
+
 function mt:remove()
     if self._removed then
         return
@@ -228,6 +232,10 @@ function mt:needRefreshAbility()
     local unit = skill._owner
     local mgr = unit._skill
     mgr._needRefreshAbility = true
+end
+
+function mt:forceRefresh()
+    self:needRefreshAbility()
 end
 
 return function (skill)
