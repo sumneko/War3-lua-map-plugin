@@ -26,8 +26,10 @@ local function init()
     Pool = {}
     for id, item in pairs(slk.item) do
         local name = item.Name
-        if name and name:sub(1, 7) == '@物品' then
-            poolAdd(id)
+        if name then
+            if name:sub(1, #'@物品-') == '@物品-' then
+                poolAdd(id)
+            end
         end
     end
 end

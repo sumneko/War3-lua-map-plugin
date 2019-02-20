@@ -2,6 +2,7 @@ local jass = require 'jass.common'
 local japi = require 'jass.japi'
 local slk = require 'jass.slk'
 local dbg = require 'jass.debug'
+local message = require 'jass.message'
 local attribute = require 'ac.unit.attribute'
 local restriction = require 'ac.unit.restriction'
 local attack = require 'ac.attack'
@@ -712,6 +713,24 @@ function mt:isBagFull()
         end
     end
     return true
+end
+
+function mt:bagSize(n)
+    if ac.isInteger(n) then
+        if n <= 0 then
+            n = 0
+        elseif n > 6 then
+            n = 6
+        end
+        jass.UnitAddAbility(self._handle, ac.id['@BAG'])
+        local handle = japi.EXGetUnitAbility(self._handle, ac.id['@BAG'])
+        japi.EXSetAbilityDataReal(handle, 1, 108, n)
+        if message.selection() == self._handle then
+            jass.SelectUnit(self._handle, true)
+        end
+    else
+        return jass.UnitInventorySize(self._handle)
+    end
 end
 
 function mt:userData(key, ...)

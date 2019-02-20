@@ -35,8 +35,12 @@ local function init()
     Pool = {}
     for id, abil in pairs(slk.ability) do
         local name = abil.Name
-        if name and name:sub(1, 1) == '@' then
-            poolAdd(name, id)
+        if name then
+            if name:sub(1, #'@主动技能-') == '@主动技能-' then
+                poolAdd(name, id)
+            elseif name:sub(1, #'@被动技能-') == '@被动技能-' then
+                poolAdd(name, id)
+            end
         end
     end
 end

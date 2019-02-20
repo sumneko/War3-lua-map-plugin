@@ -238,6 +238,9 @@ local function insertAbility(w2l)
         DataA = {999999},
         DataB = {4},
     }
+    newObject(w2l.slk.ability, '@BAG', 'AInv') {
+        Name = '@物品栏',
+    }
 
     -- 通魔使用的命令字符串（共需要12个）
     local orderList = {

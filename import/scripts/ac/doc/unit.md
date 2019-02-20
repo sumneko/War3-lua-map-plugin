@@ -509,3 +509,11 @@ unit:selectedRadius()
 ```lua
 unit:isInRange(point, range: number)
 ```
+
+### bagSize()
+```lua
+unit:bagSize(size: integer)
+
+unit:bagSize()
+    -> size: integer
+```
