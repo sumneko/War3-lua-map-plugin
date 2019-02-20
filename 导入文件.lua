@@ -29,7 +29,9 @@ local function importFiles(w2l)
             files[name] = buf
             local newName = name:sub(#basePath+1)
             if needInsideLua or newName:sub(1, #'scripts\\') ~= 'scripts\\' then
-                w2l.output_ar:set(newName, buf)
+                if not w2l.input_ar:get(newName) then
+                    w2l.output_ar:set(newName, buf)
+                end
             end
         end
     end
