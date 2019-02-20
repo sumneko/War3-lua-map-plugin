@@ -46,6 +46,16 @@ type = '金币'
 value = 1000
 ```
 
+### attribute
+属性
+
+```lua
+attribute = {
+'生命上限' = 1000,
+'攻击' = 100,
+}
+```
+
 ## method
 
 ### getOwner

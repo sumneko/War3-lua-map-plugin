@@ -76,6 +76,26 @@ local function findFirstEmptyInBag(unit)
     return 0
 end
 
+local function onAdd(item)
+    local unit = item._owner
+    if ac.isTable(item.attribute) then
+        item._addedAttribute = {}
+        for k, v in pairs(item.attribute) do
+            item._addedAttribute[#item._addedAttribute+1] = unit:add(k, v)
+        end
+    end
+    eventNotify(item, 'onAdd')
+end
+
+local function onRemove(item)
+    if item._addedAttribute then
+        for _, destroyer in ipairs(item._addedAttribute) do
+            destroyer()
+        end
+    end
+    eventNotify(item, 'onRemove')
+end
+
 local function addToUnit(item, unit)
     if unit:isBagFull() then
         return false
@@ -103,7 +123,7 @@ local function addToUnit(item, unit)
         end
     end
 
-    eventNotify(item, 'onAdd')
+    onAdd(item)
     return true
 end
 
@@ -218,7 +238,8 @@ local function onDrop(unit, handle)
     item:updateAll()
 
     Items[item._handle] = item
-    eventNotify(item, 'onRemove')
+
+    onRemove(item)
 
     return item
 end
