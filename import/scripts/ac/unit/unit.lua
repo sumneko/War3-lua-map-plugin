@@ -170,6 +170,7 @@ function ac.unit(handle)
         _level = jass.GetUnitLevel(handle),
         _owner = ac.player(jass.GetOwningPlayer(handle)),
         _collision = ac.toNumber(slkUnit.collision),
+        _userData = {},
     }, mt)
     dbg.gchash(u, handle)
     dbg.handle_ref(handle)
@@ -709,6 +710,14 @@ function mt:isBagFull()
         end
     end
     return true
+end
+
+function mt:set(key, value)
+    self._userData[key] = self._userData[key] + value
+end
+
+function mt:get(key)
+    return self._userData[key]
 end
 
 return {

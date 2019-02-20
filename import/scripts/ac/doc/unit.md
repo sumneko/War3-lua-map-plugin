@@ -490,3 +490,14 @@ unit:createItem(name: string)
 unit:isBagFull()
     -> boolean
 ```
+
+### set
+```lua
+unit:set(key: string, value: any)
+```
+
+### get
+```lua
+unit:get(key: string)
+    -> value: any
+```
