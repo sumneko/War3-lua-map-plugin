@@ -62,6 +62,12 @@ unit:event('单位-降级', function (trg, unit)
 end)
 ```
 
+### 单位-属性变化
+```lua
+unit:event('单位-属性变化', function (trg, unit, attributeName: string, value: number)
+end)
+```
+
 # player
 
 ### 玩家-选中单位

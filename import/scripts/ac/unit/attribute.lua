@@ -176,7 +176,7 @@ function mt:onShow(k)
         return
     end
     local v = self:get(k)
-    local s = self._show[k]
+    local s = self._show[k] or 0.0
     if v == s then
         return
     end
@@ -186,6 +186,7 @@ function mt:onShow(k)
     end
     self._show[k] = v
     Show[k](unit, v)
+    unit:eventNotify('单位-属性变化', unit, k, v)
 end
 
 function mt:onSet(k)
