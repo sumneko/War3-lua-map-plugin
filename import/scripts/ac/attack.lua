@@ -1,4 +1,5 @@
 local damage = require 'ac.damage'
+local japi = require 'jass.japi'
 
 local mt = {}
 mt.__index = mt
@@ -60,6 +61,8 @@ return function (unit, attack)
     if not attack then
         return nil
     end
+
+    japi.SetUnitState(unit._handle, 0x16, ac.toNumber(attack.range, 100.0))
 
     return setmetatable({
         type = attack.type,
