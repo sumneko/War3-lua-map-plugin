@@ -754,7 +754,9 @@ function mt:moveItemByClient(itemSkill, slot)
         itemSkill._slot = slot
     end
     if itemSkill._item then
+        local unit = itemSkill._owner
         itemSkill._item:eventNotify('物品-移动', itemSkill._item, destSkill and destSkill._item)
+        unit:eventNotify('物品-移动', itemSkill._item, destSkill and destSkill._item)
     end
 end
 
