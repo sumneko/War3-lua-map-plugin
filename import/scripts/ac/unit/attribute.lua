@@ -77,25 +77,28 @@ local Set = {
             attribute:set('魔法', rate * attribute:get '魔法上限')
         end
     end,
+}
+
+local Limit = {
     ['生命'] = function (attribute)
-        return function ()
-            local life = attribute:get '生命'
-            local max = attribute:get '生命上限'
-            if life > max then
-                attribute:set('生命', max)
-            elseif life < 0 then
-                attribute:set('生命', 0)
+        local life = attribute:get '生命'
+        if life < 0 then
+            attribute._base['生命'] = 0.0
+        else
+            local maxLife = attribute:get '生命上限'
+            if life > maxLife then
+                attribute._base['生命'] = maxLife
             end
         end
     end,
     ['魔法'] = function (attribute)
-        return function ()
-            local mana = attribute:get '魔法'
-            local max = attribute:get '魔法上限'
-            if mana > max then
-                attribute:set('魔法', max)
-            elseif mana < 0 then
-                attribute:set('魔法', 0)
+        local life = attribute:get '魔法'
+        if life < 0 then
+            attribute._base['魔法'] = 0.0
+        else
+            local maxLife = attribute:get '魔法上限'
+            if life > maxLife then
+                attribute._base['魔法'] = maxLife
             end
         end
     end,
@@ -118,6 +121,7 @@ function mt:set(k, v)
     local wait = self:onSet(k)
     self._base[k] = v
     self._rate[k] = 0.0
+    self:onLimit(k)
     self:onShow(k)
     if wait then
         wait()
@@ -138,6 +142,10 @@ function mt:add(k, v)
     local ext = k:sub(-1)
     if ext == '%' then
         k = k:sub(1, -2)
+        if k == '生命' or k == '魔法' then
+            log.error(('[%s]不能使用百分比属性'):format(k))
+            return function () end
+        end
         local wait = self:onSet(k)
         self._rate[k] = (self._rate[k] or 0.0) + v
         self:onShow(k)
@@ -147,6 +155,7 @@ function mt:add(k, v)
     else
         local wait = self:onSet(k)
         self._base[k] = (self._base[k] or 0.0) + v
+        self:onLimit(k)
         self:onShow(k)
         if wait then
             wait()
@@ -184,6 +193,13 @@ function mt:onSet(k)
         return nil
     end
     return Set[k](self)
+end
+
+function mt:onLimit(k)
+    if not Limit[k] then
+        return nil
+    end
+    Limit[k](self)
 end
 
 return function (unit, default)
