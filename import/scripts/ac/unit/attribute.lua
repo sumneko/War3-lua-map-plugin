@@ -184,9 +184,10 @@ function mt:onShow(k)
     if unit._removed then
         return
     end
+    local delta = v - s
     self._show[k] = v
     Show[k](unit, v)
-    unit:eventNotify('单位-属性变化', unit, k, v)
+    unit:eventNotify('单位-属性变化', unit, k, delta)
 end
 
 function mt:onSet(k)

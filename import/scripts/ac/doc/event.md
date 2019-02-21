@@ -64,7 +64,7 @@ end)
 
 ### 单位-属性变化
 ```lua
-unit:event('单位-属性变化', function (trg, unit, attributeName: string, value: number)
+unit:event('单位-属性变化', function (trg, unit, attributeName: string, delta: number)
 end)
 ```
 
