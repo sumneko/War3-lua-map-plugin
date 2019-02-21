@@ -114,6 +114,32 @@ local function onRemove(item)
     eventNotify(item, unit, 'onRemove')
 end
 
+local function createItemDummySkill(item)
+    local skillName = item._name .. '-马甲技能'
+    if ac.table.skill[skillName] then
+        local name
+        local ok
+        for i = 1, 1000 do
+            name = skillName .. tostring(i)
+            if not ac.table.skill[name] then
+                skillName = name
+                ok = true
+                break
+            end
+        end
+        if not ok then
+            return nil
+        end
+    end
+    ac.table.skill[skillName] = {
+        title = item.title,
+        description = item.description,
+        icon = item.icon,
+        passive = 1,
+    }
+    return skillName
+end
+
 local function addToUnit(item, unit)
     if unit:isBagFull() then
         return false
@@ -133,6 +159,9 @@ local function addToUnit(item, unit)
     poolAdd(id)
 
     local skillName = item._data.skill
+    if not skillName then
+        skillName = createItemDummySkill(item)
+    end
     if skillName then
         local slot = findFirstEmptyInBag(unit)
         local skill = unit:addSkill(skillName, '物品', slot)
