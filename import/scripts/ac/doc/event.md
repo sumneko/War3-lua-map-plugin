@@ -151,3 +151,23 @@ end)
 item:event('物品-移动', function (trg, item[, otherItem: item])
 end)
 ```
+
+### 物品-即将获得
+
+返回`false`可阻止单位获得物品
+
+```lua
+item:event('物品-即将获得', function (trg, item, unit)
+    return false
+end)
+```
+
+### 物品-即将拾取
+
+右键点击物品时触发，返回`false`可阻止单位的拾取行为
+
+```lua
+item:event('物品-即将拾取', function (trg, item, unit)
+    return false
+end)
+```

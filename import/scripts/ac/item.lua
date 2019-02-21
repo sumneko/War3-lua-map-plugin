@@ -7,8 +7,10 @@ local Cache = {}
 local Items = {}
 
 local METHOD = {
-    ['onAdd']    = '物品-获得',
-    ['onRemove'] = '物品-失去',
+    ['onAdd']     = '物品-获得',
+    ['onRemove']  = '物品-失去',
+    ['onCanAdd']  = '物品-即将获得',
+    ['onCanLoot'] = '物品-即将拾取',
 }
 
 local mt = {}
@@ -58,12 +60,28 @@ local function callMethod(item, name, ...)
     end
 end
 
-local function eventNotify(item, name, ...)
+local function eventNotify(item, unit, name, ...)
     local event = METHOD[name]
     if event then
         item:eventNotify(event, item, ...)
+        unit:eventNotify(event, item, ...)
     end
     callMethod(item, name, ...)
+end
+
+local function eventDispatch(item, unit, name, ...)
+    local event = METHOD[name]
+    if event then
+        local res = item:eventDispatch(event, item, ...)
+        if res ~= nil then
+            return res
+        end
+        local res = unit:eventDispatch(event, item, ...)
+        if res ~= nil then
+            return res
+        end
+    end
+    return callMethod(item, name, ...)
 end
 
 local function findFirstEmptyInBag(unit)
@@ -83,20 +101,24 @@ local function onAdd(item)
             item._addedAttribute[#item._addedAttribute+1] = unit:add(k, v)
         end
     end
-    eventNotify(item, 'onAdd')
+    eventNotify(item, unit, 'onAdd')
 end
 
 local function onRemove(item)
+    local unit = item._owner
     if item._addedAttribute then
         for _, destroyer in ipairs(item._addedAttribute) do
             destroyer()
         end
     end
-    eventNotify(item, 'onRemove')
+    eventNotify(item, unit, 'onRemove')
 end
 
 local function addToUnit(item, unit)
     if unit:isBagFull() then
+        return false
+    end
+    if eventDispatch(item, unit, 'onCanAdd', unit) == false then
         return false
     end
     item._owner = unit
@@ -196,6 +218,9 @@ local function onLootOrder(unit, handle)
     if unit:isBagFull() then
         unit:stop()
     end
+    if eventDispatch(item, unit, 'onCanLoot', unit) == false then
+        unit:stop()
+    end
 end
 
 local function onPickUp(unit, handle)
@@ -204,7 +229,18 @@ local function onPickUp(unit, handle)
         return
     end
 
-    addToUnit(item, unit)
+    local suc = addToUnit(item, unit)
+    if suc then
+        return
+    end
+
+    local x = jass.GetItemX(handle)
+    local y = jass.GetItemY(handle)
+
+    Items[handle] = nil
+    jass.RemoveItem(handle)
+    item._handle = jass.CreateItem(ac.id[item._id], x, y)
+    Items[item._handle] = item
 end
 
 local function onDrop(unit, handle)
@@ -299,9 +335,13 @@ function mt:blink(point)
     end
 end
 
+function mt:eventDispatch(name, ...)
+    local res = ac.eventDispatch(self, name, ...)
+    return res
+end
+
 function mt:eventNotify(event, ...)
     ac.eventNotify(self, event, ...)
-    self:getOwner():eventNotify(event, ...)
 end
 
 ac.item = setmetatable({}, {

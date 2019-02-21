@@ -87,3 +87,23 @@ end
 function item:onRemove()
 end
 ```
+
+### onCanAdd
+
+返回`false`可阻止单位获得物品
+
+```lua
+function item:onCanAdd(unit)
+    return false
+end
+```
+
+### onCanLoot
+
+右键点击物品时触发，返回`false`可阻止单位的拾取行为
+
+```lua
+function item:onCanLoot(unit)
+    return false
+end
+```
