@@ -116,6 +116,7 @@ local function addToUnit(item, unit)
         local skill = unit:addSkill(skillName, '物品', slot)
         if skill then
             skill._item = item
+            item._skill = skill
             if skill._icon then
                 jass.SetItemDroppable(skill._icon._handle, true)
             end
@@ -285,6 +286,17 @@ function mt:remove()
     Items[handle] = nil
     jass.RemoveItem(handle)
     poolAdd(id)
+end
+
+function mt:blink(point)
+    local x, y = point:getXY()
+    if self._handle == 0 then
+        if self._skill._icon then
+            jass.SetItemPosition(self._skill._icon._handle, x, y)
+        end
+    else
+        jass.SetItemPosition(self._handle, x, y)
+    end
 end
 
 function mt:eventNotify(event, ...)

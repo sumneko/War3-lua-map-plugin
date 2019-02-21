@@ -69,6 +69,11 @@ item:getOwner()
 item:remove()
 ```
 
+### blink
+```lua
+item:blink(point)
+```
+
 ## event
 
 ### onAdd
