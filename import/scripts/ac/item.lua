@@ -140,7 +140,7 @@ local function addToUnit(item, unit)
             skill._item = item
             item._skill = skill
             if skill._icon then
-                jass.SetItemDroppable(skill._icon._handle, true)
+                jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
             end
         end
     end

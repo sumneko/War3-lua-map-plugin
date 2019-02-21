@@ -56,6 +56,13 @@ attribute = {
 }
 ```
 
+### drop
+可以丢弃
+
+```lua
+drop = 1
+```
+
 ## method
 
 ### getOwner
