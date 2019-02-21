@@ -79,6 +79,10 @@ local function addItem(icon)
     end
     icon._handle = handle
     icon._ability = icon._slk.abilList
+
+    if skill.passive == 1 then
+        jass.UnitRemoveAbility(unit._handle, ac.id[icon._ability])
+    end
     return true
 end
 

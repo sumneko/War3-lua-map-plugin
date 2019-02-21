@@ -627,6 +627,11 @@ function mt:castByClient(target, x, y)
         return false
     end
 
+    -- 不能发动被动技能
+    if self.passive == 1 then
+        return false
+    end
+
     local cast
     if self.targetType == '点' then
         cast = createCast(self)
