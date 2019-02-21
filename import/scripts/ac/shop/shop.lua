@@ -66,7 +66,7 @@ end
 local function setItemShow(itemSkill, buyerSkill)
     if buyerSkill then
         itemSkill:setOption('title', buyerSkill.title)
-        itemSkill:setOption('description', buyerSkill.description)
+        itemSkill:setOption('description', buyerSkill._loadedDescription or buyerSkill.description)
         itemSkill:setOption('icon', buyerSkill.icon)
     else
         itemSkill:setOption('title', '空')

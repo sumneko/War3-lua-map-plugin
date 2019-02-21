@@ -130,6 +130,7 @@ function mt:updateDescription()
     if desc == self._cache.description then
         return
     end
+    skill._loadedDescription = desc
     self._cache.description = desc
     japi.EXSetItemDataString(ac.id[self._id], 3, desc)
     self:needRefreshItem()
