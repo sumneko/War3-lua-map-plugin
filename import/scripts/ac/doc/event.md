@@ -82,6 +82,12 @@ player:event('玩家-取消选中', function (trg, player, unit)
 end)
 ```
 
+### 玩家-聊天
+```lua
+player:event('玩家-聊天', function (trg, player, string)
+end)
+```
+
 # skill
 
 ### 技能-获得
