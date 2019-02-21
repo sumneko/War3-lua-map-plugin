@@ -114,7 +114,7 @@ function mt:eventDispatch(name, ...)
     if res ~= nil then
         return res
     end
-    local res = ac.game:eventDispatch(ac.game, name, ...)
+    local res = ac.game:eventDispatch(name, ...)
     if res ~= nil then
         return res
     end
