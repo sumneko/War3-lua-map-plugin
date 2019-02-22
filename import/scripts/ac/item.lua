@@ -395,6 +395,13 @@ function mt:remove()
         return
     end
     self._removed = true
+
+    if self._handle == 0 then
+        if self._skill._icon then
+            jass.SetItemPosition(self._skill._icon._handle, 0, 0)
+        end
+    end
+
     local handle = self._handle
     local id = self._id
     self._handle = 0
