@@ -1,4 +1,5 @@
 local item = require 'ac.item'
+local jass = require 'jass.common'
 
 local mt = {}
 mt.__index = mt
@@ -58,6 +59,11 @@ end
 
 function mt:createItem(name)
     return item.create(name, self)
+end
+
+function mt:isBlock()
+    local x, y = self:getXY()
+    return jass.IsTerrainPathable(x, y, 1)
 end
 
 function ac.point(x, y)

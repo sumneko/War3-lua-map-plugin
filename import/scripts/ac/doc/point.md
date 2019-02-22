@@ -54,6 +54,12 @@ point:createItem(name: string)
     -> item
 ```
 
+### isBlock
+```lua
+point:isBlock()
+    -> boolean
+```
+
 ### ac.point
 ```lua
 ac.point(x: number, y: number)
