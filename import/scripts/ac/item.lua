@@ -136,12 +136,21 @@ local function createItemDummySkill(item)
         end
     end
     ac.table.skill[skillName] = {
-        title = item.title,
-        description = item.description,
-        icon = item.icon,
         passive = 1,
     }
     return skillName
+end
+
+local function fillSkillData(skill, item)
+    if skill.title == nil then
+        skill:setOption('title', item.title)
+    end
+    if skill.description == nil then
+        skill:setOption('description', item.description)
+    end
+    if skill.icon == nil then
+        skill:setOption('icon', item.icon)
+    end
 end
 
 local function addSkill(item)
@@ -156,6 +165,7 @@ local function addSkill(item)
         if skill then
             skill._item = item
             item._skill = skill
+            fillSkillData(skill, item)
             if skill._icon then
                 jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
             end
