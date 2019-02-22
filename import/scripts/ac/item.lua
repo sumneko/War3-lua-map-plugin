@@ -93,7 +93,7 @@ local function findFirstEmptyInBag(unit)
     return 0
 end
 
-local function onAdd(item)
+local function addAttribute(item)
     local unit = item._owner
     if ac.isTable(item.attribute) then
         item._addedAttribute = {}
@@ -101,6 +101,10 @@ local function onAdd(item)
             item._addedAttribute[#item._addedAttribute+1] = unit:add(k, v)
         end
     end
+end
+
+local function onAdd(item)
+    local unit = item._owner
     eventNotify(item, unit, 'onAdd')
 end
 
@@ -140,6 +144,26 @@ local function createItemDummySkill(item)
     return skillName
 end
 
+local function addSkill(item)
+    local unit = item._owner
+    local skillName = item._data.skill
+    if not skillName then
+        skillName = createItemDummySkill(item)
+    end
+    if skillName then
+        local slot = findFirstEmptyInBag(unit)
+        local skill = unit:addSkill(skillName, '物品', slot)
+        if skill then
+            skill._item = item
+            item._skill = skill
+            if skill._icon then
+                jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
+            end
+        end
+        addAttribute(item)
+    end
+end
+
 local function addToUnit(item, unit)
     if unit:isBagFull() then
         return false
@@ -158,20 +182,8 @@ local function addToUnit(item, unit)
     end
     poolAdd(id)
 
-    local skillName = item._data.skill
-    if not skillName then
-        skillName = createItemDummySkill(item)
-    end
-    if skillName then
-        local slot = findFirstEmptyInBag(unit)
-        local skill = unit:addSkill(skillName, '物品', slot)
-        if skill then
-            skill._item = item
-            item._skill = skill
-            if skill._icon then
-                jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
-            end
-        end
+    if not item:isRune() then
+        addSkill(item)
     end
 
     onAdd(item)
@@ -404,6 +416,10 @@ end
 
 function mt:getName()
     return self._name
+end
+
+function mt:isRune()
+    return self.rune == 1
 end
 
 ac.item = setmetatable({}, {

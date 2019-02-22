@@ -63,6 +63,13 @@ attribute = {
 drop = 1
 ```
 
+### rune
+神符
+
+```lua
+rune = 1
+```
+
 ## method
 
 ### getOwner
@@ -85,6 +92,12 @@ item:blink(point)
 ```lua
 item:getName()
     -> string
+```
+
+### isRune
+```lua
+item:isRune()
+    -> boolean
 ```
 
 ## event
