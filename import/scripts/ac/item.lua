@@ -141,15 +141,16 @@ local function createItemDummySkill(item)
     return skillName
 end
 
-local function fillSkillData(skill, item)
+local function fillSkillData(skillName, item)
+    local skill = ac.skill[skillName]
     if skill.title == nil then
-        skill:setOption('title', item.title)
+        skill.title = item.title
     end
     if skill.description == nil then
-        skill:setOption('description', item.description)
+        skill.description = item.description
     end
     if skill.icon == nil then
-        skill:setOption('icon', item.icon)
+        skill.icon = item.icon
     end
 end
 
@@ -160,12 +161,12 @@ local function addSkill(item)
         skillName = createItemDummySkill(item)
     end
     if skillName then
+        fillSkillData(skillName, item)
         local slot = findFirstEmptyInBag(unit)
         local skill = unit:addSkill(skillName, '物品', slot)
         if skill then
             skill._item = item
             item._skill = skill
-            fillSkillData(skill, item)
             if skill._icon then
                 jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
             end
