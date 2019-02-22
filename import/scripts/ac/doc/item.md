@@ -81,6 +81,12 @@ item:remove()
 item:blink(point)
 ```
 
+### getName
+```lua
+item:getName()
+    -> string
+```
+
 ## event
 
 ### onAdd

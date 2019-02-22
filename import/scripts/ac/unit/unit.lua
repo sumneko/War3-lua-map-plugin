@@ -464,6 +464,14 @@ function mt:eachSkill(tp)
     return self._skill:eachSkill(tp)
 end
 
+function mt:findItem(name)
+    return item.findItem(self, name)
+end
+
+function mt:eachItem()
+    return item.eachItem(self)
+end
+
 function mt:removeSkill(name)
     if not self._skill then
         return false

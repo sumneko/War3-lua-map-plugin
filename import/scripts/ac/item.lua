@@ -19,7 +19,7 @@ mt.type = 'item'
 mt._handle = 0
 
 function mt:__tostring()
-    return ('{item|%s}'):format(self._name)
+    return ('{item|%s|%s}'):format(self._name, self._handle)
 end
 
 local function poolAdd(id)
@@ -309,6 +309,35 @@ local function onDrop(unit, handle)
     return item
 end
 
+local function findItem(unit, name)
+    if not unit._skill then
+        return nil
+    end
+    for skill in unit._skill:eachSkill '物品' do
+        if skill._item and skill._item._name == name then
+            return skill._item
+        end
+    end
+    return nil
+end
+
+local function eachItem(unit)
+    if not unit._skill then
+        return function () end
+    end
+    local items = {}
+    for skill in unit._skill:eachSkill '物品' do
+        if skill._item then
+            items[#items+1] = skill._item
+        end
+    end
+    local i = 0
+    return function ()
+        i = i + 1
+        return items[i]
+    end
+end
+
 function mt:updateTitle()
     local item = self._data
     local title = item.title or item.name or item._name
@@ -373,6 +402,10 @@ function mt:eventNotify(event, ...)
     ac.eventNotify(self, event, ...)
 end
 
+function mt:getName()
+    return self._name
+end
+
 ac.item = setmetatable({}, {
     __index = function (self, name)
         local item = createDefine(name)
@@ -390,4 +423,6 @@ return {
     onLootOrder = onLootOrder,
     onPickUp = onPickUp,
     onDrop = onDrop,
+    findItem = findItem,
+    eachItem = eachItem,
 }

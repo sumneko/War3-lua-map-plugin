@@ -517,3 +517,15 @@ unit:bagSize(size: integer)
 unit:bagSize()
     -> size: integer
 ```
+
+### findItem
+```lua
+unit:findItem(itemName: string)
+    -> item
+```
+
+### eachItem
+```lua
+for item in unit:eachItem() do
+end
+```
