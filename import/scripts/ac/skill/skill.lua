@@ -697,6 +697,10 @@ function mt:setOption(name, value)
         if self._icon then
             self._icon:updateIcon()
         end
+    elseif name == 'hotkey' then
+        if self._icon then
+            self._icon:updateHotkey()
+        end
     end
 end
 

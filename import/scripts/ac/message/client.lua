@@ -144,20 +144,19 @@ local function findSkillByAbility(unit, ability)
         return nil
     end
     for skill in unit:eachSkill '技能' do
-        local id = skill._icon and skill._icon._id
-        if ac.id[id] == ability then
+        local destAbility = skill._icon and skill._icon._ability
+        if destAbility == ability then
             return skill
         end
     end
     return nil
 end
 
-local function checkShop(msg)
+local function checkShop(ability)
     local unit = getSelect()
     if not unit or not unit._shop then
         return
     end
-    local ability = msg.ability
     local skill = findSkillByAbility(unit, ability)
     if not skill then
         return false
@@ -210,7 +209,10 @@ local function onKeyDown(msg)
     local skill
     if canControl(unit) then
         skill = findSkillByHotkey(unit, msg.code)
-    elseif canControl(localHero()) then
+        if skill._icon and checkShop(skill._icon._ability) then
+            return false
+        end
+    else
         skill = findSkillByHotkey(localHero(), msg.code)
         if skill then
             selectHero()
@@ -248,7 +250,7 @@ local function onClickAbility(msg)
         stackCommand '攻击'
         return true
     end
-    if checkShop(msg) then
+    if checkShop(ac.id[msg.ability]) then
         return false
     end
     return true

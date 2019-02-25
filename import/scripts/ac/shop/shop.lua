@@ -84,7 +84,7 @@ function mt:__tostring()
     return ('{shop|%s}'):format(self._unit:getName())
 end
 
-function mt:setItem(name, index)
+function mt:setItem(name, index, hotkey)
     local unit = self._unit
     local data = ac.table.item[name]
     if not data then
@@ -97,6 +97,8 @@ function mt:setItem(name, index)
     skill.shop = self
     skill.index = index
     skill:update()
+
+    skill:setOption('hotkey', hotkey)
     return true
 end
 
