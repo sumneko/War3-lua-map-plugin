@@ -6,7 +6,7 @@ player:createShop(name: string, point, face: number)
 
 ### setItem
 ```lua
-shop:setItem(itemName: string, index: integer)
+shop:setItem(itemName: string, index: integer[, hotkey: string])
     -> boolean
 ```
 
