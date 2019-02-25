@@ -529,3 +529,19 @@ unit:findItem(itemName: string)
 for item in unit:eachItem() do
 end
 ```
+
+### effect
+```lua
+unit:effect {
+    target = point,
+    model = string,
+    [size = number,]
+    [xScale = number,]
+    [yScale = number,]
+    [zScale = number,]
+    [height = number,]
+    [speed = number,]
+    [angle = number,]
+}
+    -> effect
+```

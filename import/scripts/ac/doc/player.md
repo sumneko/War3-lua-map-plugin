@@ -231,6 +231,22 @@ for player in ac.eachPlayer() do
 end
 ```
 
+### effect
+```lua
+player:effect {
+    target = point,
+    model = string,
+    [size = number,]
+    [xScale = number,]
+    [yScale = number,]
+    [zScale = number,]
+    [height = number,]
+    [speed = number,]
+    [angle = number,]
+}
+    -> effect
+```
+
 ### ac.player
 ```lua
 ac.player(index: integer)
