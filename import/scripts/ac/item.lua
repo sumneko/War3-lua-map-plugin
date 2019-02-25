@@ -500,6 +500,14 @@ function mt:give(unit, slot)
     return true
 end
 
+function mt:getSlot()
+    if self._skill then
+        return self._skill._slot
+    else
+        return 0
+    end
+end
+
 ac.item = setmetatable({}, {
     __index = function (self, name)
         local item = createDefine(name)

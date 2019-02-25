@@ -106,6 +106,12 @@ item:give(unit[, slot: integer])
     -> boolean
 ```
 
+### getSlot
+```lua
+item:getSlot()
+    -> integer
+```
+
 ## event
 
 ### onAdd
