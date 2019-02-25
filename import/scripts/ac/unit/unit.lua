@@ -781,10 +781,6 @@ function mt:isInRange(point, range)
     return powerDistance <= checkRange * checkRange
 end
 
-function mt:addItem(item, slot)
-
-end
-
 return {
     list = UNIT_LIST,
     update = update,

@@ -178,7 +178,7 @@ local function addSkill(item, slot)
     end
 end
 
-local function isSlotValid(unit, slot)
+local function isSlotEmpty(unit, slot)
     if slot < 1 or slot > jass.UnitInventorySize(unit._handle) then
         return false
     end
@@ -193,7 +193,7 @@ local function addToUnit(item, unit, slot)
     if unit:isBagFull() then
         return false
     end
-    if slot and not isSlotValid(unit, slot) then
+    if slot and not isSlotEmpty(unit, slot) then
         return false
     end
     if eventDispatch(item, unit, 'onCanAdd', unit) == false then
@@ -223,7 +223,7 @@ local function create(name, target, slot)
 
     local data = ac.item[name]
     if not data then
-        return
+        return nil
     end
 
     local id = poolGet()
@@ -456,22 +456,43 @@ function mt:isRune()
     return self.rune == 1
 end
 
-function mt:move(slot)
-    local unit = self._owner
-    if not unit then
+function mt:give(unit, slot)
+    if not ac.isUnit(unit) then
         return false
     end
-    local skill = self._skill
-    if not skill then
+    -- 如果单位和格子完全相同，就什么都不做
+    if unit == self._owner and slot == self._skill._slot then
         return false
     end
-    if skill._slot == slot then
+    -- 检查目标位置是否合法
+    if slot then
+        if not isSlotEmpty(unit, slot) then
+            return false
+        end
+    else
+        if unit:isBagFull() then
+            return false
+        end
+    end
+    -- 如果在自己身上，则当场移动一下
+    if self._owner == unit then
+        self._skill._slot = slot
+        if self._skill._icon then
+            local suc = self._skill._icon:updateSlot()
+            if not suc then
+                return false
+            end
+            jass.SetItemDroppable(self._skill._icon._handle, self.drop == 1)
+        end
         return false
     end
-    skill:setOption('_slot', slot)
-    if skill._icon then
-        jass.SetItemDroppable(skill._icon._handle, self.drop == 1)
+    -- 如果在其他人身上，则先扔到地上
+    if self._owner then
+        self._skill:remove()
+        onRemove(self)
     end
+    -- 添加给单位
+    addToUnit(self, unit, slot)
     return true
 end
 

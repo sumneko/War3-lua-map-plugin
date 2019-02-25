@@ -204,7 +204,7 @@ end
 
 function mt:updateSlot()
     removeItem(self)
-    addItem(self)
+    return addItem(self)
 end
 
 function mt:updateAll()

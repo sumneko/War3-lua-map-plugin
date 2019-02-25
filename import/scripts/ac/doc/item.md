@@ -100,9 +100,9 @@ item:isRune()
     -> boolean
 ```
 
-### move
+### give
 ```lua
-item:move(slot)
+item:give(unit[, slot: integer])
     -> boolean
 ```
 

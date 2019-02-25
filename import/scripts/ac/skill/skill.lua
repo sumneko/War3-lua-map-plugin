@@ -697,10 +697,6 @@ function mt:setOption(name, value)
         if self._icon then
             self._icon:updateIcon()
         end
-    elseif name == '_slot' then
-        if self._icon then
-            self._icon:updateSlot()
-        end
     end
 end
 
