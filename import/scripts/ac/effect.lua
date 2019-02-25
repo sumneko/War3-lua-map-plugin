@@ -30,15 +30,22 @@ function mt:blink(point)
     japi.EXSetEffectXY(self._handle, x, y)
 end
 
-function mt:size(x, y, z)
-    if ac.isNumber(x) then
-        self._x_scale = x
-        self._y_scale = ac.toNumber(y, x)
-        self._z_scale = ac.toNumber(z, x)
-        japi.EXEffectMatScale(self._handle, self._x_scale, self._y_scale, self._z_scale)
-    else
+function mt:size(...)
+    local n = select('#', ...)
+    if n == 0 then
         return self._x_scale, self._y_scale, self._z_scale
     end
+    if n == 1 then
+        self._x_scale = ...
+        self._y_scale = ...
+        self._z_scale = ...
+    elseif n == 3 then
+        self._x_scale, self._y_scale, self._z_scale = ...
+    end
+    self._x_scale = ac.toNumber(self._x_scale, 1.0)
+    self._y_scale = ac.toNumber(self._y_scale, 1.0)
+    self._z_scale = ac.toNumber(self._z_scale, 1.0)
+    japi.EXEffectMatScale(self._handle, self._x_scale, self._y_scale, self._z_scale)
 end
 
 function mt:speed(n)
@@ -68,13 +75,21 @@ function mt:angle(n)
     end
 end
 
-function mt:kill()
-    if self._removed then
-        return
+function mt:remaining(n)
+    if ac.isNumber(n) then
+        if self._timer then
+            self._timer:remove()
+        end
+        self._timer = ac.wait(n, function ()
+            self:remove()
+        end)
+    else
+        if self._timer then
+            return self._timer:remaining()
+        else
+            return 0.0
+        end
     end
-    self._removed = true
-    jass.DestroyEffect(self._handle)
-    self._handle = 0
 end
 
 function mt:remove()
@@ -82,10 +97,15 @@ function mt:remove()
         return
     end
     self._removed = true
-    japi.EXSetEffectXY(self._handle, 100000000.0, 100000000.0)
-    japi.EXSetEffectSize(self._handle, 0.0)
+    if self._skipDeath then
+        japi.EXSetEffectXY(self._handle, 100000000.0, 100000000.0)
+        japi.EXSetEffectSize(self._handle, 0.0)
+    end
     jass.DestroyEffect(self._handle)
     self._handle = 0
+    if self._timer then
+        self._timer:remove()
+    end
 end
 
 local function create(owner, data)
@@ -98,8 +118,14 @@ local function create(owner, data)
     if not ac.isPoint(data.target) then
         return nil
     end
+    local model = data.model
+    if ac.isFunction(data.sight) then
+        if not data.sight(ac.localPlayer()) then
+            model = ''
+        end
+    end
     local x, y = data.target:getXY()
-    local handle = jass.AddSpecialEffect(data.model, x, y)
+    local handle = jass.AddSpecialEffect(model, x, y)
     if handle == 0 then
         return nil
     end
@@ -109,6 +135,7 @@ local function create(owner, data)
         _handle = handle,
         _x = x,
         _y = y,
+        _skipDeath = data.skipDeath,
     }, mt)
 
     if data.size or data.xScale or data.yScale or data.zScale then
@@ -122,6 +149,9 @@ local function create(owner, data)
     end
     if data.angle then
         self:angle(data.angle)
+    end
+    if data.time then
+        self:remaining(data.time)
     end
 
     return self

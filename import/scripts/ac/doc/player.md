@@ -243,6 +243,9 @@ player:effect {
     [height = number,]
     [speed = number,]
     [angle = number,]
+    [time = number,]
+    [skipDeath = boolean,]
+    [sight = function,]
 }
     -> effect
 ```

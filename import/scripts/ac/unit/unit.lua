@@ -11,7 +11,6 @@ local skill = require 'ac.skill'
 local damage = require 'ac.damage'
 local item = require 'ac.item'
 local ORDER = require 'ac.war3.order'
-local effect = require 'ac.effect'
 local select = select
 
 local All = {}
@@ -780,10 +779,6 @@ function mt:isInRange(point, range)
     local powerDistance = dx * dx + dy * dy
     local checkRange = range + self:selectedRadius()
     return powerDistance <= checkRange * checkRange
-end
-
-function mt:effect(data)
-    return effect.create(self._owner, data)
 end
 
 return {

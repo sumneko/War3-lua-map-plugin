@@ -36,6 +36,10 @@ function ac.isBoolean(obj)
     return type(obj) == 'boolean'
 end
 
+function ac.isFunction(obj)
+    return type(obj) == 'function'
+end
+
 function ac.toNumber(obj, default)
     return type(obj) == 'number' and obj or default or 0.0
 end
