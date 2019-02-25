@@ -44,10 +44,7 @@ local function selectHero()
     LastSelectClock = ac.clock()
 end
 
-local function canControl(unit)
-    if not unit then
-        return false
-    end
+local function canControl()
     for x = 0, 3 do
         for y = 0, 2 do
             local ability = message.button(x, y)
@@ -64,7 +61,7 @@ local function checkSelectHero()
     if selecting == localHero() then
         return
     end
-    if canControl(selecting) and selecting:findSkill('@命令') then
+    if canControl() and selecting:findSkill('@命令') then
         return
     end
     selectHero()
@@ -207,7 +204,7 @@ local function onKeyDown(msg)
     -- 技能
     local unit = getSelect()
     local skill
-    if canControl(unit) then
+    if canControl() then
         skill = findSkillByHotkey(unit, msg.code)
         if skill._icon and checkShop(skill._icon._ability) then
             return false
