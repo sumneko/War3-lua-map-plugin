@@ -190,11 +190,13 @@ local function isSlotEmpty(unit, slot)
 end
 
 local function addToUnit(item, unit, slot)
-    if unit:isBagFull() then
-        return false
-    end
-    if slot and not isSlotEmpty(unit, slot) then
-        return false
+    if not item:isRune() then
+        if unit:isBagFull() then
+            return false
+        end
+        if slot and not isSlotEmpty(unit, slot) then
+            return false
+        end
     end
     if eventDispatch(item, unit, 'onCanAdd', unit) == false then
         return false
@@ -465,13 +467,15 @@ function mt:give(unit, slot)
         return false
     end
     -- 检查目标位置是否合法
-    if slot then
-        if not isSlotEmpty(unit, slot) then
-            return false
-        end
-    else
-        if unit:isBagFull() then
-            return false
+    if not self:isRune() then
+        if slot then
+            if not isSlotEmpty(unit, slot) then
+                return false
+            end
+        else
+            if unit:isBagFull() then
+                return false
+            end
         end
     end
     -- 如果在自己身上，则当场移动一下
