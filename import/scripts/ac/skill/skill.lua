@@ -681,6 +681,9 @@ function mt:isCast()
 end
 
 function mt:setOption(name, value)
+    if value == self:get(name) then
+        return
+    end
     self:set(name, value)
     if name == 'title' then
         if self._icon then
@@ -693,6 +696,10 @@ function mt:setOption(name, value)
     elseif name == 'icon' then
         if self._icon then
             self._icon:updateIcon()
+        end
+    elseif name == '_slot' then
+        if self._icon then
+            self._icon:updateSlot()
         end
     end
 end

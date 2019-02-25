@@ -116,6 +116,7 @@ local function onRemove(item)
         end
     end
     eventNotify(item, unit, 'onRemove')
+    item._owner = nil
 end
 
 local function createItemDummySkill(item)
@@ -437,6 +438,25 @@ end
 
 function mt:isRune()
     return self.rune == 1
+end
+
+function mt:move(slot)
+    local unit = self._owner
+    if not unit then
+        return false
+    end
+    local skill = self._skill
+    if not skill then
+        return false
+    end
+    if skill._slot == slot then
+        return false
+    end
+    skill:setOption('_slot', slot)
+    if skill._icon then
+        jass.SetItemDroppable(skill._icon._handle, self.drop == 1)
+    end
+    return true
 end
 
 ac.item = setmetatable({}, {

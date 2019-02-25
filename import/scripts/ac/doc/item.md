@@ -100,6 +100,12 @@ item:isRune()
     -> boolean
 ```
 
+### move
+```lua
+item:move(slot)
+    -> boolean
+```
+
 ## event
 
 ### onAdd

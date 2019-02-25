@@ -218,6 +218,9 @@ function mt:refresh()
     jass.SetUnitAbilityLevel(unit._handle, ac.id[id], 1)
 end
 
+function mt:updateSlot()
+end
+
 function mt:updateAll()
     self:updateTitle()
     self:updateDescription()
