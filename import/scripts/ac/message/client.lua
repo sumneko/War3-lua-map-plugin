@@ -48,9 +48,15 @@ local function canControl(unit)
     if not unit then
         return false
     end
-    local player = ac.localPlayer()
-    local otherPlayer = unit:getOwner()
-    return jass.GetPlayerAlliance(otherPlayer._handle, player._handle, 6)
+    for x = 0, 3 do
+        for y = 0, 2 do
+            local ability = message.button(x, y)
+            if ability then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 local function checkSelectHero()
