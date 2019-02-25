@@ -6,7 +6,6 @@ local timerDialog = require 'ac.timerdialog'
 local board = require 'ac.board'
 local shop = require 'ac.shop'
 local attribute = require 'ac.player.attribute'
-local effect = require 'ac.effect'
 
 local MIN_ID = 1
 local MAX_ID = 16
@@ -335,10 +334,6 @@ function mt:add(k, v)
         return
     end
     return self._attribute:add(k, v)
-end
-
-function mt:effect(data)
-    return effect.create(self, data)
 end
 
 function ac.eachPlayer()

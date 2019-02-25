@@ -108,10 +108,7 @@ function mt:remove()
     end
 end
 
-local function create(owner, data)
-    if not ac.isPlayer(owner) then
-        return nil
-    end
+function ac.effect(data)
     if not ac.isTable(data) then
         return nil
     end
@@ -131,7 +128,6 @@ local function create(owner, data)
     end
 
     local self = setmetatable({
-        _owner = owner,
         _handle = handle,
         _x = x,
         _y = y,
@@ -156,7 +152,3 @@ local function create(owner, data)
 
     return self
 end
-
-return {
-    create = create,
-}

@@ -1,6 +1,6 @@
 # effect
 ```lua
-player:effect {
+ac.effect {
     target = point,
     model = string,
     [size = number,]
