@@ -479,7 +479,7 @@ unit:damage {
 
 ### createItem
 ```lua
-unit:createItem(name: string)
+unit:createItem(name: string[, slot: integer])
     -> item
 ```
 

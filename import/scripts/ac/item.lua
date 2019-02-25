@@ -155,7 +155,7 @@ local function fillSkillData(skillName, item)
     end
 end
 
-local function addSkill(item)
+local function addSkill(item, slot)
     local unit = item._owner
     local skillName = item._data.skill
     if not skillName then
@@ -163,7 +163,9 @@ local function addSkill(item)
     end
     if skillName then
         fillSkillData(skillName, item)
-        local slot = findFirstEmptyInBag(unit)
+        if not slot then
+            slot = findFirstEmptyInBag(unit)
+        end
         local skill = unit:addSkill(skillName, '物品', slot)
         if skill then
             skill._item = item
@@ -176,8 +178,22 @@ local function addSkill(item)
     end
 end
 
-local function addToUnit(item, unit)
+local function isSlotValid(unit, slot)
+    if slot < 1 or slot > jass.UnitInventorySize(unit._handle) then
+        return false
+    end
+    if jass.UnitItemInSlot(unit._handle, slot-1) == 0 then
+        return true
+    else
+        return false
+    end
+end
+
+local function addToUnit(item, unit, slot)
     if unit:isBagFull() then
+        return false
+    end
+    if slot and not isSlotValid(unit, slot) then
         return false
     end
     if eventDispatch(item, unit, 'onCanAdd', unit) == false then
@@ -195,14 +211,14 @@ local function addToUnit(item, unit)
     poolAdd(id)
 
     if not item:isRune() then
-        addSkill(item)
+        addSkill(item, slot)
     end
 
     onAdd(item)
     return true
 end
 
-local function create(name, target)
+local function create(name, target, slot)
     init()
 
     local data = ac.item[name]
@@ -238,7 +254,7 @@ local function create(name, target)
         self:updateAll()
         Items[self._handle] = self
     elseif ac.isUnit(target) then
-        if not addToUnit(self, target) then
+        if not addToUnit(self, target, slot) then
             return nil
         end
     else

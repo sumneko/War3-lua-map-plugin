@@ -710,8 +710,8 @@ function mt:damage(data)
     damage.dispatch(dmg)
 end
 
-function mt:createItem(name)
-    return item.create(name, self)
+function mt:createItem(name, slot)
+    return item.create(name, self, slot)
 end
 
 function mt:isBagFull()
@@ -779,6 +779,10 @@ function mt:isInRange(point, range)
     local powerDistance = dx * dx + dy * dy
     local checkRange = range + self:selectedRadius()
     return powerDistance <= checkRange * checkRange
+end
+
+function mt:addItem(item, slot)
+
 end
 
 return {
