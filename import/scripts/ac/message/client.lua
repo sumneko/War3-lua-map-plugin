@@ -261,7 +261,7 @@ local function onClickAbility(msg)
         stackCommand '攻击'
         return true
     end
-    if checkShop(ac.id[msg.ability]) then
+    if checkShop(msg.ability) then
         return false
     end
     return true
