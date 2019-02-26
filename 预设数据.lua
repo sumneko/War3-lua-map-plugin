@@ -366,6 +366,10 @@ local function defaultUnit(w2l)
         unit.castbsw = 0
         -- 投射物
         unit.missileart_1 = ''
+        -- 占用人口
+        unit.fused = 0
+        -- 提供人口
+        unit.fmade = 0
     end
 end
 
