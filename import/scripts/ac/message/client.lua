@@ -162,14 +162,7 @@ local function checkShop(ability)
     return true
 end
 
-local function onKeyDown(msg)
-    -- 空格
-    if msg.code == 32 then
-        selectHero()
-        lockHero()
-        return false
-    end
-
+local function checkCommonCommand(msg)
     -- 基础命令
     if msg.code == COMMAND['攻击'] then
         checkSelectHero()
@@ -200,13 +193,15 @@ local function onKeyDown(msg)
         instantCommand '警戒'
         return false
     end
+end
 
+local function checkSkill(msg)
     -- 技能
     local unit = getSelect()
     local skill
     if canControl() then
         skill = findSkillByHotkey(unit, msg.code)
-        if skill._icon and checkShop(skill._icon._ability) then
+        if skill and skill._icon and checkShop(skill._icon._ability) then
             return false
         end
     else
@@ -216,6 +211,25 @@ local function onKeyDown(msg)
             pressKey(skill.hotkey)
             return false
         end
+    end
+end
+
+local function onKeyDown(msg)
+    -- 空格
+    if msg.code == 32 then
+        selectHero()
+        lockHero()
+        return false
+    end
+
+    local res = checkSkill(msg)
+    if res ~= nil then
+        return res
+    end
+
+    local res = checkCommonCommand(msg)
+    if res ~= nil then
+        return res
     end
 
     return true
