@@ -246,6 +246,18 @@ function mt:forceRefresh()
     self:needRefreshAbility()
 end
 
+function mt:setMaxCd(maxCd)
+    if maxCd == self._cache.maxCd then
+        return
+    end
+    self._cache.maxCd = maxCd
+    japi.EXSetAbilityDataReal(self:handle(), 1, 0x69, maxCd)
+end
+
+function mt:setCd(cd)
+    japi.EXSetAbilityState(self:handle(), 1, cd)
+end
+
 return function (skill)
     init()
 

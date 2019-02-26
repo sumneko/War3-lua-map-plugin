@@ -164,6 +164,26 @@ skill:isCast()
     -> boolean
 ```
 
+### getCd
+```lua
+skill:getCd()
+    -> number
+```
+
+### activeCd
+```lua
+skill:activeCd()
+
+skill:activeCd(maxCd: number)
+
+skill:activeCd(maxCd: number, ignoreCdReduce: boolean)
+```
+
+### setCd
+```lua
+skill:setCd(number)
+```
+
 ## event
 
 ### onAdd

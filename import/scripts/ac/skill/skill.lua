@@ -9,6 +9,7 @@ local setmetatable = setmetatable
 local tostring = tostring
 local pcall = pcall
 local xpcall = xpcall
+local select = select
 
 local METHOD = {
     ['onAdd']         = '技能-获得',
@@ -461,6 +462,74 @@ local function loadString(skill, str)
     end)
 end
 
+local function getMaxCd(skill, cool)
+    local unit = skill._owner
+    local cdReduce = unit:get '冷却缩减'
+    local maxCd = ac.toNumber(cool or skill.cool) * (1 - cdReduce / 100.0)
+    return maxCd
+end
+
+local function onCoolDown(skill)
+    skill._cdTimer:remove()
+    skill._maxCd = nil
+    if skill._icon then
+        skill._icon:setCd(0.0)
+    end
+end
+
+local function setCd(skill, cd)
+    if not skill._maxCd then
+        return false
+    end
+    if cd > skill._maxCd then
+        cd = skill._maxCd
+    end
+    if cd <= 0.0 then
+        onCoolDown(skill)
+        return true
+    end
+
+    if skill._cdTimer then
+        skill._cdTimer:remove()
+    end
+    skill._cdTimer = ac.wait(cd, function ()
+        onCoolDown(skill)
+    end)
+
+    if skill._icon then
+        skill._icon:setCd(cd)
+    end
+
+    return true
+end
+
+local function activeCd(skill, ...)
+    local n = select('#', ...)
+    local maxCd
+    if n == 0 then
+        maxCd = getMaxCd(skill)
+    elseif n == 1 then
+        local cool = ...
+        maxCd = getMaxCd(skill, cool)
+    elseif n == 2 then
+        local cool, ignore = ...
+        if ignore == true then
+            maxCd = cool
+        else
+            maxCd = getMaxCd(skill, cool)
+        end
+    else
+        return false
+    end
+
+    skill._maxCd = maxCd
+    if skill._icon then
+        skill._icon:setMaxCd(maxCd)
+    end
+
+    return setCd(skill, maxCd)
+end
+
 local function destroyCast(cast)
     if cast._stun then
         cast._stun()
@@ -527,6 +596,8 @@ local function onCastChannel(cast)
     else
         return
     end
+
+    activeCd(cast)
 
     cast._step = 'channel'
 
@@ -632,6 +703,11 @@ function mt:castByClient(target, x, y)
         return false
     end
 
+    -- 不能发动冷却中的技能
+    if self:getCd() > 0.0 then
+        return false
+    end
+
     local cast
     if self.targetType == '点' then
         cast = createCast(self)
@@ -705,6 +781,24 @@ function mt:forceRefresh()
     if self._icon then
         self._icon:forceRefresh()
     end
+end
+
+function mt:getCd()
+    if not self._cdTimer then
+        return 0.0
+    end
+    return self._cdTimer:remaining()
+end
+
+function mt:activeCd(...)
+    return activeCd(self, ...)
+end
+
+function mt:setCd(cd)
+    if not ac.isNumber(cd) then
+        return false
+    end
+    return setCd(self, cd)
 end
 
 ac.skill = setmetatable({}, {

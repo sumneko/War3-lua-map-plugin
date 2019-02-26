@@ -5,14 +5,14 @@ local mt = {}
 mt.__index = mt
 
 mt._handle = 0
-mt._x_scale = 1.0
-mt._y_scale = 1.0
-mt._z_scale = 1.0
+mt._xScale = 1.0
+mt._yScale = 1.0
+mt._zScale = 1.0
 mt._speed = 1.0
 mt._height = 0.0
-mt._x_rotate = 0.0
-mt._y_rotate = 0.0
-mt._z_rotate = 0.0
+mt._xRotate = 0.0
+mt._yRotate = 0.0
+mt._zRotate = 0.0
 mt._x = 0.0
 mt._y = 0.0
 
@@ -33,19 +33,19 @@ end
 function mt:size(...)
     local n = select('#', ...)
     if n == 0 then
-        return self._x_scale, self._y_scale, self._z_scale
+        return self._xScale, self._yScale, self._zScale
     end
     if n == 1 then
-        self._x_scale = ...
-        self._y_scale = ...
-        self._z_scale = ...
+        self._xScale = ...
+        self._yScale = ...
+        self._zScale = ...
     elseif n == 3 then
-        self._x_scale, self._y_scale, self._z_scale = ...
+        self._xScale, self._yScale, self._zScale = ...
     end
-    self._x_scale = ac.toNumber(self._x_scale, 1.0)
-    self._y_scale = ac.toNumber(self._y_scale, 1.0)
-    self._z_scale = ac.toNumber(self._z_scale, 1.0)
-    japi.EXEffectMatScale(self._handle, self._x_scale, self._y_scale, self._z_scale)
+    self._xScale = ac.toNumber(self._xScale, 1.0)
+    self._yScale = ac.toNumber(self._yScale, 1.0)
+    self._zScale = ac.toNumber(self._zScale, 1.0)
+    japi.EXEffectMatScale(self._handle, self._xScale, self._yScale, self._zScale)
 end
 
 function mt:speed(n)
@@ -68,10 +68,10 @@ end
 
 function mt:angle(n)
     if ac.isNumber(n) then
-        self._z_rotate = n
+        self._zRotate = n
         japi.EXEffectMatRotateZ(self._handle, n)
     else
-        return self._z_rotate
+        return self._zRotate
     end
 end
 
