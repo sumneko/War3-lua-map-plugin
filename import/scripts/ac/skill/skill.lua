@@ -681,9 +681,6 @@ function mt:isCast()
 end
 
 function mt:setOption(name, value)
-    if value == self:get(name) then
-        return
-    end
     self:set(name, value)
     if name == 'title' then
         if self._icon then
