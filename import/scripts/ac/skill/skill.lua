@@ -633,6 +633,21 @@ local function onCastStart(cast)
     end
 end
 
+local function addInitSkill(mgr, unit)
+    local skill = unit._data.skill
+    if ac.isTable(skill) then
+        for slot, skillName in ac.sortPairs(skill) do
+            addSkill(mgr, skillName, '技能', slot)
+        end
+    end
+    local hideSkill = unit._data.hideSkill
+    if ac.isTable(hideSkill) then
+        for _, skillName in ipairs(hideSkill) do
+            addSkill(mgr, skillName, '隐藏')
+        end
+    end
+end
+
 mt.__index = mt
 mt.type = 'skill'
 
@@ -814,7 +829,7 @@ ac.skill = setmetatable({}, {
 })
 
 return function (unit)
-    return {
+    local mgr = {
         _owner = unit,
         ['技能'] = ac.list(),
         ['物品'] = ac.list(),
@@ -828,4 +843,10 @@ return function (unit)
         checkRefreshAbility = checkRefreshAbility,
         checkRefreshItem = checkRefreshItem,
     }
+
+    unit._skill = mgr
+
+    addInitSkill(mgr, unit)
+
+    return mgr
 end

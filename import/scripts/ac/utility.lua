@@ -1,4 +1,6 @@
 local type = type
+local pairs = pairs
+local tableSort = table.sort
 
 function ac.isUnit(obj)
     return type(obj) == 'table' and obj.type == 'unit'
@@ -166,5 +168,19 @@ function ac.formatText(text, data, color)
         return res
     else
         return text
+    end
+end
+
+function ac.sortPairs(t)
+    local keys = {}
+    for k in pairs(t) do
+        keys[#keys+1] = k
+    end
+    tableSort(keys)
+    local i = 0
+    return function ()
+        i = i + 1
+        local k = keys[i]
+        return k, t[k]
     end
 end

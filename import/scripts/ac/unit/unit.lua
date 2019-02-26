@@ -194,7 +194,7 @@ function ac.unit(handle)
         -- 初始化攻击
         u._attack = attack(u, u._data.attack)
         -- 初始化技能
-        u._skill = skill(u)
+        skill(u)
         -- 添加命令图标
         u:addSkill('@命令', '技能')
         -- 添加协议技能

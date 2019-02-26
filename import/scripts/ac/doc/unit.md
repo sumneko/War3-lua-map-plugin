@@ -67,6 +67,25 @@ attack = {
 hitHeight = 60
 ```
 
+### skill
+技能
+
+```lua
+skill = {'技能A', '技能B'}
+
+skill = {
+    3 = '技能A',
+    6 = '技能B',
+}
+```
+
+### hideSkill
+隐藏技能
+
+```lua
+hideSkill = {'技能A', '技能B'}
+```
+
 ## method
 
 ### getName
