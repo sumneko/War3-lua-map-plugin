@@ -48,6 +48,14 @@ buff:remaining()
 buff:remaining(time: number)
 ```
 
+### pulse
+```lua
+buff:pulse()
+    -> pulse: number
+
+buff:pulse(pulse: number)
+```
+
 ## event
 
 ### onAdd

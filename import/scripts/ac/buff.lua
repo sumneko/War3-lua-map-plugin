@@ -94,6 +94,9 @@ local function setPulse(buff, pulse)
     if buff._pulse then
         buff._pulse:remove()
     end
+    if pulse <= 0.0 then
+        return
+    end
     buff._pulse = ac.loop(pulse, function ()
         eventNotify(buff, 'onPulse')
     end)
@@ -167,6 +170,14 @@ function mt:remaining(time)
             return 0.0
         end
         return self._timer:remaining()
+    end
+end
+
+function mt:pulse(pulse)
+    if ac.isNumber(pulse) then
+        setPulse(self, pulse)
+    else
+        return ac.toNumber(self.pulse)
     end
 end
 
