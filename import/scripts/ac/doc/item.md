@@ -1,5 +1,15 @@
 # item
 ```lua
+local mt = ac.item[itemName: string]
+
+function mt:onAdd()
+end
+
+function mt:onRemove()
+end
+```
+
+```lua
 point:createItem(name: string)
     -> item
 

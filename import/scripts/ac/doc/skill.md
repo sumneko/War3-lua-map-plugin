@@ -1,7 +1,12 @@
 # skill
 ```lua
-ac.buff[buffName: string]
-    -> mt: table
+local mt = ac.skill[skillName: string]
+
+function mt:onAdd()
+end
+
+function mt:onRemove()
+end
 ```
 
 ## skill.ini

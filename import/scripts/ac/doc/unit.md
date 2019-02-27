@@ -317,7 +317,7 @@ type: string
 
 ### removeSkill
 ```lua
-unit:removeSkill(name: string)
+unit:removeSkill(name: string[, onlyOne: boolean])
     -> boolean
 ```
 
@@ -559,5 +559,25 @@ unit:getXY()
 ```lua
 unit:addBuff(buffName: string) {
     time = number,
+    pulse = number,
 }
+    -> buff
+```
+
+### findBuff
+```lua
+unit:findBuff(buffName: string)
+    -> buff
+```
+
+### eachBuff
+```lua
+for buff in unit:eachBuff() do
+end
+```
+
+### removeBuff
+```lua
+unit:removeBuff(buffName: string[, onlyOne: boolean])
+    -> boolean
 ```

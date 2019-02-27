@@ -366,17 +366,15 @@ local function findSkill(mgr, name, tp)
 end
 
 local function eachSkill(mgr, tp)
-    local skills = {}
     if tp then
         local list = mgr[tp]
         if not list then
             log.error('技能类型不正确')
             return function () end
         end
-        for skill in list:pairs() do
-            skills[#skills+1] = skill
-        end
+        return list:pairs()
     else
+        local skills = {}
         for skill in mgr['技能']:pairs() do
             skills[#skills+1] = skill
         end
@@ -386,34 +384,44 @@ local function eachSkill(mgr, tp)
         for skill in mgr['隐藏']:pairs() do
             skills[#skills+1] = skill
         end
-    end
-    local i = 0
-    return function ()
-        i = i + 1
-        return skills[i]
+        local i = 0
+        return function ()
+            i = i + 1
+            return skills[i]
+        end
     end
 end
 
-local function removeSkillByName(mgr, name)
+local function removeSkillByName(mgr, name, onlyOne)
+    local ok = false
     for skill in mgr['技能']:pairs() do
         if skill._name == name then
+            ok = true
             skill:remove()
-            return true
+            if onlyOne then
+                return true
+            end
         end
     end
     for skill in mgr['物品']:pairs() do
         if skill._name == name then
+            ok = true
             skill:remove()
-            return true
+            if onlyOne then
+                return true
+            end
         end
     end
     for skill in mgr['隐藏']:pairs() do
         if skill._name == name then
+            ok = true
             skill:remove()
-            return true
+            if onlyOne then
+                return true
+            end
         end
     end
-    return false
+    return ok
 end
 
 local function currentSkill(mgr)

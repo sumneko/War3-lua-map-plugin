@@ -65,12 +65,42 @@ local function onDead(mgr)
     mgr._buffs:clean()
 end
 
+local function findBuff(mgr, name)
+    for buff in mgr._buffs:pairs() do
+        if buff._name == name then
+            return buff
+        end
+    end
+    return nil
+end
+
+local function eachBuff(mgr)
+    return mgr._buffs:pairs()
+end
+
+local function removeBuffByName(mgr, name, onlyOne)
+    local ok = false
+    for buff in mgr._buffs:pairs() do
+        if buff._name == name then
+            ok = true
+            buff:remove()
+            if onlyOne then
+                return true
+            end
+        end
+    end
+    return ok
+end
+
 local function manager(unit)
     local mgr = {
         _owner = unit,
         _buffs = ac.list(),
         remove = remove,
         onDead = onDead,
+        findBuff = findBuff,
+        eachBuff = eachBuff,
+        removeBuffByName = removeBuffByName,
     }
 
     unit._buff = mgr

@@ -63,7 +63,7 @@ function ac.toBoolean(obj)
     end
 end
 
--- 只能存放对象，能按添加顺序遍历的数据结构，需要显性清理，不支持递归遍历
+-- 只能存放对象，能按添加顺序遍历的数据结构，需要显性清理，不支持在遍历时清理
 local mt = {}
 mt.__index = mt
 function mt:insert(obj)

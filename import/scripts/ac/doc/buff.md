@@ -1,12 +1,20 @@
 # buff
 ```lua
-ac.buff[buffName: string]
-    -> mt: table
+local mt = ac.buff[buffName: string]
+
+mt.keep = 1
+
+function mt:onAdd()
+end
+
+function mt:onRemove()
+end
 ```
 
 ```lua
 unit:addBuff(buffName: string) {
     time = number,
+    pulse = number,
 }
 ```
 

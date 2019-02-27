@@ -486,11 +486,11 @@ function mt:eachItem()
     return item.eachItem(self)
 end
 
-function mt:removeSkill(name)
+function mt:removeSkill(name, onlyOne)
     if not self._skill then
         return false
     end
-    return self._skill:removeSkillByName(name)
+    return self._skill:removeSkillByName(name, onlyOne)
 end
 
 function mt:stopCast()
@@ -806,6 +806,30 @@ function mt:addBuff(name)
         end
         return buff.create(self, name, data)
     end
+end
+
+function mt:findBuff(name)
+    if not ac.isString(name) then
+        error('状态名称必须是字符串', 2)
+    end
+    if not self._buff then
+        return nil
+    end
+    return self._buff:findBuff(name)
+end
+
+function mt:eachBuff()
+    if not self._buff then
+        return function () end
+    end
+    return self._buff:eachBuff()
+end
+
+function mt:removeBuff(name, onlyOne)
+    if not self._buff then
+        return false
+    end
+    return self._buff:removeBuffByName(name, onlyOne)
 end
 
 return {
