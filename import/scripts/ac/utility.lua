@@ -1,7 +1,7 @@
 local type = type
 local pairs = pairs
-local next = next
 local tableSort = table.sort
+local tableInsert = table.insert
 
 function ac.isUnit(obj)
     return type(obj) == 'table' and obj.type == 'unit'
@@ -76,6 +76,25 @@ function mt:insert(obj)
     list[n] = obj
     list[obj] = n
     return true
+end
+function mt:insertBefore(obj, other)
+    if not obj then
+        return false
+    end
+    local list = self.list
+    local n = list[other]
+    if n then
+        tableInsert(list, n, obj)
+        for i = n, #list do
+            local obj = list[i]
+            list[obj] = i
+        end
+    else
+        n = #list+1
+        list[n] = obj
+        list[obj] = n
+        return true
+    end
 end
 function mt:remove(obj)
     local list = self.list

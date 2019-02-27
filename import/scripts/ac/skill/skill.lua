@@ -11,6 +11,8 @@ local pcall = pcall
 local xpcall = xpcall
 local select = select
 
+local Count = 0
+
 local METHOD = {
     ['onAdd']         = '技能-获得',
     ['onRemove']      = '技能-失去',
@@ -36,9 +38,9 @@ local DefinedDual = {}
 local mt = {}
 function mt:__tostring()
     if self._parent then
-        return ('{cast|%s} -> %s'):format(self:getName(), self:getOwner())
+        return ('{cast|%s-%d} -> %s'):format(self:getName(), self._count, self:getOwner())
     else
-        return ('{skill|%s} -> %s'):format(self:getName(), self:getOwner())
+        return ('{skill|%s-%d} -> %s'):format(self:getName(), self._count, self:getOwner())
     end
 end
 
@@ -275,12 +277,15 @@ local function addSkill(mgr, name, tp, slot)
     local list = mgr[tp]
     list:insert(skill)
 
+    Count = Count + 1
+
     skill._owner = unit
     skill._level = 0
     skill._type = tp
     skill._slot = slot
     skill._cost = computeCost(skill)
     skill._mgr = mgr
+    skill._count = Count
     skill.level = 0
     for _ = 1, ac.toInteger(skill.initLevel, 1) do
         upgradeSkill(skill)

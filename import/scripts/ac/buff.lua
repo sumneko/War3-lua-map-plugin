@@ -4,8 +4,8 @@ local jass = require 'jass.common'
 local METHOD = {
     ['onAdd']         = '状态-获得',
     ['onRemove']      = '状态-失去',
-    ['onRemove']      = '状态-心跳',
 }
+local Count = 0
 
 local function callMethod(buff, name, ...)
     local method = buff[name]
@@ -27,6 +27,20 @@ local function eventNotify(buff, name, ...)
     callMethod(buff, name, ...)
 end
 
+local function eventDispatch(buff, name, ...)
+    local event = METHOD[name]
+    if event then
+        local res = ac.eventDispatch(buff, event, buff, ...)
+        if res ~= nil then
+            return res
+        end
+        local res = buff:getOwner():eventDispatch(event, buff, ...)
+        if res ~= nil then
+            return res
+        end
+    end
+    return callMethod(buff, name, ...)
+end
 
 local setmetatable = setmetatable
 local mt = {}
@@ -34,7 +48,7 @@ mt.__index = mt
 mt.type = 'buff'
 
 function mt:__tostring()
-    return ('{buff|%s}'):format(self._name)
+    return ('{buff|%s-%d}'):format(self._name, self._count)
 end
 
 local function createDefine(name)
@@ -138,6 +152,7 @@ local function onAdd(buff)
     if ac.isNumber(buff.pulse) then
         setPulse(buff, buff.pulse)
     end
+
     eventNotify(buff, 'onAdd')
 end
 
@@ -161,11 +176,38 @@ local function create(unit, name, data)
         return nil
     end
 
+    Count = Count + 1
     local self = setmetatable(data, ac.buff[name])
     self._owner = unit
+    self._count = Count
+    self._mgr = mgr
 
     if not unit:isAlive() and self.keep ~= 1 then
         return nil
+    end
+
+    local coverType = ac.toInteger(self.coverType)
+    if coverType == 0 then
+        for otherBuff in mgr._buffs:pairs() do
+            if otherBuff._name == name then
+                local res = eventDispatch(otherBuff, 'onCover', self)
+                if res == false then
+                    return nil
+                else
+                    otherBuff:remove()
+                end
+            end
+        end
+    elseif coverType == 1 then
+        for otherBuff in mgr._buffs:pairs() do
+            if otherBuff._name == name then
+                local res = eventDispatch(otherBuff, 'onCover', self)
+                if res == true then
+                    mgr._buffs:insertBefore(self, otherBuff)
+                    break
+                end
+            end
+        end
     end
 
     mgr._buffs:insert(self)
@@ -196,7 +238,7 @@ function mt:remaining(time)
         setRemainig(self, time)
     else
         if not self._timer then
-            return 0.0
+            return ac.toNumber(self.time)
         end
         return self._timer:remaining()
     end

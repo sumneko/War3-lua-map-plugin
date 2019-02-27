@@ -35,6 +35,14 @@ unit:addBuff(buffName: string) {
 
 可选参数，每隔这个时间触发一次`onPulse`事件。注意，如果`time`恰好是`pulse`的整数倍，则状态移除的那个时候不会触发`onPulse`事件。
 
+### coverType
+共存模式: integer
+
+* `0`: 独占模式，单位只能同时保留一个同名状态。on_cover可以决定哪个状态保留下来。
+* `1`: 共存模式，单位可以同时保留多个同名状态。on_cover可以决定这些状态的排序。
+
+可选参数，默认为`0`。
+
 ## method
 
 ### getOwner
@@ -83,3 +91,19 @@ end
 function buff:onPulse()
 end
 ```
+
+### onCover
+```lua
+function buff:onCover(newBuff: buff)
+    return true
+end
+```
+
+返回值的含义：
+
+* 独占模式
+    * `true`: 当前状态被移除，新的状态被添加。
+    * `false`: 阻止新的状态添加。
+* 共存模式
+    * `true`: 新的状态排序到当前状态之前。
+    * `false`: 新的状态排序到当前状态之后。
