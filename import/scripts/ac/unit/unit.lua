@@ -303,6 +303,7 @@ end
 
 function mt:kill(target)
     if not ac.isUnit(target) then
+        log.error('必须指定死者')
         return
     end
     if target._dead then
@@ -587,6 +588,7 @@ function mt:reborn(point, showEffect)
     local suc = jass.ReviveHero(self._handle, x, y, ac.toBoolean(showEffect))
     if suc then
         self._dead = false
+        self._lastPoint = nil
         self:set('生命', self:get '生命上限')
         local mana = self:get '魔法'
         self:set('魔法', 0.0)
