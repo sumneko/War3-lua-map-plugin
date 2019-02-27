@@ -129,6 +129,7 @@ local function setRemainig(buff, time)
         return
     end
     buff._timer = ac.wait(time, function ()
+        eventNotify(buff, 'onFinish')
         buff:remove()
     end)
 end
@@ -167,6 +168,19 @@ local function onRemove(buff)
     eventNotify(buff, 'onRemove')
 end
 
+local function isSameBuff(buff, name, source, coverGlobal)
+    if coverGlobal == 0 then
+        if buff._name == name and buff._source == source then
+            return true
+        end
+    elseif coverGlobal == 1 then
+        if buff._name == name then
+            return true
+        end
+    end
+    return false
+end
+
 local function create(unit, name, data)
     local mgr = unit._buff
     if not mgr then
@@ -181,15 +195,17 @@ local function create(unit, name, data)
     self._owner = unit
     self._count = Count
     self._mgr = mgr
+    self._source = ac.isUnit(self.source) and self.source or unit
 
     if not unit:isAlive() and self.keep ~= 1 then
         return nil
     end
 
+    local coverGlobal = ac.toInteger(self.coverGlobal)
     local coverType = ac.toInteger(self.coverType)
     if coverType == 0 then
         for otherBuff in mgr._buffs:pairs() do
-            if otherBuff._name == name then
+            if isSameBuff(otherBuff, name, self._source, coverGlobal) then
                 local res = eventDispatch(otherBuff, 'onCover', self)
                 if res == false then
                     return nil
@@ -200,7 +216,7 @@ local function create(unit, name, data)
         end
     elseif coverType == 1 then
         for otherBuff in mgr._buffs:pairs() do
-            if otherBuff._name == name then
+            if isSameBuff(otherBuff, name, self._source, coverGlobal) then
                 local res = eventDispatch(otherBuff, 'onCover', self)
                 if res == true then
                     mgr._buffs:insertBefore(self, otherBuff)
