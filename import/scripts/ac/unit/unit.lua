@@ -313,6 +313,11 @@ function mt:kill(target)
     target._dead = true
     jass.KillUnit(handle)
     target:set('生命', 0)
+
+    if target._buff then
+        target._buff:onDead()
+    end
+
     target:eventNotify('单位-死亡', target, self)
 end
 
@@ -797,7 +802,7 @@ function mt:addBuff(name)
         if not ac.isTable(data) then
             error('状态数据必须是表', 2)
         end
-        buff.create(self, name, data)
+        return buff.create(self, name, data)
     end
 end
 

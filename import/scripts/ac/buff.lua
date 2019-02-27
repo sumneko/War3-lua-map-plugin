@@ -49,13 +49,19 @@ local function remove(mgr)
         return
     end
     mgr._removed = true
-    local list = {}
     for buff in mgr._buffs:pairs() do
-        list[#list+1] = buff
-    end
-    for _, buff in ipairs(list) do
         buff:remove()
     end
+end
+
+local function onDead(mgr)
+    for buff in mgr._buffs:pairs() do
+        if buff.keep ~= 1 then
+            buff:remove()
+        end
+    end
+
+    mgr._buffs:clean()
 end
 
 local function manager(unit)
@@ -63,6 +69,7 @@ local function manager(unit)
         _owner = unit,
         _buffs = ac.list(),
         remove = remove,
+        onDead = onDead,
     }
 
     unit._buff = mgr
@@ -100,6 +107,10 @@ local function create(unit, name, data)
     local self = setmetatable(data, ac.buff[name])
     self._owner = unit
 
+    if not unit:isAlive() and self.keep ~= 1 then
+        return nil
+    end
+
     mgr._buffs:insert(self)
 
     onAdd(self)
@@ -119,7 +130,6 @@ function mt:remove()
     local unit = self._owner
     local mgr = unit._buff
     mgr._buffs:remove(self)
-    mgr._buffs:clean()
 
     onRemove(self)
 end

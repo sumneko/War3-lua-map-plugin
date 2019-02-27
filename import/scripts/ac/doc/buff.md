@@ -10,6 +10,18 @@ unit:addBuff(buffName: string) {
 }
 ```
 
+## parameter
+
+### keep
+死亡后保留: integer
+
+可选参数，`1`表示死亡后保留。
+
+### time
+持续时间: number
+
+可选参数。
+
 ## method
 
 ### getOwner
