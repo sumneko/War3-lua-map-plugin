@@ -195,7 +195,7 @@ end
 
 function ac.wait(timeout, onTimer)
     local t = setmetatable({
-        ['_timeout'] = mathMax(mathFloor(timeout * 1000.0), 1),
+        ['_timeout'] = mathMax(mathFloor(timeout * 1000.0 + 0.5), 1),
         ['_onTimer'] = onTimer,
         ['_timerCount'] = 1,
     }, mt)
@@ -205,7 +205,7 @@ end
 
 function ac.loop(timeout, onTimer)
     local t = setmetatable({
-        ['_timeout'] = mathFloor(timeout * 1000.0),
+        ['_timeout'] = mathFloor(timeout * 1000.0 + 0.5),
         ['_onTimer'] = onTimer,
     }, mt)
     mTimeout(t, t._timeout)
@@ -217,7 +217,7 @@ function ac.timer(timeout, count, onTimer)
         return ac.loop(timeout, onTimer)
     end
     local t = setmetatable({
-        ['_timeout'] = mathFloor(timeout * 1000.0),
+        ['_timeout'] = mathFloor(timeout * 1000.0 + 0.5),
         ['_onTimer'] = onTimer,
         ['_timerCount'] = count,
     }, mt)

@@ -4,6 +4,7 @@ local jass = require 'jass.common'
 local METHOD = {
     ['onAdd']         = '状态-获得',
     ['onRemove']      = '状态-失去',
+    ['onRemove']      = '状态-心跳',
 }
 
 local function callMethod(buff, name, ...)
@@ -77,17 +78,41 @@ local function manager(unit)
     return mgr
 end
 
+local function setRemainig(buff, time)
+    if buff._timer then
+        buff._timer:remove()
+    end
+    if time <= 0.0 then
+        return
+    end
+    buff._timer = ac.wait(time, function ()
+        buff:remove()
+    end)
+end
+
+local function setPulse(buff, pulse)
+    if buff._pulse then
+        buff._pulse:remove()
+    end
+    buff._pulse = ac.loop(pulse, function ()
+        eventNotify(buff, 'onPulse')
+    end)
+end
+
 local function onAdd(buff)
     if ac.isNumber(buff.time) then
-        buff._timer = ac.wait(buff.time, function ()
-            buff:remove()
-        end)
+        setRemainig(buff, buff.time)
     end
-
+    if ac.isNumber(buff.pulse) then
+        setPulse(buff, buff.pulse)
+    end
     eventNotify(buff, 'onAdd')
 end
 
 local function onRemove(buff)
+    if buff._pulse then
+        buff._pulse:remove()
+    end
     if buff._timer then
         buff._timer:remove()
     end
@@ -132,6 +157,17 @@ function mt:remove()
     mgr._buffs:remove(self)
 
     onRemove(self)
+end
+
+function mt:remaining(time)
+    if ac.isNumber(time) then
+        setRemainig(self, time)
+    else
+        if not self._timer then
+            return 0.0
+        end
+        return self._timer:remaining()
+    end
 end
 
 ac.buff = setmetatable({}, {
