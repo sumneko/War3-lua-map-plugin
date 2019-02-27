@@ -548,3 +548,16 @@ unit:findItem(itemName: string)
 for item in unit:eachItem() do
 end
 ```
+
+### getXY
+```lua
+unit:getXY()
+    -> x: number, y: number
+```
+
+### addBuff
+```lua
+unit:addBuff(buffName: string) {
+    time = number,
+}
+```

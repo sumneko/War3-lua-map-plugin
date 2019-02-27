@@ -1,4 +1,8 @@
 # skill
+```lua
+ac.buff[buffName: string]
+    -> mt: table
+```
 
 ## skill.ini
 

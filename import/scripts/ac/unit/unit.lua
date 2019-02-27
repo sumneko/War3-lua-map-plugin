@@ -8,6 +8,7 @@ local restriction = require 'ac.unit.restriction'
 local attack = require 'ac.attack'
 local mover = require 'ac.mover'
 local skill = require 'ac.skill'
+local buff = require 'ac.buff'
 local damage = require 'ac.damage'
 local item = require 'ac.item'
 local ORDER = require 'ac.war3.order'
@@ -79,6 +80,11 @@ local function createDestructor(unit, callback)
 end
 
 local function onRemove(unit)
+    -- 移除单位身上的状态
+    if unit._buff then
+        unit._buff:remove()
+    end
+
     -- 解除玩家英雄
     if unit:isHero() then
         unit._owner:removeHero(unit)
@@ -195,6 +201,8 @@ function ac.unit(handle)
         u._attack = attack(u, u._data.attack)
         -- 初始化技能
         skill(u)
+        -- 初始化状态
+        buff.manager(u)
         -- 添加命令图标
         u:addSkill('@命令', '技能')
         -- 添加协议技能
@@ -779,6 +787,18 @@ function mt:isInRange(point, range)
     local powerDistance = dx * dx + dy * dy
     local checkRange = range + self:selectedRadius()
     return powerDistance <= checkRange * checkRange
+end
+
+function mt:addBuff(name)
+    if not ac.isString(name) then
+        error('状态名称必须是字符串', 2)
+    end
+    return function (data)
+        if not ac.isTable(data) then
+            error('状态数据必须是表', 2)
+        end
+        buff.create(self, name, data)
+    end
 end
 
 return {
