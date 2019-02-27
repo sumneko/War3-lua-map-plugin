@@ -65,6 +65,15 @@ local function updateSelector(mover)
     end
 end
 
+local function checkBlock(mover)
+    if not mover.onBlock then
+        return
+    end
+    if mover.mover:getPoint():isBlock() then
+        eventNotify(mover, 'onBlock')
+    end
+end
+
 local function checkHit(mover)
     if not mover._selector then
         return
@@ -91,17 +100,22 @@ local function update(delta)
         updateHeight(mover)
     end
 
-    -- 2. 检查碰撞
+    -- 2. 检查阻挡
+    for mover in Movers:pairs() do
+        checkBlock(mover)
+    end
+
+    -- 3. 检查碰撞
     for mover in Movers:pairs() do
         checkHit(mover)
     end
 
-    -- 3. 检查完成
+    -- 4. 检查完成
     for mover in Movers:pairs() do
         updateFinish(mover)
     end
 
-    -- 4. 清理
+    -- 5. 清理
     Movers:clean()
 end
 

@@ -122,6 +122,14 @@ function mover:onHit(unit)
 end
 ```
 
+### onBlock
+阻挡事件
+
+```lua
+function mover:onBlock()
+end
+```
+
 ### onFinish
 完成事件
 
