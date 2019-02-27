@@ -57,7 +57,6 @@ local function update(delta)
         end
         ::CONTINUE::
     end
-    UNIT_LIST:clean()
 end
 
 local function createDestructor(unit, callback)

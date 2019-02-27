@@ -61,8 +61,6 @@ local function onDead(mgr)
             buff:remove()
         end
     end
-
-    mgr._buffs:clean()
 end
 
 local function findBuff(mgr, name)
@@ -89,6 +87,7 @@ local function removeBuffByName(mgr, name, onlyOne)
             end
         end
     end
+    print('#', mgr._buffs.max, #mgr._buffs.list)
     return ok
 end
 

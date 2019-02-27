@@ -311,7 +311,6 @@ local function removeSkill(unit, skill)
     if not list:remove(skill) then
         return false
     end
-    list:clean()
 
     updateIcon(skill)
 

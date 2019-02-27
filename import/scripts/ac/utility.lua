@@ -1,5 +1,6 @@
 local type = type
 local pairs = pairs
+local next = next
 local tableSort = table.sort
 
 function ac.isUnit(obj)
@@ -63,7 +64,7 @@ function ac.toBoolean(obj)
     end
 end
 
--- 只能存放对象，能按添加顺序遍历的数据结构，需要显性清理，不支持在遍历时清理
+-- 只能存放对象，能按添加顺序遍历的数据结构
 local mt = {}
 mt.__index = mt
 function mt:insert(obj)
@@ -84,12 +85,13 @@ function mt:remove(obj)
     end
     list[n] = false
     list[obj] = nil
+    self:clean()
     return true
 end
 function mt:pairs()
     local i = 0
     local list = self.list
-    local function next()
+    local function nextObject()
         i = i + 1
         local obj = list[i]
         if obj then
@@ -97,42 +99,50 @@ function mt:pairs()
         elseif obj == nil then
             return nil
         else
-            return next()
+            return nextObject()
         end
     end
-    return next
+    return nextObject
 end
 function mt:clean()
+    if self.cleaning then
+        return
+    end
     local list = self.list
     local max = #list
     if max < self.max then
         return
     end
-    local alive = 0
-    for i = 1, max do
-        local obj = list[i]
-        if obj then
-            alive = alive + 1
-            if i ~= alive then
-                list[alive] = obj
-                list[obj] = alive
+    self.cleaning = true
+    ac.wait(0, function ()
+        self.cleaning = false
+        local alive = 0
+        for i = 1, max do
+            local obj = list[i]
+            if obj then
+                alive = alive + 1
+                if i ~= alive then
+                    list[alive] = obj
+                    list[obj] = alive
+                    list[i] = nil
+                end
+            else
                 list[i] = nil
             end
-        else
-            list[i] = nil
         end
-    end
-    local new = alive * 2
-    if new > 10 then
-        self.max = new
-    else
-        self.max = 10
-    end
+        local new = alive * 2
+        if new > 10 then
+            self.max = new
+        else
+            self.max = 10
+        end
+    end)
 end
 function ac.list()
     return setmetatable({
         max = 10,
         list = {},
+        cleaning = false,
     }, mt)
 end
 

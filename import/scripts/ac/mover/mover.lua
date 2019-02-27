@@ -114,9 +114,6 @@ local function update(delta)
     for mover in Movers:pairs() do
         updateFinish(mover)
     end
-
-    -- 5. 清理
-    Movers:clean()
 end
 
 local function createMover(mover)
