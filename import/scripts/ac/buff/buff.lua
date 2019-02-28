@@ -174,13 +174,16 @@ local function onRemove(buff)
     eventNotify(buff, 'onRemove')
 end
 
-local function isSameBuff(buff, name, source, coverGlobal)
+local function isSameNameBuffs(otherBuff, buff, coverGlobal)
+    if buff == otherBuff then
+        return false
+    end
     if coverGlobal == 0 then
-        if buff._name == name and buff._source == source then
+        if otherBuff._name == buff._name and otherBuff._source == buff._source then
             return true
         end
     elseif coverGlobal == 1 then
-        if buff._name == name then
+        if otherBuff._name == buff._name then
             return true
         end
     end
@@ -211,7 +214,7 @@ local function create(unit, name, data)
     local coverType = ac.toInteger(self.coverType)
     if coverType == 0 then
         for otherBuff in mgr._buffs:pairs() do
-            if isSameBuff(otherBuff, name, self._source, coverGlobal) then
+            if isSameNameBuffs(otherBuff, self, coverGlobal) then
                 local res = eventDispatch(otherBuff, 'onCover', self)
                 if res == false then
                     return nil
@@ -222,7 +225,7 @@ local function create(unit, name, data)
         end
     elseif coverType == 1 then
         for otherBuff in mgr._buffs:pairs() do
-            if isSameBuff(otherBuff, name, self._source, coverGlobal) then
+            if isSameNameBuffs(otherBuff, self, coverGlobal) then
                 local res = eventDispatch(otherBuff, 'onCover', self)
                 if res == true then
                     mgr._buffs:insertBefore(self, otherBuff)

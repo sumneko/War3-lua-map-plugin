@@ -72,6 +72,9 @@ function mt:insert(obj)
         return false
     end
     local list = self.list
+    if list[obj] then
+        return false
+    end
     local n = #list+1
     list[n] = obj
     list[obj] = n
@@ -82,6 +85,9 @@ function mt:insertBefore(obj, other)
         return false
     end
     local list = self.list
+    if list[obj] then
+        return false
+    end
     local n = list[other]
     if n then
         tableInsert(list, n, obj)
@@ -136,7 +142,7 @@ function mt:clean()
     ac.wait(0, function ()
         self.cleaning = false
         local alive = 0
-        for i = 1, max do
+        for i = 1, #list do
             local obj = list[i]
             if obj then
                 alive = alive + 1
