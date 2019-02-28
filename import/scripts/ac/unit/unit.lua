@@ -45,7 +45,7 @@ local function update(delta)
                 goto CONTINUE
             end
         end
-        if u.class == '生物' and not u._dead then
+        if u._class == '生物' and not u._dead then
             local life = delta * u:get '生命恢复'
             if life > 0 then
                 u:add('生命', life)
@@ -167,8 +167,7 @@ function ac.unit(handle)
     local slkUnit = slk.unit[id]
 
     local u = setmetatable({
-        class = class,
-        _gchash = handle,
+        _class = class,
         _handle = handle,
         _id = ac.id[id],
         _name = name,
@@ -181,7 +180,6 @@ function ac.unit(handle)
     }, mt)
     dbg.gchash(u, handle)
     dbg.handle_ref(handle)
-    u._gchash = handle
 
     All[handle] = u
     UNIT_LIST:insert(u)
