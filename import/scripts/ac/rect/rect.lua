@@ -4,6 +4,7 @@ local jass = require 'jass.common'
 local Preset
 local Condition
 local RegionMap = {}
+local Group = jass.CreateGroup()
 
 local mt = {}
 mt.__index = mt
@@ -80,6 +81,36 @@ local function registerEvent(self)
     jass.TriggerRegisterEnterRegion(self._trg, self._region, nil)
     jass.TriggerRegisterLeaveRegion(self._trg, self._region, nil)
     jass.TriggerAddCondition(self._trg, Condition)
+
+    -- 选取初始就在区域内的单位，触发进入区域事件
+    ac.wait(0, function ()
+        do return end
+        if self._removed then
+            return
+        end
+        local x = (self._minx + self._maxx) / 2.0
+        local y = (self._miny + self._maxy) / 2.0
+        local dx = self._maxx - self._minx
+        local dy = self._maxy - self._miny
+        local r = (dx * dx + dy * dy) ^ 0.5 / 2.0 + ac.world.maxSelectedRadius + 32
+        jass.GroupEnumUnitsInRange(Group, x, y, r, nil)
+        local list = {}
+        while true do
+            local handle = jass.FirstOfGroup(Group)
+            if handle == 0 then
+                break
+            end
+            jass.GroupRemoveUnit(Group, handle)
+            local unit = ac.unit(handle)
+            if unit and jass.IsUnitInRegion(self._region, handle) then
+                list[#list+1] = unit
+            end
+        end
+        for _, unit in ipairs(list) do
+            self._inside:insert(unit)
+            callMethod(self, 'onEnter', unit)
+        end
+    end)
 end
 
 local function createByXY(minx, miny, maxx, maxy)
@@ -90,6 +121,10 @@ local function createByXY(minx, miny, maxx, maxy)
 
     local self = setmetatable({
         _handle = handle,
+        _minx = minx,
+        _miny = miny,
+        _maxx = maxx,
+        _maxy = maxy,
     }, mt)
 
     return self
