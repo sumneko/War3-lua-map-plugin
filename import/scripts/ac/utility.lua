@@ -113,6 +113,10 @@ function mt:remove(obj)
     self:clean()
     return true
 end
+function mt:has(obj)
+    local list = self.list
+    return list[obj] ~= nil
+end
 function mt:pairs()
     local i = 0
     local list = self.list

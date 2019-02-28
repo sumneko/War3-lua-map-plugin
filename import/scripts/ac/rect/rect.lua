@@ -42,7 +42,7 @@ local function initCondition()
             if not unit or unit._class ~= '生物' then
                 return false
             end
-            rect._inside[unit] = true
+            rect._inside:insert(unit)
             callMethod(rect, 'onEnter', unit)
         else
             -- 离开
@@ -50,10 +50,10 @@ local function initCondition()
                 return false
             end
             local unit = ac.unit(jass.GetLeavingUnit())
-            if not rect._inside[unit] then
+            if not rect._inside:has(unit) then
                 return false
             end
-            rect._inside[unit] = nil
+            rect._inside:remove(unit)
             callMethod(rect, 'onLeave', unit)
         end
         return false
@@ -68,7 +68,7 @@ local function registerEvent(self)
         return
     end
 
-    self._inside = {}
+    self._inside = ac.list()
 
     initCondition()
 
@@ -123,12 +123,12 @@ local function presetRect(name)
 end
 
 function mt:__newindex(key, value)
+    rawset(self, key, value)
     if key == 'onEnter' then
         registerEvent(self)
     elseif key == 'onLeave' then
         registerEvent(self)
     end
-    rawset(self, key, value)
 end
 
 function mt:remove()
@@ -147,6 +147,11 @@ function mt:remove()
     if self._trg then
         jass.DestroyTrigger(self._trg)
         self._trg = nil
+    end
+    if self._inside then
+        for unit in self._inside:pairs() do
+            callMethod(self, 'onLeave', unit)
+        end
     end
 end
 
