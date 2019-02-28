@@ -56,6 +56,26 @@ unit:addBuff(buffName: string) {
 
 可选参数，默认为`0`。
 
+### show
+显示图标: integer
+
+可选参数，`1`表示显示图标。
+
+### icon
+图标: string
+
+可选参数。
+
+### title
+标题: string
+
+可选参数。
+
+### description
+描述: string
+
+可选参数。
+
 ## method
 
 ### getOwner

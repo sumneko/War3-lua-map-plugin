@@ -1,5 +1,4 @@
-local japi = require 'jass.japi'
-local jass = require 'jass.common'
+local icon = require 'ac.buff.icon'
 
 local METHOD = {
     ['onAdd']         = '状态-获得',
@@ -154,6 +153,10 @@ local function onAdd(buff)
         setPulse(buff, buff.pulse)
     end
 
+    if buff.show == 1 then
+        buff._icon = icon(buff)
+    end
+
     eventNotify(buff, 'onAdd')
 end
 
@@ -163,6 +166,9 @@ local function onRemove(buff)
     end
     if buff._timer then
         buff._timer:remove()
+    end
+    if buff._icon then
+        buff._icon:remove()
     end
 
     eventNotify(buff, 'onRemove')

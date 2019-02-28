@@ -347,6 +347,26 @@ local function insertItem(w2l)
     end
 end
 
+local function insertBuff(w2l)
+    local nextId = idCreator '^'
+    for i = 1, 1000 do
+        local buffId = nextId()
+        newObject(w2l.slk.buff, buffId, 'BIcf') {
+            TargetArt = '',
+            SpecialArt = '',
+        }
+        newObject(w2l.slk.ability, nextId(), 'AIcf') {
+            Name = '@状态技能-' .. tostring(i),
+            DataA = {0},
+            targs = {'none'},
+            Dur = {0},
+            HeroDur = {0},
+            Buttonpos_2 = -11,
+            BuffId = {buffId},
+        }
+    end
+end
+
 local function defaultUnit(w2l)
     -- 设置所有单位的默认数据
     for _, unit in pairs(w2l.slk.unit) do
@@ -433,6 +453,7 @@ function mt:on_full(w2l)
     insertUnit(w2l)
     insertAbility(w2l)
     insertItem(w2l)
+    insertBuff(w2l)
 
     defaultUnit(w2l)
     defaultMisc(w2l)
