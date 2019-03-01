@@ -204,15 +204,12 @@ local function addToUnit(item, unit, slot)
         return false
     end
     item._owner = unit
-    local id = item._id
     local handle = item._handle
     item._handle = 0
-    item._id = nil
     if handle ~= 0 then
         Items[handle] = nil
         jass.RemoveItem(handle)
     end
-    poolAdd(id)
 
     if not item:isRune() then
         addSkill(item, slot)
@@ -335,13 +332,7 @@ local function onDrop(unit, handle)
         return nil
     end
 
-    local id = poolGet()
-    if not id then
-        log.error('无法分配新的物品')
-        return nil
-    end
-
-    item._id = id
+    local id = item._id
     item._handle = jass.CreateItem(ac.id[id], x, y)
     if item._handle == 0 then
         item:remove()
@@ -392,7 +383,7 @@ end
 
 function mt:updateTitle()
     local item = self._data
-    local title = item.title or item.name or item._name
+    local title = item.title or item.name or self._name
     if title == self._cache.title then
         return
     end
