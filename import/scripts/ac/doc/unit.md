@@ -169,6 +169,7 @@ unit:addRestriction(restrictionName: string)
 
 restrictionName: string
     | '硬直'
+    | '无敌'
 ```
 
 ### removeRestriction
@@ -177,6 +178,7 @@ unit:removeRestriction(restrictionName: string)
 
 restrictionName: string
     | '硬直'
+    | '无敌'
 ```
 
 ### getRestriction
@@ -186,6 +188,7 @@ unit:getRestriction(restrictionName: string)
 
 restrictionName: string
     | '硬直'
+    | '无敌'
 ```
 
 ### hasRestriction
@@ -195,6 +198,7 @@ unit:hasRestriction(restrictionName: string)
 
 restrictionName: string
     | '硬直'
+    | '无敌'
 ```
 
 ### isAlive

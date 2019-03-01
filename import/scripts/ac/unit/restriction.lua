@@ -1,14 +1,21 @@
+local jass = require 'jass.common'
 local japi = require 'jass.japi'
 
 local Add = {
     ['硬直'] = function (unit)
         japi.EXPauseUnit(unit._handle, true)
     end,
+    ['无敌'] = function (unit)
+        jass.SetUnitInvulnerable(unit._handle, true)
+    end,
 }
 
 local Remove = {
     ['硬直'] = function (unit)
         japi.EXPauseUnit(unit._handle, false)
+    end,
+    ['无敌'] = function (unit)
+        jass.SetUnitInvulnerable(unit._handle, false)
     end,
 }
 
@@ -79,7 +86,7 @@ return function (unit, restriction)
 
     if type(restriction) == 'table' then
         for _, k in ipairs(restriction) do
-            obj:addRestriction(k)
+            obj:add(k)
         end
     end
 
