@@ -173,10 +173,15 @@ function mt:updateTargetType()
     self._cache.targetType = targetType
     if targetType == '单位' then
         japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 1)
+        japi.EXSetAbilityDataInteger(self:handle(), 1, 0x64, 0x00)
     elseif targetType == '点' then
         japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 2)
     elseif targetType == '单位或点' then
         japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 3)
+        japi.EXSetAbilityDataInteger(self:handle(), 1, 0x64, 0x00)
+    elseif targetType == '物品' then
+        japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 1)
+        japi.EXSetAbilityDataInteger(self:handle(), 1, 0x64, 0x20)
     else
         japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 0)
     end

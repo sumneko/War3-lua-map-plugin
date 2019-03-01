@@ -741,17 +741,24 @@ function mt:castByClient(target, x, y)
         cast._targetType = '点'
         cast._targetPoint = ac.point(x, y)
     elseif self.targetType == '单位' then
-        if not target then
+        if not ac.isUnit(target) then
             return false
         end
         cast = createCast(self)
         cast._targetType = '单位'
-        cast._targetUnit = ac.point(x, y)
+        cast._targetUnit = target
     elseif self.targetType == '单位或点' then
         cast = createCast(self)
         cast._targetType = '单位或点'
         cast._targetUnit = target
         cast._targetPoint = ac.point(x, y)
+    elseif self.targetType == '物品' then
+        if not ac.isItem(target) then
+            return false
+        end
+        cast = createCast(self)
+        cast._targetType = '物品'
+        cast._targetItem = target
     else
         cast = createCast(self)
     end
@@ -770,6 +777,8 @@ function mt:getTarget()
         else
             return self._targetPoint
         end
+    elseif self._targetType == '物品' then
+        return self._targetItem
     else
         return nil
     end

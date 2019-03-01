@@ -5,6 +5,7 @@ local japi = require 'jass.japi'
 local Pool
 local Cache = {}
 local Items = {}
+local Count = 0
 
 local METHOD = {
     ['onAdd']     = '物品-获得',
@@ -19,7 +20,7 @@ mt.type = 'item'
 mt._handle = 0
 
 function mt:__tostring()
-    return ('{item|%s|%s}'):format(self._name, self._handle)
+    return ('{item|%s|%s}'):format(self._name, self._count)
 end
 
 local function poolAdd(id)
@@ -172,6 +173,7 @@ local function addSkill(item, slot)
             item._skill = skill
             if skill._icon then
                 jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
+                Items[skill._icon._handle] = item
             end
         end
         addAttribute(item)
@@ -238,12 +240,15 @@ local function create(name, target, slot)
         Cache[id] = {}
     end
 
+    Count = Count + 1
+
     local self = setmetatable({
         _id = id,
         _name = name,
         _data = data,
         _slk = slk.item[id],
         _cache = Cache[id],
+        _count = Count,
     }, data)
 
     if ac.isPoint(target) then
@@ -322,6 +327,7 @@ local function onDrop(unit, handle)
         if skill._icon and skill._icon._handle == handle then
             item = skill._item
             skill:remove()
+            Items[handle] = nil
             break
         end
     end
@@ -380,6 +386,10 @@ local function eachItem(unit)
     end
 end
 
+local function findByHandle(handle)
+    return Items[handle]
+end
+
 function mt:updateTitle()
     local item = self._data
     local title = item.title or item.name or item._name
@@ -416,6 +426,9 @@ function mt:remove()
     self._removed = true
 
     if self._handle == 0 then
+        if self._skill._icon then
+            Items[self._skill._icon._handle] = nil
+        end
         self._skill:remove()
         onRemove(self)
     end
@@ -492,6 +505,9 @@ function mt:give(unit, slot)
     end
     -- 如果在其他人身上，则先扔到地上
     if self._owner then
+        if self._skill._icon then
+            Items[self._skill._icon._handle] = nil
+        end
         self._skill:remove()
         onRemove(self)
     end
@@ -527,4 +543,5 @@ return {
     onDrop = onDrop,
     findItem = findItem,
     eachItem = eachItem,
+    findByHandle = findByHandle,
 }

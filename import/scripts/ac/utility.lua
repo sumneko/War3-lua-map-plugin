@@ -7,6 +7,10 @@ function ac.isUnit(obj)
     return type(obj) == 'table' and obj.type == 'unit'
 end
 
+function ac.isItem(obj)
+    return type(obj) == 'table' and obj.type == 'item'
+end
+
 function ac.isPoint(obj)
     return type(obj) == 'table' and obj.type == 'point'
 end

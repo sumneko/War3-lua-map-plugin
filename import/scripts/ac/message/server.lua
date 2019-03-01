@@ -1,5 +1,6 @@
 local jass = require 'jass.common'
 local slk = require 'jass.slk'
+local item = require 'ac.item'
 local ORDER = require 'ac.war3.order'
 local PROTO = require 'ac.message.proto'
 local TRG = jass.CreateTrigger()
@@ -153,6 +154,7 @@ local function onCastStart(unit)
         local skill = searchAbilityId(unit, ac.id[id])
         if skill then
             local target = ac.unit(jass.GetSpellTargetUnit())
+                        or item.findByHandle(jass.GetSpellTargetItem())
             local x = jass.GetSpellTargetX()
             local y = jass.GetSpellTargetY()
             order(unit, 'stop')

@@ -61,6 +61,7 @@ targetType = '无'
 targetType = '点'
 targetType = '单位'
 targetType = '单位或点'
+targetType = '物品'
 ```
 
 ### passive
