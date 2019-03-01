@@ -41,6 +41,19 @@ selector:inLine(start: point/unit, length: number, angle: number, width: number)
     -> selector
 ```
 
+### mode
+
+默认模式为`单位`。在`物品`模式下，选取器规则只有形状有效。
+
+```lua
+selector:mode(mode: string)
+    -> selector
+
+mode: string
+    | '单位'
+    | '物品'
+```
+
 ### filter
 ```lua
 selector:filter(function(unit)

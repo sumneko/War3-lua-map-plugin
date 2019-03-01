@@ -572,4 +572,5 @@ return {
     findItem = findItem,
     eachItem = eachItem,
     findByHandle = findByHandle,
+    items = Items,
 }

@@ -1,4 +1,5 @@
 local jass = require 'jass.common'
+local item = require 'ac.item'
 local sqrt = math.sqrt
 local abs = math.abs
 
@@ -93,13 +94,46 @@ local function eachUnitInRange(self, x, y, r, callback)
     return units
 end
 
+local function eachItemInRange(_, x, y, r, callback)
+    local items = {}
+
+    local powerRadius = r * r
+    for _, it in pairs(item.items) do
+        if it._owner then
+            goto CONTINUE
+        end
+
+        local x1, y1 = it._point:getXY()
+        local dx = x - x1
+        local dy = y - y1
+        if dx * dx + dy * dy > powerRadius then
+            goto CONTINUE
+        end
+
+        if callback(it) then
+            items[#items+1] = it
+        end
+
+        :: CONTINUE ::
+    end
+
+    return items
+end
+
 local function selectInRange(self)
     local point = self._point
     local radius = self._radius
     local x, y = point:getXY()
-    return eachUnitInRange(self, x, y, radius, function (unit)
-        return unit:isInRange(point, radius)
-    end)
+    if self._mode == '单位' then
+        return eachUnitInRange(self, x, y, radius, function (unit)
+            return unit:isInRange(point, radius)
+        end)
+    elseif self._mode == '物品' then
+        return eachItemInRange(self, x, y, radius, function ()
+            return true
+        end)
+    end
+    return {}
 end
 
 -- https://blog.csdn.net/zaffix/article/details/25005057
@@ -183,10 +217,18 @@ local function selectInSector(self)
     local x1, y1 = point:getXY()
     local p2 = point:getPoint() - {angle, radius}
     local x2, y2 = p2:getXY()
-    return eachUnitInRange(self, x1, y1, radius, function (unit)
-        local x, y = unit:getXY()
-        return checkPointInSector(x, y, unit:selectedRadius(), x1, y1, x2, y2, section, radius)
-    end)
+    if self._mode == '单位' then
+        return eachUnitInRange(self, x1, y1, radius, function (unit)
+            local x, y = unit:getXY()
+            return checkPointInSector(x, y, unit:selectedRadius(), x1, y1, x2, y2, section, radius)
+        end)
+    elseif self._mode == '物品' then
+        return eachItemInRange(self, x1, y1, radius, function (it)
+            local x, y = it:getXY()
+            return checkPointInSector(x, y, 0, x1, y1, x2, y2, section, radius)
+        end)
+    end
+    return {}
 end
 
 -- https://blog.csdn.net/zaffix/article/details/25077835
@@ -237,10 +279,18 @@ local function selectInLine(self)
     local x2 = x0 + width / 2.0 * ac.math.cos(angle + 90.0)
     local y2 = y0 + width / 2.0 * ac.math.sin(angle + 90.0)
 
-    return eachUnitInRange(x0, y0, r, function (unit)
-        local x, y = unit:getXY()
-        return isCircleIntersectRectangle(x, y, unit:selectedRadius(), x0, y0, x1, y1, x2, y2)
-    end)
+    if self._mode == '单位' then
+        return eachUnitInRange(x0, y0, r, function (unit)
+            local x, y = unit:getXY()
+            return isCircleIntersectRectangle(x, y, unit:selectedRadius(), x0, y0, x1, y1, x2, y2)
+        end)
+    elseif self._mode == '物品' then
+        return eachItemInRange(x0, y0, r, function (it)
+            local x, y = it:getXY()
+            return isCircleIntersectRectangle(x, y, 0, x0, y0, x1, y1, x2, y2)
+        end)
+    end
+    return {}
 end
 
 local mt = {}
@@ -248,6 +298,7 @@ mt.__index = mt
 
 mt.type = 'selector'
 mt._selectType = 'none'
+mt._mode = '单位'
 
 function mt:__tostring()
     return ('{selector|%s}'):format(self._selectType)
@@ -275,6 +326,13 @@ function mt:inLine(point, length, angle, width)
     self._angle = angle
     self._length = length
     self._width = width
+    return self
+end
+
+function mt:mode(name)
+    if name == '单位' or name == '物品' then
+        self._mode = name
+    end
     return self
 end
 
