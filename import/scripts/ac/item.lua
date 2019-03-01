@@ -308,8 +308,7 @@ local function onPickUp(unit, handle)
         return
     end
 
-    local x = jass.GetItemX(handle)
-    local y = jass.GetItemY(handle)
+    local x, y = item:getXY()
 
     Items[handle] = nil
     jass.RemoveItem(handle)
@@ -317,25 +316,23 @@ local function onPickUp(unit, handle)
     Items[item._handle] = item
 end
 
-local function onDrop(unit, handle)
-    local x = jass.GetItemX(handle)
-    local y = jass.GetItemY(handle)
-    local item
-    for skill in unit:eachSkill '物品' do
-        if skill._icon and skill._icon._handle == handle then
-            item = skill._item
-            item._stack = skill._stack
-            skill:remove()
-            Items[handle] = nil
-            break
-        end
+local function drop(item, point)
+    local skill = item._skill
+    if not skill then
+        return
     end
-    if not item then
-        return nil
+    item._stack = skill._stack
+    item._skill = nil
+    skill._item = nil
+    if skill._icon then
+        Items[skill._icon._handle] = nil
     end
+    skill:remove()
 
     local id = item._id
+    local x, y = point:getXY()
     item._handle = jass.CreateItem(ac.id[id], x, y)
+    item._point = point
     if item._handle == 0 then
         item:remove()
         return nil
@@ -348,6 +345,18 @@ local function onDrop(unit, handle)
     onRemove(item)
 
     return item
+end
+
+local function onDrop(unit, handle)
+    local x = jass.GetItemX(handle)
+    local y = jass.GetItemY(handle)
+    local item
+    for skill in unit:eachSkill '物品' do
+        if skill._icon and skill._icon._handle == handle then
+            item = skill._item
+            return drop(item, ac.point(x, y))
+        end
+    end
 end
 
 local function findItem(unit, name)
@@ -419,12 +428,7 @@ function mt:remove()
     self._removed = true
 
     if self._handle == 0 then
-        if self._skill._icon then
-            Items[self._skill._icon._handle] = nil
-        end
-        self._stack = self._skill._stack
-        self._skill:remove()
-        onRemove(self)
+        drop(self, self._owner:getPoint())
     end
 
     local handle = self._handle
@@ -440,9 +444,7 @@ end
 function mt:blink(point)
     local x, y = point:getXY()
     if self._handle == 0 then
-        if self._skill._icon then
-            jass.SetItemPosition(self._skill._icon._handle, x, y)
-        end
+        drop(self, point)
     else
         jass.SetItemPosition(self._handle, x, y)
     end
@@ -531,6 +533,22 @@ function mt:stack(n)
         else
             return self._stack or 0
         end
+    end
+end
+
+function mt:getPoint()
+    if self._owner then
+        return self._owner:getPoint()
+    else
+        return self._point
+    end
+end
+
+function mt:getXY()
+    if self._owner then
+        return self._owner:getXY()
+    else
+        return self._point:getXY()
     end
 end
 
