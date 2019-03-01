@@ -275,7 +275,7 @@ function mt:hasRestriction(k)
     if not self._restriction then
         return false
     end
-    self._restriction:has(k)
+    return self._restriction:has(k)
 end
 
 function mt:isAlive()
