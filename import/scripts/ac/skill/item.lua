@@ -199,6 +199,16 @@ function mt:updateCost()
     japi.EXSetAbilityDataInteger(self:handle(), 1, 0x68, cost)
 end
 
+function mt:updateStack()
+    local skill = self._skill
+    local stack = ac.nearInteger(skill._stack)
+    if stack == self._cache.stack then
+        return
+    end
+    self._cache.stack = stack
+    jass.SetItemCharges(self._handle, stack)
+end
+
 function mt:refresh()
     local skill = self._skill
     local unit = skill._owner

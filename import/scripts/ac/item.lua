@@ -171,6 +171,7 @@ local function addSkill(item, slot)
         if skill then
             skill._item = item
             item._skill = skill
+            skill:stack(item._stack)
             if skill._icon then
                 jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
                 Items[skill._icon._handle] = item
@@ -512,6 +513,21 @@ function mt:getSlot()
         return self._skill._slot
     else
         return 0
+    end
+end
+
+function mt:stack(n)
+    if ac.isNumber(n) then
+        self._stack = n
+        if self._skill then
+            self._skill:stack(self._stack)
+        end
+    else
+        if self._skill then
+            return self._skill:stack()
+        else
+            return self._stack or 0
+        end
     end
 end
 

@@ -2,6 +2,9 @@ local type = type
 local pairs = pairs
 local tableSort = table.sort
 local tableInsert = table.insert
+local mathFloor = math.floor
+local mathTointeger = math.tointeger
+local tonumber = tonumber
 
 function ac.isUnit(obj)
     return type(obj) == 'table' and obj.type == 'unit'
@@ -28,7 +31,7 @@ function ac.isNumber(obj)
 end
 
 function ac.isInteger(obj)
-    return math.tointeger(obj) ~= nil
+    return mathTointeger(obj) ~= nil
 end
 
 function ac.isTable(obj)
@@ -52,7 +55,7 @@ function ac.toNumber(obj, default)
 end
 
 function ac.toInteger(obj, default)
-    local int = math.tointeger(obj)
+    local int = mathTointeger(obj)
     if int then
         return int
     else
@@ -66,6 +69,11 @@ function ac.toBoolean(obj)
     else
         return false
     end
+end
+
+function ac.nearInteger(obj)
+    local n = tonumber(obj) or 0.0
+    return mathFloor(n + 0.5)
 end
 
 -- 只能存放对象，能按添加顺序遍历的数据结构

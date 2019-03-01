@@ -837,6 +837,17 @@ function mt:setCd(cd)
     return setCd(self, cd)
 end
 
+function mt:stack(n)
+    if ac.isNumber(n) then
+        self._stack = n
+        if self._icon then
+            self._icon:updateStack()
+        end
+    else
+        return self._stack or 0
+    end
+end
+
 ac.skill = setmetatable({}, {
     __index = function (self, name)
         local skill = createDefine(name)

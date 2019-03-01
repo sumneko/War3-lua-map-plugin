@@ -215,6 +215,9 @@ function mt:updateCost()
     japi.EXSetAbilityDataInteger(self:handle(), 1, 0x68, cost)
 end
 
+function mt:updateStack()
+end
+
 function mt:refresh()
     local skill = self._skill
     local unit = skill._owner
