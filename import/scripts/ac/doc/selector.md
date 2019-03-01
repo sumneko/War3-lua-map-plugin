@@ -15,6 +15,13 @@ for _, u in ac.selector()
     : ipairs()
 do
 end
+
+for _, it in ac.selecot()
+    : mode '物品'
+    : inRange(point, radius)
+    : ipairs()
+do
+end
 ```
 
 ### ac.selector
@@ -42,7 +49,6 @@ selector:inLine(start: point/unit, length: number, angle: number, width: number)
 ```
 
 ### mode
-
 默认模式为`单位`。在`物品`模式下，选取器规则只有形状有效。
 
 ```lua
