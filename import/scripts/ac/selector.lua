@@ -4,10 +4,74 @@ local abs = math.abs
 
 local GROUP = jass.CreateGroup()
 
-local function selectInRange(point, radius)
+local function checkFilter(unit, filters)
+    if not filters then
+        return true
+    end
+    for j = 1, #filters do
+        if not filters[j](unit) then
+            return false
+        end
+    end
+    return true
+end
+
+local function checkOf(unit, of)
+    if not of then
+        return true
+    end
+    local types = unit._type
+    for tp in next, of do
+        if types and types[tp] then
+            return true
+        end
+    end
+    return false
+end
+
+local function checkOfNot(unit, ofNot)
+    if not ofNot then
+        return true
+    end
+    local types = unit._type
+    for tp in next, ofNot do
+        if types and types[tp] then
+            return false
+        end
+    end
+    return true
+end
+
+local function checkAllow(unit, dead, god)
+    if not dead and not unit:isAlive() then
+        return false
+    end
+    if not god and unit:hasRestriction '无敌' then
+        return false
+    end
+    return true
+end
+
+local function filter(self, unit)
+    if not checkAllow(unit, self._dead, self._god) then
+        return false
+    end
+    if not checkOf(unit, self._of) then
+        return false
+    end
+    if not checkOfNot(unit, self._ofNot) then
+        return false
+    end
+    if not checkFilter(unit, self._filters) then
+        return false
+    end
+    return true
+end
+
+local function eachUnitInRange(self, x, y, r, callback)
     local units = {}
-    local x, y = point:getXY()
-    jass.GroupEnumUnitsInRange(GROUP, x, y, radius + ac.world.maxSelectedRadius, nil)
+
+    jass.GroupEnumUnitsInRange(GROUP, x, y, r + ac.world.maxSelectedRadius, nil)
     while true do
         local u = jass.FirstOfGroup(GROUP)
         if u == 0 then
@@ -18,13 +82,24 @@ local function selectInRange(point, radius)
         if not unit then
             goto CONTINUE
         end
-        if not unit:isInRange(point, radius) then
-            goto CONTINUE
+
+        if callback(unit) and filter(self, unit) then
+            units[#units+1] = unit
         end
-        units[#units+1] = unit
+
         :: CONTINUE ::
     end
+
     return units
+end
+
+local function selectInRange(self)
+    local point = self._point
+    local radius = self._radius
+    local x, y = point:getXY()
+    return eachUnitInRange(self, x, y, radius, function (unit)
+        return unit:isInRange(point, radius)
+    end)
 end
 
 -- https://blog.csdn.net/zaffix/article/details/25005057
@@ -100,30 +175,18 @@ local function checkPointInSector(x, y, r, x1, y1, x2, y2, theta, radius)
     return false
 end
 
-local function selectInSector(point, radius, angle, section)
-    local units = {}
+local function selectInSector(self)
+    local point = self._point
+    local radius = self._radius
+    local angle = self._angle
+    local section = self._section
     local x1, y1 = point:getXY()
     local p2 = point:getPoint() - {angle, radius}
     local x2, y2 = p2:getXY()
-    jass.GroupEnumUnitsInRange(GROUP, x1, y1, radius + ac.world.maxSelectedRadius, nil)
-    while true do
-        local u = jass.FirstOfGroup(GROUP)
-        if u == 0 then
-            break
-        end
-        jass.GroupRemoveUnit(GROUP, u)
-        local unit = ac.unit(u)
-        if not unit then
-            goto CONTINUE
-        end
+    return eachUnitInRange(self, x1, y1, radius, function (unit)
         local x, y = unit:getXY()
-        if not checkPointInSector(x, y, unit:selectedRadius(), x1, y1, x2, y2, section, radius) then
-            goto CONTINUE
-        end
-        units[#units+1] = unit
-        :: CONTINUE ::
-    end
-    return units
+        return checkPointInSector(x, y, unit:selectedRadius(), x1, y1, x2, y2, section, radius)
+    end)
 end
 
 -- https://blog.csdn.net/zaffix/article/details/25077835
@@ -162,8 +225,11 @@ local function isCircleIntersectRectangle(x, y, r, x0, y0, x1, y1, x2, y2)
     return (w2 - w1) * (w2 - w1) + (h2 - h1) * (h2 - h1) <= r * r
 end
 
-local function selectInLine(point, length, angle, width)
-    local units = {}
+local function selectInLine(self)
+    local point = self._point
+    local length = self._length
+    local angle = self._angle
+    local width = self._width
     local x1, y1 = point:getXY()
     local x0 = x1 + length / 2.0 * ac.math.cos(angle)
     local y0 = y1 + length / 2.0 * ac.math.sin(angle)
@@ -171,90 +237,10 @@ local function selectInLine(point, length, angle, width)
     local x2 = x0 + width / 2.0 * ac.math.cos(angle + 90.0)
     local y2 = y0 + width / 2.0 * ac.math.sin(angle + 90.0)
 
-    jass.GroupEnumUnitsInRange(GROUP, x0, y0, r + ac.world.maxSelectedRadius, nil)
-    while true do
-        local u = jass.FirstOfGroup(GROUP)
-        if u == 0 then
-            break
-        end
-        jass.GroupRemoveUnit(GROUP, u)
-        local unit = ac.unit(u)
-        if not unit then
-            goto CONTINUE
-        end
+    return eachUnitInRange(x0, y0, r, function (unit)
         local x, y = unit:getXY()
-        if not isCircleIntersectRectangle(x, y, unit:selectedRadius(), x0, y0, x1, y1, x2, y2) then
-            goto CONTINUE
-        end
-
-        units[#units+1] = unit
-
-        :: CONTINUE ::
-    end
-    return units
-end
-
-local function checkFilter(unit, filters)
-    if not filters then
-        return true
-    end
-    for j = 1, #filters do
-        if not filters[j](unit) then
-            return false
-        end
-    end
-    return true
-end
-
-local function checkOf(unit, of)
-    if not of then
-        return true
-    end
-    local types = unit._type
-    for tp in next, of do
-        if types and types[tp] then
-            return true
-        end
-    end
-    return false
-end
-
-local function checkOfNot(unit, ofNot)
-    if not ofNot then
-        return true
-    end
-    local types = unit._type
-    for tp in next, ofNot do
-        if types and types[tp] then
-            return false
-        end
-    end
-    return true
-end
-
-local function checkAllow(unit, dead, god)
-    if not dead and not unit:isAlive() then
-        return false
-    end
-    if not god and unit:hasRestriction '无敌' then
-        return false
-    end
-    return true
-end
-
-local function filter(units, selector)
-    local passed = {}
-    for i = 1, #units do
-        local unit = units[i]
-        if checkAllow(unit, selector._dead, selector._god) and
-           checkOf(unit, selector._of) and
-           checkOfNot(unit, selector._ofNot) and
-           checkFilter(unit, selector._filters)
-        then
-            passed[#passed+1] = unit
-        end
-    end
-    return passed
+        return isCircleIntersectRectangle(x, y, unit:selectedRadius(), x0, y0, x1, y1, x2, y2)
+    end)
 end
 
 local mt = {}
@@ -379,18 +365,16 @@ function mt:ofNot(data)
 end
 
 function mt:get()
-    local units
+    local objs
     if self._selectType == 'range' then
-        units = selectInRange(self._point, self._radius)
+        objs = selectInRange(self)
     elseif self._selectType == 'sector' then
-        units = selectInSector(self._point, self._radius, self._angle, self._section)
+        objs = selectInSector(self)
     elseif self._selectType == 'line' then
-        units = selectInLine(self._point, self._length, self._angle, self._width)
+        objs = selectInLine(self)
     end
 
-    units = filter(units, self)
-
-    return units
+    return objs
 end
 
 function mt:ipairs()
