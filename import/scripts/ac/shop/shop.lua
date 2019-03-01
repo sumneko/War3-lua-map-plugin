@@ -68,10 +68,12 @@ local function setItemShow(itemSkill, buyerSkill)
         itemSkill:setOption('title', buyerSkill.title)
         itemSkill:setOption('description', buyerSkill._loadedDescription or buyerSkill.description)
         itemSkill:setOption('icon', buyerSkill.icon)
+        itemSkill:stack(buyerSkill:stack())
     else
         itemSkill:setOption('title', '空')
         itemSkill:setOption('description', '')
         itemSkill:setOption('icon', ac.table.skill['@商店物品栏'].icon)
+        itemSkill:stack(0)
     end
 end
 
