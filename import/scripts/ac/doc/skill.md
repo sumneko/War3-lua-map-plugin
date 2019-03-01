@@ -194,6 +194,14 @@ skill:activeCd(maxCd: number, ignoreCdReduce: boolean)
 skill:setCd(number)
 ```
 
+### stack
+```lua
+skill:stack(stack: number)
+
+skill:stack()
+    -> stack: number
+```
+
 ## event
 
 ### onAdd
