@@ -36,6 +36,13 @@ local function costPrice(player, item)
     end
 end
 
+local function activeCd(skill, item)
+    local cd = ac.toNumber(item.cool)
+    if cd > 0 then
+        skill:activeCd(cd)
+    end
+end
+
 local function checkBag(buyer)
     if buyer:isBagFull() then
         return false, '购买者物品栏已满'
@@ -141,8 +148,6 @@ function mt:buyItem(name, buyer)
         return nil, '购买失败'
     end
 
-    costPrice(player, item)
-
     return item
 end
 
@@ -156,6 +161,8 @@ function mt:buyItemByClient(index, player)
     local skill = unit:findSkill(index, '技能')
     if skill then
         item, err = self:buyItem(skill.itemName, player)
+        costPrice(player, item)
+        activeCd(skill, item)
     else
         err = '未找到物品'
     end

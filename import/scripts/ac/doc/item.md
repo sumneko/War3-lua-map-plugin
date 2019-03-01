@@ -80,6 +80,13 @@ drop = 1
 rune = 1
 ```
 
+### cool
+购买冷却
+
+```lua
+cool = 1
+```
+
 ## method
 
 ### getOwner
