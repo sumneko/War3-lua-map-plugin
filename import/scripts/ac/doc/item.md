@@ -122,6 +122,14 @@ item:getSlot()
     -> integer
 ```
 
+### stack
+```lua
+item:stack(stack: number)
+
+item:stack()
+    -> stack: number
+```
+
 ## event
 
 ### onAdd

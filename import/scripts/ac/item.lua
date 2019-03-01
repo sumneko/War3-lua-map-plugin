@@ -324,6 +324,7 @@ local function onDrop(unit, handle)
     for skill in unit:eachSkill '物品' do
         if skill._icon and skill._icon._handle == handle then
             item = skill._item
+            item._stack = skill._stack
             skill:remove()
             Items[handle] = nil
             break
@@ -421,6 +422,7 @@ function mt:remove()
         if self._skill._icon then
             Items[self._skill._icon._handle] = nil
         end
+        self._stack = self._skill._stack
         self._skill:remove()
         onRemove(self)
     end
@@ -500,6 +502,7 @@ function mt:give(unit, slot)
         if self._skill._icon then
             Items[self._skill._icon._handle] = nil
         end
+        self._stack = self._skill._stack
         self._skill:remove()
         onRemove(self)
     end
