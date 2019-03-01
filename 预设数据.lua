@@ -378,14 +378,17 @@ local function defaultUnit(w2l)
         unit.weaptp1 = 'instant'
         -- 攻击骰子数量
         unit.dice1 = 1
+        unit.dice2 = 1
         -- 攻击骰子面数
         unit.sides1 = 1
+        unit.sides2 = 1
         -- 魔法施放点
         unit.castpt = 0
         -- 魔法施放回复
         unit.castbsw = 0
         -- 投射物
         unit.missileart_1 = ''
+        unit.missileart_2 = ''
         -- 占用人口
         unit.fused = 0
         -- 提供人口

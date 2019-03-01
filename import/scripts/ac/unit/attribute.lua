@@ -1,7 +1,11 @@
 local jass = require 'jass.common'
 local japi = require 'jass.japi'
 
-local Care = {'生命', '生命上限', '生命恢复', '魔法', '魔法上限', '魔法恢复', '攻击', '护甲', '移动速度', '攻击速度', '冷却缩减', '减耗', '力量', '智力', '敏捷'}
+local Care = {'生命', '生命上限', '生命恢复', '魔法', '魔法上限', '魔法恢复', '攻击', '护甲', '移动速度', '攻击速度', '攻击间隔', '冷却缩减', '减耗', '力量', '智力', '敏捷'}
+
+Default = {
+    ['攻击间隔'] = 1.0,
+}
 
 local Show = {
     ['生命'] = function (unit, v)
@@ -26,6 +30,7 @@ local Show = {
     end,
     ['攻击'] = function (unit, v)
         japi.SetUnitState(unit._handle, 0x12, v-1)
+        japi.SetUnitState(unit._handle, 0x32, v-1)
     end,
     ['护甲'] = function (unit, v)
         japi.SetUnitState(unit._handle, 0x20, v)
@@ -40,6 +45,10 @@ local Show = {
             --当攻击速度小于0的时候,每点相当于攻击间隔增加1%
             japi.SetUnitState(unit._handle, 0x51, 1 + v / (100 - v))
         end
+    end,
+    ['攻击间隔'] = function (unit, v)
+        japi.SetUnitState(unit._handle, 0x25, v)
+        japi.SetUnitState(unit._handle, 0x38, v)
     end,
     ['力量'] = function (unit, v)
         jass.SetHeroStr(unit._handle, math.floor(v), true)
@@ -212,7 +221,7 @@ return function (unit, default)
         _show = {},
     }, mt)
     for _, k in ipairs(Care) do
-        local v = default and default[k] or 0.0
+        local v = default and default[k] or Default[k] or 0.0
         obj:set(k, v)
     end
     obj:set('生命', obj:get '生命上限')
