@@ -84,15 +84,14 @@ local function registerEvent(self)
 
     -- 选取初始就在区域内的单位，触发进入区域事件
     ac.wait(0, function ()
-        do return end
         if self._removed then
             return
         end
-        local x = (self._minx + self._maxx) / 2.0
-        local y = (self._miny + self._maxy) / 2.0
-        local dx = self._maxx - self._minx
-        local dy = self._maxy - self._miny
+        local x, y = self._point:getXY()
+        local dx = self._width
+        local dy = self._height
         local r = (dx * dx + dy * dy) ^ 0.5 / 2.0 + ac.world.maxSelectedRadius + 32
+
         jass.GroupEnumUnitsInRange(Group, x, y, r, nil)
         local list = {}
         while true do
@@ -118,13 +117,58 @@ local function createByXY(minx, miny, maxx, maxy)
     if not handle then
         return nil
     end
+    local x = (minx + maxx) / 2.0
+    local y = (miny + maxy) / 2.0
+    local width = maxx - minx
+    local height = maxy - miny
 
     local self = setmetatable({
         _handle = handle,
-        _minx = minx,
-        _miny = miny,
-        _maxx = maxx,
-        _maxy = maxy,
+        _point = ac.point(x, y),
+        _width = width,
+        _height = height,
+    }, mt)
+
+    return self
+end
+
+local function createByCorner(minPoint, maxPoint)
+    if not ac.isPoint(minPoint) then
+        return nil
+    end
+    if not ac.isPoint(maxPoint) then
+        return nil
+    end
+    local minx, miny = minPoint:getXY()
+    local maxx, maxy = maxPoint:getXY()
+    return createByXY(minx, miny, maxx, maxy)
+end
+
+local function createByCenter(point, width, height)
+    if not ac.isPoint(point) then
+        return nil
+    end
+    width = ac.toNumber(width)
+    height = ac.toNumber(width)
+    if width <= 0 or height <= 0 then
+        return nil
+    end
+    local x, y = point:getXY()
+    local minx = x - width / 2.0
+    local maxx = x + width / 2.0
+    local miny = y - height / 2.0
+    local maxy = y + height / 2.0
+
+    local handle = jass.Rect(minx, miny, maxx, maxy)
+    if not handle then
+        return nil
+    end
+
+    local self = setmetatable({
+        _handle = handle,
+        _point = point,
+        _width = width,
+        _height = height,
     }, mt)
 
     return self
@@ -190,12 +234,32 @@ function mt:remove()
     end
 end
 
+function mt:getPoint()
+    return self._point
+end
+
+function mt:width()
+    return self._width
+end
+
+function mt:height()
+    return self._height
+end
+
 function ac.rect(...)
     local n = select('#', ...)
     if n == 1 then
-        if type(...) == 'string' then
-            local name = ...
-            return presetRect(name)
-        end
+        local name = ...
+        return presetRect(name)
+    elseif n == 2 then
+        local minPoint, maxPoint = ...
+        return createByCorner(minPoint, maxPoint)
+    elseif n == 3 then
+        local point, width, height = ...
+        return createByCenter(point, width, height)
+    elseif n == 4 then
+        local minx, miny, maxx, maxy = ...
+        return createByXY(minx, miny, maxx, maxy)
     end
+    return nil
 end
