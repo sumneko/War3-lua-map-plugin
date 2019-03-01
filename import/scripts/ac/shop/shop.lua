@@ -195,16 +195,14 @@ function mt:updateItem()
     end
 end
 
-local function create(unit, point)
+local function create(unit)
     local shop = setmetatable({
         _unit = unit,
         _private = ac.list()
     }, mt)
     unit:removeSkill('@命令')
-    jass.UnitAddAbility(unit._handle, ac.id['Avul'])
     jass.UnitAddAbility(unit._handle, ac.id['AInv'])
     jass.UnitAddAbility(unit._handle, ac.id['@SLC'])
-    jass.UnitRemoveAbility(unit._handle, ac.id['Amov'])
 
     for i = 1, 6 do
         unit:addSkill('@商店物品栏', '物品', i)

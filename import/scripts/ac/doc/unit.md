@@ -581,3 +581,9 @@ end
 unit:removeBuff(buffName: string[, onlyOne: boolean])
     -> boolean
 ```
+
+### createShop
+```lua
+unit:createShop()
+    -> shop
+```

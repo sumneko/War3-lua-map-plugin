@@ -12,6 +12,7 @@ local buff = require 'ac.buff'
 local damage = require 'ac.damage'
 local item = require 'ac.item'
 local ORDER = require 'ac.war3.order'
+local shop = require 'ac.shop'
 local select = select
 
 local All = {}
@@ -827,6 +828,13 @@ function mt:removeBuff(name, onlyOne)
         return false
     end
     return self._buff:removeBuffByName(name, onlyOne)
+end
+
+function mt:createShop()
+    if self._removed then
+        return nil
+    end
+    return shop.create(self)
 end
 
 return {
