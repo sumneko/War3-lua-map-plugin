@@ -112,6 +112,13 @@ function mt:setItem(name, index, hotkey)
     skill.itemName = name
     skill.shop = self
     skill.index = index
+
+    for k, v in pairs(data) do
+        if skill[k] == nil then
+            skill[k] = v
+        end
+    end
+
     skill:update()
 
     skill:setOption('hotkey', hotkey)

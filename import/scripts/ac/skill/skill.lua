@@ -464,11 +464,19 @@ local function loadString(skill, str)
         local pos = pat:find(':', 1, true)
         if pos then
             local key = pat:sub(1, pos-1)
-            local value = skill[key]
+            local f, err = load('return '..key, key, "t", skill)
+            if not f then
+                return err
+            end
+            local value = f()
             local fmt = pat:sub(pos+1)
             return ('%'..fmt):format(value)
         else
-            local value = skill[pat]
+            local f, err = load('return '..pat, pat, "t", skill)
+            if not f then
+                return err
+            end
+            local value = f()
             return tostring(value)
         end
     end)
