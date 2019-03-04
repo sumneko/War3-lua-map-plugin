@@ -13,7 +13,7 @@ end
 point:createItem(name: string)
     -> item
 
-unit:createItem(name: string)
+unit:createItem(name: string[, slot: integer])
     -> item
 ```
 

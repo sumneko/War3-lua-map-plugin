@@ -43,7 +43,10 @@ local function activeCd(skill, item)
     end
 end
 
-local function checkBag(buyer)
+local function checkBag(data, buyer)
+    if data.rune == 1 then
+        return true
+    end
     if buyer:isBagFull() then
         return false, '购买者物品栏已满'
     end
@@ -133,7 +136,7 @@ function mt:buyItem(name, buyer)
         return nil, err
     end
 
-    suc, err = checkBag(buyer)
+    suc, err = checkBag(data, buyer)
     if not suc then
         return nil, err
     end
