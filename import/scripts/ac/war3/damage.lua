@@ -1,12 +1,12 @@
 local jass = require 'jass.common'
+local japi = require 'jass.japi'
 local unit = require 'ac.unit'
 
 local Trg
 local Condition = jass.Condition(function ()
     local source = ac.unit(jass.GetEventDamageSource())
     local target = ac.unit(jass.GetTriggerUnit())
-    local dmg = jass.GetEventDamage()
-    if source and target and dmg == 1.0 then
+    if source and target and japi.EXGetEventDamageData(1) == 1 then
         if source._attack then
             source._attack:dispatch(target)
         end
