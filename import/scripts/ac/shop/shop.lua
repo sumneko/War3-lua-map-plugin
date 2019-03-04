@@ -161,12 +161,12 @@ function mt:buyItemByClient(index, player)
     local skill = unit:findSkill(index, '技能')
     if skill then
         item, err = self:buyItem(skill.itemName, player)
-        costPrice(player, item)
-        activeCd(skill, item)
     else
         err = '未找到物品'
     end
     if item then
+        costPrice(player, item)
+        activeCd(skill, item)
         self:updateItem()
         return
     end
