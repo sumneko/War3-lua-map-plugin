@@ -29,10 +29,16 @@ local Show = {
         japi.SetUnitState(unit._handle, 3, v)
     end,
     ['攻击'] = function (unit, v)
+        if v > 9999999 + 1 then
+            v = 9999999
+        end
         japi.SetUnitState(unit._handle, 0x12, v-1)
         japi.SetUnitState(unit._handle, 0x32, v-1)
     end,
     ['护甲'] = function (unit, v)
+        if v > 9999999 + 1 then
+            v = 9999999
+        end
         japi.SetUnitState(unit._handle, 0x20, v)
     end,
     ['移动速度'] = function (unit, v)
@@ -51,12 +57,21 @@ local Show = {
         japi.SetUnitState(unit._handle, 0x38, v)
     end,
     ['力量'] = function (unit, v)
+        if v > 9999999 + 1 then
+            v = 9999999
+        end
         jass.SetHeroStr(unit._handle, math.floor(v), true)
     end,
     ['敏捷'] = function (unit, v)
+        if v > 9999999 + 1 then
+            v = 9999999
+        end
         jass.SetHeroAgi(unit._handle, math.floor(v), true)
     end,
     ['智力'] = function (unit, v)
+        if v > 9999999 + 1 then
+            v = 9999999
+        end
         jass.SetHeroInt(unit._handle, math.floor(v), true)
     end,
 }
