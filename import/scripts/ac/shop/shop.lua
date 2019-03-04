@@ -103,7 +103,11 @@ function mt:setItem(name, index, hotkey)
         log.error(('物品[%s]不存在'):format(name))
         return false
     end
-    local skill = unit:findSkill(index, '技能') or unit:addSkill('@商店物品', '技能', index)
+    local skill = unit:addSkill('@商店物品', '技能', index)
+    if not skill then
+        log.error(('物品[%s]添加失败'):format(name))
+        return false
+    end
     skill.item = data
     skill.itemName = name
     skill.shop = self
