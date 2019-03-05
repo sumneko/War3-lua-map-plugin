@@ -240,7 +240,6 @@ local function create(name, target, slot)
 
     local self = setmetatable({
         _id = id,
-        _name = name,
         _data = data,
         _slk = slk.item[id],
         _cache = Cache[id],
@@ -273,7 +272,9 @@ local function createDefine(name)
         log.error(('物品[%s]不存在'):format(name))
         return nil
     end
-    local define = setmetatable({}, mt)
+    local define = setmetatable({
+        _name = name,
+    }, mt)
     define.__index = define
     define.__tostring = mt.__tostring
     for k, v in pairs(data) do
