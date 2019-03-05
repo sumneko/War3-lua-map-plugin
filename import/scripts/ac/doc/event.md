@@ -166,7 +166,7 @@ end)
 
 ### 物品-即将获得
 
-返回`false`可阻止单位获得物品
+返回`true`可以无视物品栏限制获得物品；返回`false`可阻止单位获得物品。
 
 ```lua
 item:event('物品-即将获得', function (trg, item, unit)
@@ -176,10 +176,20 @@ end)
 
 ### 物品-即将拾取
 
-右键点击物品时触发，返回`false`可阻止单位的拾取行为
+右键点击物品时触发，返回`true`可以无视物品栏限制拾取物品；返回`false`可阻止单位的拾取行为。
 
 ```lua
 item:event('物品-即将拾取', function (trg, item, unit)
+    return false
+end)
+```
+
+### 物品-即将购买
+
+购买物品时触发，此时的`item`并不是一个物品对象，因此只能进行数据读取等操作。返回`true`可以无视物品栏限制购买物品；返回`false`可以阻止购买物品。
+
+```lua
+item:event('物品-即将购买', function (trg, item, buyer: unit, shop)
     return false
 end)
 ```

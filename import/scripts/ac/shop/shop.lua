@@ -189,15 +189,17 @@ function mt:buyItemByClient(index, player)
         self:updateItem()
         return
     end
-    player:message {
-        text = '{err}',
-        data = {
-            err = err,
-        },
-        color = {
-            err = 'ffff11',
+    if err then
+        player:message {
+            text = '{err}',
+            data = {
+                err = err,
+            },
+            color = {
+                err = 'ffff11',
+            }
         }
-    }
+    end
 end
 
 function mt:updateItem()

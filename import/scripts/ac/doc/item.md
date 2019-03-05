@@ -153,7 +153,7 @@ end
 
 ### onCanAdd
 
-返回`false`可阻止单位获得物品
+返回`true`可以无视物品栏限制获得物品；返回`false`可阻止单位获得物品。
 
 ```lua
 function item:onCanAdd(unit)
@@ -163,10 +163,20 @@ end
 
 ### onCanLoot
 
-右键点击物品时触发，返回`false`可阻止单位的拾取行为
+右键点击物品时触发，返回`true`可以无视物品栏限制拾取物品；返回`false`可阻止单位的拾取行为。
 
 ```lua
 function item:onCanLoot(unit)
+    return false
+end
+```
+
+### onCanBuy
+
+购买物品时触发，此时的`self`并不是一个物品对象，因此只能进行数据读取等操作。返回`true`可以无视物品栏限制购买物品；返回`false`可以阻止购买物品。
+
+```lua
+function item:onCanBuy(buyer: unit, shop)
     return false
 end
 ```
