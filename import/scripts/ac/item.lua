@@ -91,7 +91,7 @@ local function findFirstEmptyInBag(unit)
             return i
         end
     end
-    return 0
+    return nil
 end
 
 local function addAttribute(item)
@@ -189,16 +189,17 @@ local function isSlotEmpty(unit, slot)
 end
 
 local function addToUnit(item, unit, slot)
-    if not item:isRune() then
+    local res = eventDispatch(item, unit, 'onCanAdd', unit)
+    if res == false then
+        return false
+    end
+    if res ~= true and not item:isRune() then
         if unit:isBagFull() then
             return false
         end
         if slot and not isSlotEmpty(unit, slot) then
             return false
         end
-    end
-    if eventDispatch(item, unit, 'onCanAdd', unit) == false then
-        return false
     end
     item._owner = unit
     local handle = item._handle
@@ -285,10 +286,11 @@ local function onLootOrder(unit, handle)
     if not item then
         return
     end
-    if unit:isBagFull() then
-        unit:stop()
+    local res = eventDispatch(item, unit, 'onCanLoot', unit)
+    if res == true then
+        return
     end
-    if eventDispatch(item, unit, 'onCanLoot', unit) == false then
+    if res == false or unit:isBagFull() then
         unit:stop()
     end
 end
