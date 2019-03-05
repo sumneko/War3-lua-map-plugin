@@ -1,5 +1,6 @@
 local jass = require 'jass.common'
 local japi = require 'jass.japi'
+local item = require 'ac.item'
 
 local function canBuy(shop, buyer)
     if not ac.isUnit(buyer) then
@@ -43,8 +44,12 @@ local function activeCd(skill, item)
     end
 end
 
-local function checkBag(data, buyer)
-    if data.rune == 1 then
+local function checkBag(shop, itemData, buyer)
+    local res = item.onCanBuy(itemData, buyer, shop)
+    if res ~= nil then
+        return res
+    end
+    if itemData.rune == 1 then
         return true
     end
     if buyer:isBagFull() then
@@ -147,7 +152,7 @@ function mt:buyItem(name, buyer)
         return nil, err
     end
 
-    suc, err = checkBag(data, buyer)
+    suc, err = checkBag(self, ac.item[name], buyer)
     if not suc then
         return nil, err
     end

@@ -12,6 +12,7 @@ local METHOD = {
     ['onRemove']  = '物品-失去',
     ['onCanAdd']  = '物品-即将获得',
     ['onCanLoot'] = '物品-即将拾取',
+    ['onCanBuy']  = '物品-即将购买',
 }
 
 local mt = {}
@@ -357,6 +358,10 @@ local function onDrop(unit, handle)
     end
 end
 
+local function onCanBuy(itemData, buyer, shop)
+    return eventDispatch(itemData, buyer, 'onCanBuy', buyer, shop)
+end
+
 local function findItem(unit, name)
     if not unit._skill then
         return nil
@@ -567,6 +572,7 @@ return {
     onLootOrder = onLootOrder,
     onPickUp = onPickUp,
     onDrop = onDrop,
+    onCanBuy = onCanBuy,
     findItem = findItem,
     eachItem = eachItem,
     findByHandle = findByHandle,
