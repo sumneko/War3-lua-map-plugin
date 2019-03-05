@@ -179,6 +179,9 @@ function mt:buyItemByClient(index, player)
     local item, err
     local skill = unit:findSkill(index, '技能')
     if skill then
+        if skill:getCd() > 0.0 then
+            return
+        end
         item, err = self:buyItem(skill.itemName, player)
     else
         err = '未找到物品'
