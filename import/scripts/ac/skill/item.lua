@@ -230,6 +230,7 @@ function mt:updateAll()
     self:updateRange()
     self:updateTargetType()
     self:updateCost()
+    self:updateStack()
 end
 
 function mt:needRefreshItem()
