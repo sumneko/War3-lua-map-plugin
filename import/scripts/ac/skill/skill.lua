@@ -258,7 +258,7 @@ local function upgradeSkill(skill)
     end
 end
 
-local function addSkill(mgr, name, tp, slot)
+local function addSkill(mgr, name, tp, slot, onInit)
     local unit = mgr._owner
     if not unit then
         return nil
@@ -292,6 +292,10 @@ local function addSkill(mgr, name, tp, slot)
     end
 
     updateIcon(skill)
+
+    if onInit then
+        onInit(skill)
+    end
 
     return skill
 end

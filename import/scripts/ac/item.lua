@@ -164,8 +164,7 @@ local function addSkill(item, slot)
         if not slot then
             slot = findFirstEmptyInBag(unit)
         end
-        local skill = unit:addSkill(skillName, '物品', slot)
-        if skill then
+        unit:addSkill(skillName, '物品', slot, function (skill)
             skill._item = item
             item._skill = skill
             skill:stack(item._stack)
@@ -173,7 +172,7 @@ local function addSkill(item, slot)
                 jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
                 Items[skill._icon._handle] = item
             end
-        end
+        end)
         addAttribute(item)
     end
 end
