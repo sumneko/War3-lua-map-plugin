@@ -147,7 +147,7 @@ end
 local function fillSkillData(skillName, itemData)
     local skill = ac.skill[skillName]
     for k, v in pairs(itemData) do
-        if skill[k] == nil and METHOD[k] == nil then
+        if skill[k] == nil then
             skill[k] = v
         end
     end
@@ -160,7 +160,7 @@ local function addSkill(item, slot)
         skillName = createItemDummySkill(item)
     end
     if skillName then
-        fillSkillData(skillName, item._data)
+        fillSkillData(skillName, ac.table.item[item._name])
         if not slot then
             slot = findFirstEmptyInBag(unit)
         end
