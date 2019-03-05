@@ -143,16 +143,12 @@ local function createItemDummySkill(item)
     return skillName
 end
 
-local function fillSkillData(skillName, item)
+local function fillSkillData(skillName, itemData)
     local skill = ac.skill[skillName]
-    if skill.title == nil then
-        skill.title = item.title
-    end
-    if skill.description == nil then
-        skill.description = item.description
-    end
-    if skill.icon == nil then
-        skill.icon = item.icon
+    for k, v in pairs(itemData) do
+        if skill[k] == nil then
+            skill[k] = v
+        end
     end
 end
 
@@ -163,7 +159,7 @@ local function addSkill(item, slot)
         skillName = createItemDummySkill(item)
     end
     if skillName then
-        fillSkillData(skillName, item)
+        fillSkillData(skillName, item._data)
         if not slot then
             slot = findFirstEmptyInBag(unit)
         end
