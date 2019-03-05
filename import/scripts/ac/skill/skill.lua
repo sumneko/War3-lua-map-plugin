@@ -44,6 +44,18 @@ function mt:__tostring()
     end
 end
 
+local function lockEvent(skill)
+    skill:set('_lockEvent', skill._lockEvent + 1)
+end
+
+local function unlockEvent(skill)
+    skill:set('_lockEvent', skill._lockEvent - 1)
+    local first = skill._lockList and table.remove(skill._lockList, 1)
+    if first then
+        skill:eventNotify(table.unpack(first, 1, first.n))
+    end
+end
+
 local function callMethod(skill, name, ...)
     local method = skill[name]
     if not method then
@@ -53,15 +65,6 @@ local function callMethod(skill, name, ...)
     if suc then
         return res
     end
-end
-
-local function eventNotify(skill, name, ...)
-    local event = METHOD[name]
-    if event then
-        ac.eventNotify(skill, event, skill, ...)
-        skill:getOwner():eventNotify(event, skill, ...)
-    end
-    callMethod(skill, name, ...)
 end
 
 local function compileValue(name, k, v, maxLevel)
@@ -252,9 +255,9 @@ local function upgradeSkill(skill)
     skill.level = newLevel
     updateSkill(skill, newLevel)
     if newLevel == 1 then
-        eventNotify(skill, 'onAdd')
+        skill:eventNotify('onAdd')
     else
-        eventNotify(skill, 'onUpgrade')
+        skill:eventNotify('onUpgrade')
     end
 end
 
@@ -286,7 +289,10 @@ local function addSkill(mgr, name, tp, slot, onInit)
     skill._cost = computeCost(skill)
     skill._mgr = mgr
     skill._count = Count
+    skill._lockEvent = 0
     skill.level = 0
+
+    lockEvent(skill)
     for _ = 1, ac.toInteger(skill.initLevel, 1) do
         upgradeSkill(skill)
     end
@@ -296,6 +302,8 @@ local function addSkill(mgr, name, tp, slot, onInit)
     if onInit then
         onInit(skill)
     end
+
+    unlockEvent(skill)
 
     return skill
 end
@@ -323,7 +331,7 @@ local function removeSkill(unit, skill)
 
     updateIcon(skill)
 
-    eventNotify(skill, 'onRemove')
+    skill:eventNotify('onRemove')
 
     return true
 end
@@ -568,14 +576,14 @@ local function onCastStop(cast)
     cast._step = 'stop'
     destroyCast(cast)
 
-    callMethod(cast, 'onCastStop')
+    cast:eventNotify('onCastStop')
 end
 
 local function onCastBreak(cast)
     cast._step = 'break'
     destroyCast(cast)
 
-    callMethod(cast, 'onCastBreak')
+    cast:eventNotify('onCastBreak')
 end
 
 local function onCastFinish(cast)
@@ -583,7 +591,7 @@ local function onCastFinish(cast)
 
     cast._step = 'finish'
 
-    callMethod(cast, 'onCastFinish')
+    cast:eventNotify('onCastFinish')
 
     local time = ac.toNumber(cast.castFinishTime)
     if time > 0 then
@@ -600,7 +608,7 @@ local function onCastShot(cast)
 
     cast._step = 'shot'
 
-    callMethod(cast, 'onCastShot')
+    cast:eventNotify('onCastShot')
 
     local time = ac.toNumber(cast.castShotTime)
     if time > 0 then
@@ -625,7 +633,7 @@ local function onCastChannel(cast)
 
     cast._step = 'channel'
 
-    callMethod(cast, 'onCastChannel')
+    cast:eventNotify('onCastChannel')
 
     local time = ac.toNumber(cast.castChannelTime)
     if time > 0 then
@@ -645,7 +653,7 @@ local function onCastStart(cast)
     cast._stun = unit:addRestriction '硬直'
     cast._step = 'start'
 
-    callMethod(cast, 'onCastStart')
+    cast:eventNotify('onCastStart')
 
     local time = ac.toNumber(cast.castStartTime)
     if time > 0 then
@@ -729,6 +737,24 @@ function mt:getOrder()
         return nil
     end
     return icon:getOrder()
+end
+
+function mt:eventNotify(name, ...)
+    if self._lockEvent == 0 then
+        lockEvent(self)
+        local event = METHOD[name]
+        if event then
+            ac.eventNotify(self, event, self, ...)
+            self:getOwner():eventNotify(event, self, ...)
+        end
+        callMethod(self, name, ...)
+        unlockEvent(self)
+    else
+        if not self._lockList then
+            self:set('_lockList', {})
+        end
+        self._lockList[#self._lockList+1] = table.pack(name, ...)
+    end
 end
 
 function mt:castByClient(target, x, y)
