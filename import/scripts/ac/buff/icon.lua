@@ -117,7 +117,7 @@ return function (buff)
         _name = buff._name,
         _slk = slkData,
         _cache = Cache[id],
-        _ability = ac.id[id],
+        _ability = id,
         _buffId = slkData.BuffID1,
     }, mt)
 

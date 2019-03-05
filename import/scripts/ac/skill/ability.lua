@@ -282,7 +282,7 @@ return function (skill)
     local icon = setmetatable({
         _name = name,
         _id = id,
-        _ability = ac.id[id],
+        _ability = id,
         _skill = skill,
         _cache = Cache[id],
         _slk = slk.ability[id],
