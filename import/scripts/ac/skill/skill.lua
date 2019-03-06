@@ -17,6 +17,7 @@ local METHOD = {
     ['onAdd']         = '技能-获得',
     ['onRemove']      = '技能-失去',
     ['onUpgrade']     = '技能-升级',
+    ['onCanCast']     = '技能-即将施法',
     ['onCastStart']   = '技能-施法开始',
     ['onCastChannel'] = '技能-施法引导',
     ['onCastShot']    = '技能-施法出手',
@@ -669,6 +670,21 @@ local function onCastStart(cast)
     end
 end
 
+local function onCanCast(cast)
+    local res = cast:eventDispatch('onCanCast')
+    if res == false then
+        return false
+    end
+    return true
+end
+
+local function onCast(cast)
+    if not onCanCast(cast) then
+        return
+    end
+    onCastStart(cast)
+end
+
 local function addInitSkill(mgr, unit)
     local skill = unit._data.skill
     if ac.isTable(skill) then
@@ -758,6 +774,26 @@ function mt:eventNotify(name, ...)
     end
 end
 
+function mt:eventDispatch(name, ...)
+    lockEvent(self)
+    local event = METHOD[name]
+    if event then
+        local res = ac.eventDispatch(self, event, self, ...)
+        if res ~= nil then
+            unlockEvent(self)
+            return res
+        end
+        local res = self:getOwner():eventDispatch(event, self, ...)
+        if res ~= nil then
+            unlockEvent(self)
+            return res
+        end
+    end
+    local res = callMethod(self, name, ...)
+    unlockEvent(self)
+    return res
+end
+
 function mt:castByClient(target, x, y)
     -- 合法性检查
     if not self._icon then
@@ -802,7 +838,7 @@ function mt:castByClient(target, x, y)
         cast = createCast(self)
     end
 
-    onCastStart(cast)
+    onCast(cast)
 end
 
 function mt:getTarget()
