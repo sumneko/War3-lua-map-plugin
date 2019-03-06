@@ -351,7 +351,7 @@ local function onDrop(unit, handle)
     local y = jass.GetItemY(handle)
     local item
     for skill in unit:eachSkill '物品' do
-        if skill._icon and skill._icon._handle == handle then
+        if skill._item and skill._icon and skill._icon._handle == handle then
             item = skill._item
             return drop(item, ac.point(x, y))
         end
