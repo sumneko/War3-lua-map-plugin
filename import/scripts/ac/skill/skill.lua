@@ -50,7 +50,7 @@ end
 
 local function unlockEvent(skill)
     skill:set('_lockEvent', skill._lockEvent - 1)
-    local first = skill._lockList and table.remove(skill._lockList, 1)
+    local first = table.remove(skill._lockList, 1)
     if first then
         skill:eventNotify(table.unpack(first, 1, first.n))
     end
@@ -290,6 +290,7 @@ local function addSkill(mgr, name, tp, slot, onInit)
     skill._mgr = mgr
     skill._count = Count
     skill._lockEvent = 0
+    skill._lockList = {}
     skill.level = 0
 
     lockEvent(skill)
@@ -750,9 +751,6 @@ function mt:eventNotify(name, ...)
         callMethod(self, name, ...)
         unlockEvent(self)
     else
-        if not self._lockList then
-            self:set('_lockList', {})
-        end
         self._lockList[#self._lockList+1] = table.pack(name, ...)
     end
 end

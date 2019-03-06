@@ -17,30 +17,6 @@ local function callMethod(buff, name, ...)
     end
 end
 
-local function eventNotify(buff, name, ...)
-    local event = METHOD[name]
-    if event then
-        ac.eventNotify(buff, event, buff, ...)
-        buff:getOwner():eventNotify(event, buff, ...)
-    end
-    callMethod(buff, name, ...)
-end
-
-local function eventDispatch(buff, name, ...)
-    local event = METHOD[name]
-    if event then
-        local res = ac.eventDispatch(buff, event, buff, ...)
-        if res ~= nil then
-            return res
-        end
-        local res = buff:getOwner():eventDispatch(event, buff, ...)
-        if res ~= nil then
-            return res
-        end
-    end
-    return callMethod(buff, name, ...)
-end
-
 local setmetatable = setmetatable
 local mt = {}
 mt.__index = mt
@@ -128,7 +104,7 @@ local function setRemainig(buff, time)
         return
     end
     buff._timer = ac.wait(time, function ()
-        eventNotify(buff, 'onFinish')
+        buff:eventNotify('onFinish')
         buff:remove()
     end)
 end
@@ -141,7 +117,7 @@ local function setPulse(buff, pulse)
         return
     end
     buff._pulse = ac.loop(pulse, function ()
-        eventNotify(buff, 'onPulse')
+        buff:eventNotify('onPulse')
     end)
 end
 
@@ -157,7 +133,7 @@ local function onAdd(buff)
         buff._icon = icon(buff)
     end
 
-    eventNotify(buff, 'onAdd')
+    buff:eventNotify('onAdd')
 end
 
 local function onRemove(buff)
@@ -171,7 +147,7 @@ local function onRemove(buff)
         buff._icon:remove()
     end
 
-    eventNotify(buff, 'onRemove')
+    buff:eventNotify('onRemove')
 end
 
 local function isSameNameBuffs(otherBuff, buff, coverGlobal)
@@ -205,6 +181,8 @@ local function create(unit, name, data)
     self._count = Count
     self._mgr = mgr
     self._source = ac.isUnit(self.source) and self.source or unit
+    self._lockEvent = 0
+    self._lockList = {}
 
     if not unit:isAlive() and self.keep ~= 1 then
         return nil
@@ -215,7 +193,7 @@ local function create(unit, name, data)
     if coverType == 0 then
         for otherBuff in mgr._buffs:pairs() do
             if isSameNameBuffs(otherBuff, self, coverGlobal) then
-                local res = eventDispatch(otherBuff, 'onCover', self)
+                local res = otherBuff:eventDispatch('onCover', self)
                 if res == false then
                     return nil
                 else
@@ -226,7 +204,7 @@ local function create(unit, name, data)
     elseif coverType == 1 then
         for otherBuff in mgr._buffs:pairs() do
             if isSameNameBuffs(otherBuff, self, coverGlobal) then
-                local res = eventDispatch(otherBuff, 'onCover', self)
+                local res = otherBuff:eventDispatch('onCover', self)
                 if res == true then
                     mgr._buffs:insertBefore(self, otherBuff)
                     break
@@ -275,6 +253,30 @@ function mt:pulse(pulse)
     else
         return ac.toNumber(self.pulse)
     end
+end
+
+function mt:eventNotify(name, ...)
+    local event = METHOD[name]
+    if event then
+        ac.eventNotify(self, event, self, ...)
+        self:getOwner():eventNotify(event, self, ...)
+    end
+    callMethod(self, name, ...)
+end
+
+function mt:eventDispatch(name, ...)
+    local event = METHOD[name]
+    if event then
+        local res = ac.eventDispatch(self, event, self, ...)
+        if res ~= nil then
+            return res
+        end
+        local res = self:getOwner():eventDispatch(event, self, ...)
+        if res ~= nil then
+            return res
+        end
+    end
+    return callMethod(self, name, ...)
 end
 
 ac.buff = setmetatable({}, {
