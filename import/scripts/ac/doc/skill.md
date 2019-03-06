@@ -202,6 +202,12 @@ skill:stack()
     -> stack: number
 ```
 
+### getItem
+```lua
+skill:getItem()
+    -> item
+```
+
 ## event
 
 ### onAdd

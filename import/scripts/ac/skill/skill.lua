@@ -886,6 +886,10 @@ function mt:stack(n)
     end
 end
 
+function mt:getItem()
+    return self._item
+end
+
 ac.skill = setmetatable({}, {
     __index = function (self, name)
         local skill = createDefine(name)
