@@ -108,6 +108,16 @@ skill:event('技能-升级', function (trg, skill)
 end)
 ```
 
+### 技能-即将施法
+
+返回`false`可以阻止技能发动。
+
+```lua
+skill:event('技能-即将施法', function (trg, skill)
+    return false
+end)
+```
+
 ### 技能-施法开始
 ```lua
 skill:event('技能-施法开始', function (trg, skill)

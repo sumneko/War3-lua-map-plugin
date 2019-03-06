@@ -228,6 +228,16 @@ function skill:onUpgrade()
 end
 ```
 
+### onCanCast
+
+返回`false`可以阻止技能发动。
+
+```lua
+function skill:onCanCast()
+    return false
+end
+```
+
 ### onCastStart
 ```lua
 function skill:onCastStart()
