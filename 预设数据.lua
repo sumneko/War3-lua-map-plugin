@@ -359,8 +359,8 @@ local function insertBuff(w2l)
             Name = '@状态技能-' .. tostring(i),
             DataA = {0},
             targs = {'none'},
-            Dur = {0},
-            HeroDur = {0},
+            Dur = {10},
+            HeroDur = {10},
             Buttonpos_2 = -11,
             BuffId = {buffId},
         }
