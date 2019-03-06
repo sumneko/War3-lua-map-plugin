@@ -41,15 +41,11 @@ end
 local function dispatch(damage)
     local source = damage.source
     local target = damage.target
-    local skill = damage.skill
     if not source then
         error('伤害没有来源')
     end
     if not target then
         error('伤害没有目标')
-    end
-    if not skill then
-        error('伤害没有关联技能')
     end
 
     damage.currentDamage = damage.damage
