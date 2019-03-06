@@ -449,14 +449,14 @@ function mt:selectedRadius(n)
     end
 end
 
-function mt:addSkill(name, type, slot)
+function mt:addSkill(name, type, slot, onInit)
     if self._removed then
         return nil
     end
     if not self._skill then
         return nil
     end
-    return self._skill:addSkill(name, type, slot)
+    return self._skill:addSkill(name, type, slot, onInit)
 end
 
 function mt:findSkill(name, type)
