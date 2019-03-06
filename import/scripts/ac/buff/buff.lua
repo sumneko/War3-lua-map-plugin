@@ -6,6 +6,21 @@ local METHOD = {
 }
 local Count = 0
 
+local function lockEvent(buff)
+    buff._lockEvent = buff._lockEvent + 1
+end
+
+local function unlockEvent(buff)
+    buff._lockEvent = buff._lockEvent - 1
+    if buff._lockEvent ~= 0 then
+        return
+    end
+    local first = table.remove(buff._lockList, 1)
+    if first then
+        buff:eventNotify(table.unpack(first, 1, first.n))
+    end
+end
+
 local function callMethod(buff, name, ...)
     local method = buff[name]
     if not method then
@@ -256,27 +271,38 @@ function mt:pulse(pulse)
 end
 
 function mt:eventNotify(name, ...)
-    local event = METHOD[name]
-    if event then
-        ac.eventNotify(self, event, self, ...)
-        self:getOwner():eventNotify(event, self, ...)
+    if self._lockEvent == 0 then
+        lockEvent(self)
+        local event = METHOD[name]
+        if event then
+            ac.eventNotify(self, event, self, ...)
+            self:getOwner():eventNotify(event, self, ...)
+        end
+        callMethod(self, name, ...)
+        unlockEvent(self)
+    else
+        self._lockList[#self._lockList+1] = table.pack(name, ...)
     end
-    callMethod(self, name, ...)
 end
 
 function mt:eventDispatch(name, ...)
+    lockEvent(self)
     local event = METHOD[name]
     if event then
         local res = ac.eventDispatch(self, event, self, ...)
         if res ~= nil then
+            unlockEvent(self)
             return res
         end
         local res = self:getOwner():eventDispatch(event, self, ...)
         if res ~= nil then
+            unlockEvent(self)
             return res
         end
     end
-    return callMethod(self, name, ...)
+    local res = callMethod(self, name, ...)
+    unlockEvent(self)
+    return res
 end
 
 ac.buff = setmetatable({}, {

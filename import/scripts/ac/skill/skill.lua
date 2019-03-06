@@ -50,6 +50,9 @@ end
 
 local function unlockEvent(skill)
     skill:set('_lockEvent', skill._lockEvent - 1)
+    if skill._lockEvent ~= 0 then
+        return
+    end
     local first = table.remove(skill._lockList, 1)
     if first then
         skill:eventNotify(table.unpack(first, 1, first.n))
