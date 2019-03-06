@@ -1,8 +1,12 @@
 # ac.game
 
 ### 游戏-造成伤害
+
+返回`boolean`后，底层将不再结算伤害。
+
 ```lua
 ac.game:event('游戏-造成伤害', function (trg, unit, damage)
+    return boolean
 end)
 ```
 
