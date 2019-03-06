@@ -13,6 +13,7 @@ function mt:shotInstant(target)
         target = target,
         skill  = self,
         damage = self._owner:get '攻击',
+        _commonAttack = true,
     }
     self._owner:eventNotify('单位-攻击出手', self._owner, target, dmg)
     damage.dispatch(dmg)
@@ -24,6 +25,7 @@ function mt:shotMissile(target)
         target = target,
         skill  = self,
         damage = self._owner:get '攻击',
+        _commonAttack = true,
     }
     if not self.mover then
         return

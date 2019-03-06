@@ -7,6 +7,10 @@ mt.target = nil
 mt.damage = 0.0
 mt.currentDamage = 0.0
 
+function mt:isCommonAttack()
+    return self._commonAttack == true
+end
+
 local function onDefence(damage)
     local def = damage.target:get '护甲'
     if def < 0 then
