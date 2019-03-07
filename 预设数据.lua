@@ -336,6 +336,7 @@ local function insertItem(w2l)
             usable = 1,
             abilList = abilityId,
             droppable = 0,
+            file = [[Objects\InventoryItems\tome\tome.mdl]],
         }
     end
 

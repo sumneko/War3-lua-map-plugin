@@ -296,25 +296,6 @@ local function onLootOrder(unit, handle)
     end
 end
 
-local function onPickUp(unit, handle)
-    local item = Items[handle]
-    if not item then
-        return
-    end
-
-    local suc = addToUnit(item, unit)
-    if suc then
-        return
-    end
-
-    local x, y = item:getXY()
-
-    Items[handle] = nil
-    jass.RemoveItem(handle)
-    item._handle = jass.CreateItem(ac.id[item._id], x, y)
-    Items[item._handle] = item
-end
-
 local function drop(item, point)
     local skill = item._skill
     if not skill then
@@ -356,6 +337,26 @@ local function onDrop(unit, handle)
             return drop(item, ac.point(x, y))
         end
     end
+end
+
+local function onPickUp(unit, handle)
+    local item = Items[handle]
+    if not item then
+        return
+    end
+
+    drop(item, unit:getPoint())
+    local suc = addToUnit(item, unit)
+    if suc then
+        return
+    end
+
+    local x, y = item:getXY()
+
+    Items[handle] = nil
+    jass.RemoveItem(handle)
+    item._handle = jass.CreateItem(ac.id[item._id], x, y)
+    Items[item._handle] = item
 end
 
 local function onCanBuy(itemData, buyer, shop)
