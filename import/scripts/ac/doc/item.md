@@ -137,6 +137,12 @@ item:stack()
     -> stack: number
 ```
 
+### getPoint
+```lua
+item:getPoint()
+    -> point
+```
+
 ## event
 
 ### onAdd
