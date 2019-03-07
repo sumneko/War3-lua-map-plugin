@@ -389,15 +389,19 @@ function mt:setOwner(player, changeColor)
     return true
 end
 
-function mt:particle(model, socket)
+function mt:particle(model, socket, life)
     local handle = jass.AddSpecialEffectTarget(model, self._handle, socket)
     if handle == 0 then
         return nil
     else
-        return createDestructor(self, function ()
+        local destructor = createDestructor(self, function ()
             -- 这里不做引用计数保护，但析构器会保证这段代码只会运行一次
             jass.DestroyEffect(handle)
         end)
+        if ac.isNumber(life) then
+            ac.wait(life, destructor)
+        end
+        return destructor
     end
 end
 

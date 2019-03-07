@@ -248,7 +248,7 @@ unit:setOwner(player[, changeColor: boolean])
 
 ### particle
 ```lua
-unit:particle(model: string, socket: string)
+unit:particle(model: string, socket: string[, life: number])
     -> destructor: function
 ```
 
