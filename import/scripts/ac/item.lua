@@ -248,6 +248,7 @@ local function create(name, target, slot)
     if ac.isPoint(target) then
         local x, y = target:getXY()
         self._handle = jass.CreateItem(ac.id[id], x, y)
+        self._point = target
         if self._handle == 0 then
             poolAdd(id)
             return nil
