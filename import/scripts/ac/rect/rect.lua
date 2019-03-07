@@ -149,7 +149,7 @@ local function createByCenter(point, width, height)
         return nil
     end
     width = ac.toNumber(width)
-    height = ac.toNumber(width)
+    height = ac.toNumber(height)
     if width <= 0 or height <= 0 then
         return nil
     end
