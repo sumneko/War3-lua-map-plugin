@@ -92,6 +92,13 @@ cost = 100
 hotkey = 'Q'
 ```
 
+### animation
+动画
+
+```lua
+animation = 'attack'
+```
+
 ### castStartTime
 施法开始时间
 

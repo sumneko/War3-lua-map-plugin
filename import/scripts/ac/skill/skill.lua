@@ -654,6 +654,8 @@ local function onCastStart(cast)
     local unit = cast._owner
 
     unit:stopCast()
+    jass.SetUnitAnimation(unit._handle, cast.animation)
+
     cast._mgr._currentSkill = cast
     cast._stun = unit:addRestriction '硬直'
     cast._step = 'start'
