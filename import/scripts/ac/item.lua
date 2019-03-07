@@ -248,7 +248,6 @@ local function create(name, target, slot)
     if ac.isPoint(target) then
         local x, y = target:getXY()
         self._handle = jass.CreateItem(ac.id[id], x, y)
-        self._point = target
         if self._handle == 0 then
             poolAdd(id)
             return nil
@@ -313,7 +312,6 @@ local function drop(item, point)
     local id = item._id
     local x, y = point:getXY()
     item._handle = jass.CreateItem(ac.id[id], x, y)
-    item._point = point
     if item._handle == 0 then
         item:remove()
         return nil
@@ -545,7 +543,7 @@ function mt:getPoint()
     if self._owner then
         return self._owner:getPoint()
     else
-        return self._point
+        return ac.point(jass.GetItemX(self._handle), jass.GetItemY(self._handle))
     end
 end
 
@@ -553,7 +551,7 @@ function mt:getXY()
     if self._owner then
         return self._owner:getXY()
     else
-        return self._point:getXY()
+        return jass.GetItemX(self._handle), jass.GetItemY(self._handle)
     end
 end
 
