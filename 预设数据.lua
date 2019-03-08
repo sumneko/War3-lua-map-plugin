@@ -394,6 +394,12 @@ local function defaultUnit(w2l)
         unit.fused = 0
         -- 提供人口
         unit.fmade = 0
+        -- 力量提升
+        unit.strplus = 0.0
+        -- 敏捷提升
+        unit.agiplus = 0.0
+        -- 智力提升
+        unit.intplus = 0.0
     end
 end
 
