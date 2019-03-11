@@ -215,6 +215,12 @@ skill:getItem()
     -> item
 ```
 
+### stop
+```lua
+skill:stop()
+    -> boolean
+```
+
 ## event
 
 ### onAdd

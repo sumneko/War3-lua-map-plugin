@@ -401,6 +401,11 @@ unit:attack(point/unit)
 ### stop
 ```lua
 unit:stop()
+```
+
+### stopWalk
+```lua
+unit:stopWalk()
     -> boolean
 ```
 

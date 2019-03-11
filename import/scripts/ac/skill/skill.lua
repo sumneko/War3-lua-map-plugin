@@ -705,9 +705,9 @@ end
 mt.__index = mt
 mt.type = 'skill'
 
-function mt:_stop()
+function mt:stop()
     if not self:isCast() then
-        return
+        return false
     end
     if self._step == 'start' then
         onCastBreak(self)
@@ -718,6 +718,7 @@ function mt:_stop()
     elseif self._step == 'finish' then
         onCastStop(self)
     end
+    return true
 end
 
 function mt:getOwner()

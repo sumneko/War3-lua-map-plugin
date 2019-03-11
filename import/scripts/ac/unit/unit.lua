@@ -313,6 +313,8 @@ function mt:kill(target)
     jass.KillUnit(handle)
     target:set('生命', 0)
 
+    self:stopCast()
+
     if target._buff then
         target._buff:onDead()
     end
@@ -507,9 +509,25 @@ function mt:removeSkill(name, onlyOne)
 end
 
 function mt:stopCast()
+    if not self._skill then
+        return false
+    end
+    local cast = self._skill:currentSkill()
+    if not cast then
+        return false
+    end
+    return cast:stop()
 end
 
 function mt:_stopCastByClient()
+    if not self._skill then
+        return false
+    end
+    local cast = self._skill:currentSkill()
+    if not cast then
+        return false
+    end
+    return cast:stop()
 end
 
 function mt:event(name, f)
@@ -585,9 +603,14 @@ function mt:attack(target)
     return false
 end
 
-function mt:stop()
+function mt:stopWalk()
     local x, y = (self:getPoint() - {self:getFacing(), 1}):getXY()
     return jass.IssuePointOrderById(self._handle, ORDER['move'], x, y)
+end
+
+function mt:stop()
+    self:stopCast()
+    self:stopWalk()
 end
 
 function mt:reborn(point, showEffect)
