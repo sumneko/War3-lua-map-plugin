@@ -7,6 +7,7 @@ local slk = require 'jass.slk'
 local Flag = {}
 local LastSelecting
 local MinX, MinY, MaxX, MaxY
+local DummyPoint = jass.Location(0, 0)
 
 local function updateSelect()
     local selecting = ac.unit(message.selection())
@@ -100,10 +101,16 @@ local function bounds()
     return MinX, MinY, MaxX, MaxY
 end
 
+local function getZ(x, y)
+    jass.MoveLocation(DummyPoint, x, y)
+    return jass.GetLocationZ(DummyPoint)
+end
+
 ac.world = {
     update = update,
     tick = getTick,
     flag = flag,
     maxSelectedRadius = slk.misc.Misc.MaxCollisionRadius,
     bounds = bounds,
+    getZ = getZ,
 }

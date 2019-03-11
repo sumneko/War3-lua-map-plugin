@@ -60,7 +60,7 @@ end
 function mt:height(n)
     if ac.isNumber(n) then
         self._height = n
-        japi.EXSetEffectZ(self._handle, n)
+        japi.EXSetEffectZ(self._handle, n + ac.world.getZ(self._x, self._y))
     else
         return self._height
     end
