@@ -596,3 +596,9 @@ unit:removeBuff(buffName: string[, onlyOne: boolean])
 unit:createShop()
     -> shop
 ```
+
+### cast
+```lua
+unit:cast(name: string[, target: any][, data: table])
+    -> boolean
+```

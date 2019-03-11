@@ -221,6 +221,12 @@ skill:stop()
     -> boolean
 ```
 
+### cast
+```lua
+skill:cast([target: any][, data: table])
+    -> boolean
+```
+
 ## event
 
 ### onAdd

@@ -878,6 +878,14 @@ function mt:createShop()
     return shop.create(self)
 end
 
+function mt:cast(name, ...)
+    local skl = self:findSkill(name)
+    if not skl then
+        return false
+    end
+    return skl:cast(...)
+end
+
 return {
     list = UNIT_LIST,
     update = update,

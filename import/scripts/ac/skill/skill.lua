@@ -682,9 +682,10 @@ end
 
 local function onCast(cast)
     if not onCanCast(cast) then
-        return
+        return false
     end
     onCastStart(cast)
+    return true
 end
 
 local function addInitSkill(mgr, unit)
@@ -797,6 +798,62 @@ function mt:eventDispatch(name, ...)
     return res
 end
 
+function mt:cast(...)
+    -- 不能发动冷却中的技能
+    if self:getCd() > 0.0 then
+        return false
+    end
+
+    local cast, target, data
+    if self.targetType == '点' then
+        target, data = ...
+        if not ac.isPoint(target) then
+            return false
+        end
+        cast = createCast(self)
+        cast._targetType = '点'
+        cast._targetPoint = target
+    elseif self.targetType == '单位' then
+        target, data = ...
+        if not ac.isUnit(target) then
+            return false
+        end
+        cast = createCast(self)
+        cast._targetType = '单位'
+        cast._targetUnit = target
+    elseif self.targetType == '单位或点' then
+        target, data = ...
+        cast = createCast(self)
+        cast._targetType = '单位或点'
+        if ac.isUnit(target) then
+            cast._targetUnit = target
+        elseif ac.isPoint(target) then
+            cast._targetPoint = target
+        else
+            return false
+        end
+    elseif self.targetType == '物品' then
+        target, data = ...
+        if not ac.isItem(target) then
+            return false
+        end
+        cast = createCast(self)
+        cast._targetType = '物品'
+        cast._targetItem = target
+    else
+        data = ...
+        cast = createCast(self)
+    end
+
+    if ac.isTable(data) then
+        for k, v in pairs(data) do
+            cast[k] = v
+        end
+    end
+
+    return onCast(cast)
+end
+
 function mt:castByClient(target, x, y)
     -- 合法性检查
     if not self._icon then
@@ -841,7 +898,7 @@ function mt:castByClient(target, x, y)
         cast = createCast(self)
     end
 
-    onCast(cast)
+    return onCast(cast)
 end
 
 function mt:getTarget()
