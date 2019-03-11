@@ -19,7 +19,7 @@ local function onMove(mover, delta)
     local me, dest = mover.mover:getPoint(), mover.target:getPoint()
     local angle = me / dest
     local distance = me * dest - mover.target:getCollision()
-    local step = mover.speed * delta
+    local step = mover.speed * mover.timeRate * delta
     mover:setAngle(angle)
     if step >= distance then
         mover.mover:setPoint(me - {angle, distance})

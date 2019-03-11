@@ -19,7 +19,7 @@ end
 
 local function onMove(mover, delta)
     local me = mover.mover:getPoint()
-    local step = mover.speed * delta
+    local step = mover.speed * mover.timeRate * delta
     local distance = mover.distance - mover._moved
     local angle = mover.angle
     if step >= distance then

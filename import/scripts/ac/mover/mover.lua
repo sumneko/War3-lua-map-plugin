@@ -12,6 +12,7 @@ mt.source = nil
 mt._process = 0.0
 mt._height = 0.0
 mt.hitArea = 0.0
+mt.timeRate = 1.0
 
 local function eventNotify(mover, name, ...)
     local method = mover[name]
@@ -96,18 +97,24 @@ end
 local function update(delta)
     -- 1. 更新移动
     for mover in Movers:pairs() do
-        updateMove(mover, delta)
-        updateHeight(mover)
+        if not mover:isPause() then
+            updateMove(mover, delta)
+            updateHeight(mover)
+        end
     end
 
     -- 2. 检查阻挡
     for mover in Movers:pairs() do
-        checkBlock(mover)
+        if not mover:isPause() then
+            checkBlock(mover)
+        end
     end
 
     -- 3. 检查碰撞
     for mover in Movers:pairs() do
-        checkHit(mover)
+        if not mover:isPause() then
+            checkHit(mover)
+        end
     end
 
     -- 4. 检查完成
@@ -148,6 +155,7 @@ local function computeParams(mover)
     if not ac.isPoint(mover.start) then
         mover.start = mover.source:getPoint()
     end
+    mover.timeRate = ac.toNumber(mover.timeRate, 1.0)
     if mover.fix then
         mover.start = mover.start - {mover.fix[1] + mover.source:getFacing(), mover.fix[2]}
     end
@@ -233,6 +241,33 @@ function mt:setProcess(n)
         return
     end
     self._process = n
+end
+
+function mt:setOption(k, v)
+    if k == 'timeRate' then
+        if not ac.isNumber(v) then
+            return
+        end
+    end
+    self[k] = v
+end
+
+function mt:pause()
+    self._pause = (self._pause or 0) + 1
+end
+
+function mt:resume()
+    self._pause = (self._pause or 0) - 1
+end
+
+function mt:isPause()
+    if not self._pause then
+        return false
+    end
+    if self._pause == 0 then
+        return false
+    end
+    return true
 end
 
 return {

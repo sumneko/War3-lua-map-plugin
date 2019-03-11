@@ -85,6 +85,11 @@
 
 可选参数，默认不碰撞同一个单位。设置为`true`后可能会以极高的频率触发同一个单位的`onHit`事件。
 
+### timeRate
+运动的时间流逝速度
+
+可选参数，运动的速度与加速度都会倍乘该系数，默认为`1.0`。
+
 ## method
 
 ### remove
@@ -110,6 +115,32 @@ mover:stepProcess(number)
 ### setProcess
 ```lua
 mover:setProcess(number)
+```
+
+### pause
+暂停的运动不会改变位置与速度，也不会触发完成以外的事件。
+
+```lua
+mover:pause()
+```
+
+### resume
+```lua
+mover:resume()
+```
+
+### isPause
+```lua
+mover:isPause()
+    -> boolean
+```
+
+### setOption
+```lua
+mover:setOption(name: string, value: any)
+
+name: string
+    | 'timeRate'
 ```
 
 ## event

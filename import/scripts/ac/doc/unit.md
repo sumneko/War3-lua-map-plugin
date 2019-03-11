@@ -360,6 +360,7 @@ unit:moverTarget {
     [hitType = string],
     [hitArea = number],
     [hitSame = boolean],
+    [timeRate = number(1.0)],
 }
     -> mover
 ```
@@ -382,6 +383,7 @@ unit:moverLine {
     [hitType = string],
     [hitArea = number],
     [hitSame = boolean],
+    [timeRate = number(1.0)],
 }
     -> mover
 ```
