@@ -6,6 +6,7 @@ local jass = require 'jass.common'
 local slk = require 'jass.slk'
 local Flag = {}
 local LastSelecting
+local MinX, MinY, MaxX, MaxY
 
 local function updateSelect()
     local selecting = ac.unit(message.selection())
@@ -87,9 +88,22 @@ local function flag(key, value)
     end
 end
 
+local function bounds()
+    if not MinX then
+        local handle = jass.GetWorldBounds()
+        MinX = jass.GetRectMinX(handle)
+        MinY = jass.GetRectMinY(handle)
+        MaxX = jass.GetRectMaxX(handle)
+        MaxY = jass.GetRectMaxY(handle)
+        jass.RemoveRect(handle)
+    end
+    return MinX, MinY, MaxX, MaxY
+end
+
 ac.world = {
     update = update,
     tick = getTick,
     flag = flag,
     maxSelectedRadius = slk.misc.Misc.MaxCollisionRadius,
+    bounds = bounds,
 }

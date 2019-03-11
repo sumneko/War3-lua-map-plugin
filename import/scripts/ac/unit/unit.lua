@@ -351,10 +351,21 @@ function mt:setPoint(point)
         return false
     end
     local x, y = point:getXY()
+    local minx, miny, maxx, maxy = ac.world.bounds()
+    if x < minx then
+        x = minx
+    elseif x > maxx then
+        x = maxx
+    end
+    if y < miny then
+        y = miny
+    elseif y > maxy then
+        y = maxy
+    end
     jass.SetUnitX(self._handle, x)
     jass.SetUnitY(self._handle, y)
     if self._lastPoint then
-        self._lastPoint = point
+        self._lastPoint = ac.point(x, y)
     end
     return true
 end
