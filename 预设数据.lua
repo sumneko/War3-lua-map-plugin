@@ -400,6 +400,9 @@ local function defaultUnit(w2l)
         unit.agiplus = 0.0
         -- 智力提升
         unit.intplus = 0.0
+        -- 技能
+        unit.abillist = ''
+        unit.heroabillist = ''
     end
 end
 
@@ -460,13 +463,13 @@ function mt:on_full(w2l)
         return
     end
 
+    defaultUnit(w2l)
+    defaultMisc(w2l)
+
     insertUnit(w2l)
     insertAbility(w2l)
     insertItem(w2l)
     insertBuff(w2l)
-
-    defaultUnit(w2l)
-    defaultMisc(w2l)
 end
 
 return mt
