@@ -299,7 +299,7 @@ type: string
 
 ### findSkill
 ```lua
-unit:findSkill(name: string[, type: string])
+unit:findSkill(name: string/index: integer[, type: string])
     -> skill
 
 type: string

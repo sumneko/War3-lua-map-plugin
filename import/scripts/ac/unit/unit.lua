@@ -313,10 +313,13 @@ function mt:kill(target)
     jass.KillUnit(handle)
     target:set('生命', 0)
 
-    self:stopCast()
+    target:stopCast()
 
     if target._buff then
         target._buff:onDead()
+    end
+    if target._shop then
+        shop.onDead(target._shop)
     end
 
     target:eventNotify('单位-死亡', target, self)

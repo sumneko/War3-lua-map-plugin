@@ -257,6 +257,21 @@ local function create(unit)
     return shop
 end
 
+local function onDead(shop)
+    local unit = shop._unit
+    for i = 1, 6 do
+        local skill = unit:findSkill(i, '物品')
+        if skill then
+            skill:remove()
+        end
+    end
+    shop._timer:remove()
+    shop._trg1:remove()
+    shop._trg2:remove()
+    shop._trg3:remove()
+end
+
 return {
     create = create,
+    onDead = onDead,
 }
