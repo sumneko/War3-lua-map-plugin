@@ -602,3 +602,17 @@ unit:createShop()
 unit:cast(name: string[, target: any][, data: table])
     -> boolean
 ```
+
+### speed
+```lua
+unit:speed([speed: number])
+    -> [speed: number]
+```
+
+### color
+
+范围均为[0.0-1.0]。
+
+```lua
+unit:color(r: number, g: number, b: number, a: number)
+```

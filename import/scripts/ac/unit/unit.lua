@@ -886,6 +886,23 @@ function mt:cast(name, ...)
     return skl:cast(...)
 end
 
+function mt:speed(n)
+    if ac.isNumber(n) then
+        jass.SetUnitTimeScale(self._handle, n)
+        self._speed = n
+    else
+        return self._speed or 1.0
+    end
+end
+
+function mt:color(r, g, b, a)
+    r = math.floor(ac.toNumber(r, 1.0) * 255)
+    g = math.floor(ac.toNumber(g, 1.0) * 255)
+    b = math.floor(ac.toNumber(b, 1.0) * 255)
+    a = math.floor(ac.toNumber(a, 1.0) * 255)
+    jass.SetUnitVertexColor(self._handle, r, g, b, a)
+end
+
 return {
     list = UNIT_LIST,
     update = update,
