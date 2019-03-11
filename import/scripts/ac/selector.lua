@@ -110,7 +110,7 @@ local function eachItemInRange(_, x, y, r, callback)
             goto CONTINUE
         end
 
-        if callback(it) then
+        if callback(it) and it:isShow() then
             items[#items+1] = it
         end
 

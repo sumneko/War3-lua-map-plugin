@@ -143,6 +143,22 @@ item:getPoint()
     -> point
 ```
 
+### show
+```lua
+item:show()
+```
+
+### hide
+```lua
+item:hide()
+```
+
+### isShow
+```lua
+item:isShow()
+    -> boolean
+```
+
 ## event
 
 ### onAdd

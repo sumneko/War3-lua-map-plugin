@@ -189,6 +189,9 @@ local function isSlotEmpty(unit, slot)
 end
 
 local function addToUnit(item, unit, slot)
+    if item._removed then
+        return false
+    end
     local res = eventDispatch(item, unit, 'onCanAdd', unit)
     if res == false then
         return false
@@ -317,6 +320,10 @@ local function drop(item, point)
         return nil
     end
 
+    if not item:isShow() then
+        jass.SetItemVisible(item._handle, false)
+    end
+
     item:updateAll()
 
     Items[item._handle] = item
@@ -329,12 +336,13 @@ end
 local function onDrop(unit, handle)
     local x = jass.GetItemX(handle)
     local y = jass.GetItemY(handle)
-    local item
-    for skill in unit:eachSkill '物品' do
-        if skill._item and skill._icon and skill._icon._handle == handle then
-            item = skill._item
-            return drop(item, ac.point(x, y))
+    local item = Items[handle]
+    jass.RemoveItem(handle)
+    if item then
+        if item._owner ~= unit then
+            return
         end
+        return drop(item, ac.point(x, y))
     end
 end
 
@@ -355,7 +363,14 @@ local function onPickUp(unit, handle)
     Items[handle] = nil
     jass.RemoveItem(handle)
     item._handle = jass.CreateItem(ac.id[item._id], x, y)
+    if item._handle == 0 then
+        item:remove()
+        return nil
+    end
     Items[item._handle] = item
+    if not item:isShow() then
+        jass.SetItemVisible(item._handle, false)
+    end
 end
 
 local function onCanBuy(itemData, buyer, shop)
@@ -471,6 +486,9 @@ function mt:isRune()
 end
 
 function mt:give(unit, slot)
+    if self._removed then
+        return false
+    end
     if not ac.isUnit(unit) then
         return false
     end
@@ -512,8 +530,7 @@ function mt:give(unit, slot)
         onRemove(self)
     end
     -- 添加给单位
-    addToUnit(self, unit, slot)
-    return true
+    return addToUnit(self, unit, slot)
 end
 
 function mt:getSlot()
@@ -553,6 +570,30 @@ function mt:getXY()
     else
         return jass.GetItemX(self._handle), jass.GetItemY(self._handle)
     end
+end
+
+function mt:show()
+    self._hide = (self._hide or 0) - 1
+    if self._hide == 0 then
+        jass.SetItemVisible(self._handle, true)
+    end
+end
+
+function mt:hide()
+    self._hide = (self._hide or 0) + 1
+    if self._hide == 1 then
+        jass.SetItemVisible(self._handle, false)
+    end
+end
+
+function mt:isShow()
+    if not self._hide then
+        return true
+    end
+    if self._hide == 0 then
+        return true
+    end
+    return false
 end
 
 ac.item = setmetatable({}, {
