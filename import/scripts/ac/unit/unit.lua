@@ -706,9 +706,9 @@ end
 
 function mt:isAlly(other)
     if ac.isPlayer(other) then
-        return jass.IsPlayerEnemy(self._owner._handle, other._handle)
+        return jass.IsPlayerAlly(self._owner._handle, other._handle)
     elseif ac.isUnit(other) then
-        return jass.IsPlayerEnemy(self._owner._handle, other._owner._handle)
+        return jass.IsPlayerAlly(self._owner._handle, other._owner._handle)
     end
     return false
 end
