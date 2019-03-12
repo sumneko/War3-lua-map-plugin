@@ -2,20 +2,50 @@ local jass = require 'jass.common'
 local japi = require 'jass.japi'
 
 local Add = {
-    ['硬直'] = function (unit)
+    ['硬直'] = function (self, unit)
         japi.EXPauseUnit(unit._handle, true)
     end,
-    ['无敌'] = function (unit)
+    ['无敌'] = function (self, unit)
         jass.SetUnitInvulnerable(unit._handle, true)
+    end,
+    ['幽灵'] = function (self, unit)
+        japi.EXSetUnitCollisionType(false, unit._handle, 1)
+    end,
+    ['定身'] = function (self, unit)
+        self._moveType = self._moveType | 0x01
+        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+    end,
+    ['飞行'] = function (self, unit)
+        self._moveType = self._moveType | 0x04
+        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+    end,
+    ['疾风步'] = function (self, unit)
+        self._moveType = self._moveType | 0x10
+        japi.EXSetUnitMoveType(unit._handle, self._moveType)
     end,
 }
 
 local Remove = {
-    ['硬直'] = function (unit)
+    ['硬直'] = function (self, unit)
         japi.EXPauseUnit(unit._handle, false)
     end,
-    ['无敌'] = function (unit)
+    ['无敌'] = function (self, unit)
         jass.SetUnitInvulnerable(unit._handle, false)
+    end,
+    ['幽灵'] = function (self, unit)
+        japi.EXSetUnitCollisionType(true, unit._handle, 1)
+    end,
+    ['定身'] = function (self, unit)
+        self._moveType = self._moveType ~ 0x01
+        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+    end,
+    ['飞行'] = function (self, unit)
+        self._moveType = self._moveType ~ 0x04
+        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+    end,
+    ['疾风步'] = function (self, unit)
+        self._moveType = self._moveType ~ 0x10
+        japi.EXSetUnitMoveType(unit._handle, self._moveType)
     end,
 }
 
@@ -35,7 +65,7 @@ function mt:add(k)
     end
     self[k] = (self[k] or 0) + 1
     if self[k] == 1 then
-        Add[k](unit)
+        Add[k](self, unit)
     end
 
     local used
@@ -59,7 +89,7 @@ function mt:remove(k)
     end
     self[k] = (self[k] or 0) - 1
     if self[k] == 0 then
-        Remove[k](unit)
+        Remove[k](self, unit)
     end
 end
 
@@ -82,6 +112,7 @@ end
 return function (unit, restriction)
     local obj = setmetatable({
         _unit = unit,
+        _moveType = 0,
     }, mt)
 
     if type(restriction) == 'table' then

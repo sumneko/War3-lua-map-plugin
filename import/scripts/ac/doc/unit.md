@@ -170,6 +170,10 @@ unit:addRestriction(restrictionName: string)
 restrictionName: string
     | '硬直'
     | '无敌'
+    | '幽灵'
+    | '定身'
+    | '飞行'
+    | '疾风步'
 ```
 
 ### removeRestriction
@@ -179,6 +183,10 @@ unit:removeRestriction(restrictionName: string)
 restrictionName: string
     | '硬直'
     | '无敌'
+    | '幽灵'
+    | '定身'
+    | '飞行'
+    | '疾风步'
 ```
 
 ### getRestriction
@@ -189,6 +197,10 @@ unit:getRestriction(restrictionName: string)
 restrictionName: string
     | '硬直'
     | '无敌'
+    | '幽灵'
+    | '定身'
+    | '飞行'
+    | '疾风步'
 ```
 
 ### hasRestriction
@@ -199,6 +211,10 @@ unit:hasRestriction(restrictionName: string)
 restrictionName: string
     | '硬直'
     | '无敌'
+    | '幽灵'
+    | '定身'
+    | '飞行'
+    | '疾风步'
 ```
 
 ### isAlive
