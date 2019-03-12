@@ -618,3 +618,8 @@ unit:speed([speed: number])
 ```lua
 unit:color(r: number, g: number, b: number, a: number)
 ```
+
+### animation
+```lua
+unit:animation(name: integer/string)
+```

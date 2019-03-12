@@ -903,6 +903,14 @@ function mt:color(r, g, b, a)
     jass.SetUnitVertexColor(self._handle, r, g, b, a)
 end
 
+function mt:animation(name)
+    if ac.isInteger(name) then
+        jass.SetUnitAnimationByIndex(self._handle, name)
+    elseif ac.isString(name) then
+        jass.SetUnitAnimation(self._handle, name)
+    end
+end
+
 return {
     list = UNIT_LIST,
     update = update,
