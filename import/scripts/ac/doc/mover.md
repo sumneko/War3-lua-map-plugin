@@ -140,6 +140,7 @@ mover:isPause()
 mover:setOption(name: string, value: any)
 
 name: string
+    | 'angle'
     | 'timeRate'
 ```
 

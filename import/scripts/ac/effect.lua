@@ -3,6 +3,7 @@ local japi = require 'jass.japi'
 
 local mt = {}
 mt.__index = mt
+mt.type = 'effect'
 
 mt._handle = 0
 mt._xScale = 1.0

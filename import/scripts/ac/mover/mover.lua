@@ -248,6 +248,10 @@ function mt:setOption(k, v)
         if not ac.isNumber(v) then
             return
         end
+    elseif k == 'angle' then
+        if not ac.isNumber(v) then
+            return
+        end
     end
     self[k] = v
 end
