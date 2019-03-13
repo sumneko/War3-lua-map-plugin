@@ -634,7 +634,7 @@ local function onCastChannel(cast)
         return
     end
 
-    activeCd(cast)
+    activeCd(cast._parent)
 
     cast._step = 'channel'
 
@@ -962,19 +962,19 @@ function mt:getCd()
 end
 
 function mt:activeCd(...)
-    return activeCd(self, ...)
+    return activeCd(self._parent or self, ...)
 end
 
 function mt:setCd(cd)
     if not ac.isNumber(cd) then
         return false
     end
-    return setCd(self, cd)
+    return setCd(self._parent or self, cd)
 end
 
 function mt:stack(n)
     if ac.isNumber(n) then
-        self._stack = n
+        self:set('_stack', n)
         if self._icon then
             self._icon:updateStack()
         end
