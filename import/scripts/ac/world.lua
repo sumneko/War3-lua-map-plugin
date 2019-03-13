@@ -1,6 +1,7 @@
 local updateTimer = require 'ac.timer'
 local mover = require 'ac.mover'
 local unit = require 'ac.unit'
+local lightning = require 'ac.lightning'
 local message = require 'jass.message'
 local jass = require 'jass.common'
 local slk = require 'jass.slk'
@@ -69,6 +70,7 @@ local function update(delta)
     Tick = Tick + 1
     if Tick % 3 == 0 then
         mover.update(delta * 3)
+        lightning.update()
     end
     if Tick % 10 == 0 then
         unit.update(delta * 10)
