@@ -103,7 +103,7 @@ local function eachItemInRange(_, x, y, r, callback)
             goto CONTINUE
         end
 
-        local x1, y1 = it._point:getXY()
+        local x1, y1 = it:getXY()
         local dx = x - x1
         local dy = y - y1
         if dx * dx + dy * dy > powerRadius then
