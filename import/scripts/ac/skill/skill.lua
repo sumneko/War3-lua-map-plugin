@@ -804,6 +804,11 @@ function mt:cast(...)
         return false
     end
 
+    -- 不能在死亡状态发动技能
+    if not self._owner:isAlive() then
+        return false
+    end
+
     local cast, target, data
     if self.targetType == '点' then
         target, data = ...
@@ -867,6 +872,11 @@ function mt:castByClient(target, x, y)
 
     -- 不能发动冷却中的技能
     if self:getCd() > 0.0 then
+        return false
+    end
+
+    -- 不能在死亡状态发动技能
+    if not self._owner:isAlive() then
         return false
     end
 
