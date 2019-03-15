@@ -112,8 +112,24 @@ end
 return function (unit, restriction)
     local obj = setmetatable({
         _unit = unit,
-        _moveType = 0,
     }, mt)
+
+    -- 探测单位的默认移动方式
+    if unit._slk.movetp == 'foot' then
+        obj._moveType = 0x02
+    elseif unit._slk.movetp == 'horse' then
+        obj._moveType = 0x02
+    elseif unit._slk.movetp == 'fly' then
+        obj._moveType = 0x04
+    elseif unit._slk.movetp == 'hover' then
+        obj._moveType = 0x02
+    elseif unit._slk.movetp == 'float' then
+        obj._moveType = 0x40
+    elseif unit._slk.movetp == 'amph' then
+        obj._moveType = 0x80
+    else
+        obj._moveType = 0
+    end
 
     if type(restriction) == 'table' then
         for _, k in ipairs(restriction) do
