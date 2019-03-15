@@ -1,6 +1,54 @@
 local jass = require 'jass.common'
 local japi = require 'jass.japi'
 
+local function updateMoveType(self, unit)
+    if self:has '定身' then
+        japi.EXSetUnitMoveType(unit._handle, 0x01)
+        return
+    end
+
+    if self:has '飞行' then
+        japi.EXSetUnitMoveType(unit._handle, 0x04)
+        return
+    end
+
+    if self:has '疾风步' then
+        japi.EXSetUnitMoveType(unit._handle, 0x10)
+    end
+
+    if unit._slk.movetp == 'foot' then
+        japi.EXSetUnitMoveType(unit._handle, 0x02)
+        return
+    end
+    
+    if unit._slk.movetp == 'horse' then
+        japi.EXSetUnitMoveType(unit._handle, 0x02)
+        return
+    end
+
+    if unit._slk.movetp == 'fly' then
+        japi.EXSetUnitMoveType(unit._handle, 0x04)
+        return
+    end
+
+    if unit._slk.movetp == 'hover' then
+        japi.EXSetUnitMoveType(unit._handle, 0x02)
+        return
+    end
+
+    if unit._slk.movetp == 'float' then
+        japi.EXSetUnitMoveType(unit._handle, 0x40)
+        return
+    end
+
+    if unit._slk.movetp == 'amph' then
+        japi.EXSetUnitMoveType(unit._handle, 0x80)
+        return
+    end
+
+    japi.EXSetUnitMoveType(unit._handle, 0x00)
+end
+
 local Add = {
     ['硬直'] = function (self, unit)
         japi.EXPauseUnit(unit._handle, true)
@@ -12,16 +60,13 @@ local Add = {
         japi.EXSetUnitCollisionType(false, unit._handle, 1)
     end,
     ['定身'] = function (self, unit)
-        self._moveType = self._moveType | 0x01
-        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+        updateMoveType(self, unit)
     end,
     ['飞行'] = function (self, unit)
-        self._moveType = self._moveType | 0x04
-        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+        updateMoveType(self, unit)
     end,
     ['疾风步'] = function (self, unit)
-        self._moveType = self._moveType | 0x10
-        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+        updateMoveType(self, unit)
     end,
 }
 
@@ -36,16 +81,13 @@ local Remove = {
         japi.EXSetUnitCollisionType(true, unit._handle, 1)
     end,
     ['定身'] = function (self, unit)
-        self._moveType = self._moveType ~ 0x01
-        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+        updateMoveType(self, unit)
     end,
     ['飞行'] = function (self, unit)
-        self._moveType = self._moveType ~ 0x04
-        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+        updateMoveType(self, unit)
     end,
     ['疾风步'] = function (self, unit)
-        self._moveType = self._moveType ~ 0x10
-        japi.EXSetUnitMoveType(unit._handle, self._moveType)
+        updateMoveType(self, unit)
     end,
 }
 
@@ -113,23 +155,6 @@ return function (unit, restriction)
     local obj = setmetatable({
         _unit = unit,
     }, mt)
-
-    -- 探测单位的默认移动方式
-    if unit._slk.movetp == 'foot' then
-        obj._moveType = 0x02
-    elseif unit._slk.movetp == 'horse' then
-        obj._moveType = 0x02
-    elseif unit._slk.movetp == 'fly' then
-        obj._moveType = 0x04
-    elseif unit._slk.movetp == 'hover' then
-        obj._moveType = 0x02
-    elseif unit._slk.movetp == 'float' then
-        obj._moveType = 0x40
-    elseif unit._slk.movetp == 'amph' then
-        obj._moveType = 0x80
-    else
-        obj._moveType = 0
-    end
 
     if type(restriction) == 'table' then
         for _, k in ipairs(restriction) do
