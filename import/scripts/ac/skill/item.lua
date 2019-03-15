@@ -63,22 +63,31 @@ local function addItem(icon)
         return false
     end
 
+    local handle = jass.CreateItem(ac.id[id], 0.0, 0.0)
+    if handle == 0 then
+        return false
+    end
+    icon._handle = handle
+    icon._ability = icon._slk.abilList
+    icon:updateAll()
+
     local cheeses = {}
     for i = 1, slot - 1 do
         if jass.UnitItemInSlot(unit._handle, i-1) == 0 then
             cheeses[#cheeses+1] = jass.UnitAddItemById(unit._handle, ac.id['@CHE'])
         end
     end
-    local handle = jass.UnitAddItemById(unit._handle, ac.id[id])
+    local suc = jass.UnitAddItem(unit._handle, handle)
     for _, cheese in ipairs(cheeses) do
         jass.RemoveItem(cheese)
     end
 
-    if handle == 0 then
+    if not suc then
+        icon._handle = nil
+        icon._ability = nil
+        jass.RemoveItem(handle)
         return false
     end
-    icon._handle = handle
-    icon._ability = icon._slk.abilList
 
     if skill.passive == 1 then
         jass.UnitRemoveAbility(unit._handle, ac.id[icon._ability])
@@ -237,6 +246,9 @@ function mt:needRefreshItem()
     local skill = self._skill
     local unit = skill._owner
     local mgr = unit._skill
+    if not jass.IsItemOwned(self._handle) then
+        return
+    end
     mgr._needRefreshItem = true
 end
 
@@ -291,8 +303,6 @@ return function (skill)
         releaseId(icon)
         return nil
     end
-
-    icon:updateAll()
 
     return icon
 end
