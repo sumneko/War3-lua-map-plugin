@@ -81,7 +81,7 @@ local Set = {
         local max = attribute:get '生命上限'
         local rate
         if max <= 0.0 then
-            rate = 0.0
+            rate = 1.0
         else
             rate = attribute:get '生命' / max
         end
@@ -93,7 +93,7 @@ local Set = {
         local max = attribute:get '魔法上限'
         local rate
         if max <= 0.0 then
-            rate = 0.0
+            rate = 1.0
         else
             rate = attribute:get '魔法' / max
         end
@@ -237,9 +237,7 @@ return function (unit, default)
     }, mt)
     for _, k in ipairs(Care) do
         local v = default and default[k] or Default[k] or 0.0
-        obj:set(k, v)
+        obj:add(k, v)
     end
-    obj:set('生命', obj:get '生命上限')
-    obj:set('魔法', obj:get '魔法上限')
     return obj
 end
