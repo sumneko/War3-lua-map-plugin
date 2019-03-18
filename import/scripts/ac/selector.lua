@@ -280,12 +280,12 @@ local function selectInLine(self)
     local y2 = y0 + width / 2.0 * ac.math.sin(angle + 90.0)
 
     if self._mode == '单位' then
-        return eachUnitInRange(x0, y0, r, function (unit)
+        return eachUnitInRange(self, x0, y0, r, function (unit)
             local x, y = unit:getXY()
             return isCircleIntersectRectangle(x, y, unit:selectedRadius(), x0, y0, x1, y1, x2, y2)
         end)
     elseif self._mode == '物品' then
-        return eachItemInRange(x0, y0, r, function (it)
+        return eachItemInRange(self, x0, y0, r, function (it)
             local x, y = it:getXY()
             return isCircleIntersectRectangle(x, y, 0, x0, y0, x1, y1, x2, y2)
         end)
