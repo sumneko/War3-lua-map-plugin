@@ -68,6 +68,9 @@ local Add = {
     ['疾风步'] = function (self, unit)
         updateMoveType(self, unit)
     end,
+    ['隐藏'] = function (self, unit)
+        jass.ShowUnit(unit._handle, false)
+    end,
 }
 
 local Remove = {
@@ -88,6 +91,9 @@ local Remove = {
     end,
     ['疾风步'] = function (self, unit)
         updateMoveType(self, unit)
+    end,
+    ['隐藏'] = function (self, unit)
+        jass.ShowUnit(unit._handle, true)
     end,
 }
 

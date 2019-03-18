@@ -174,6 +174,7 @@ restrictionName: string
     | '定身'
     | '飞行'
     | '疾风步'
+    | '隐藏'
 ```
 
 ### removeRestriction
@@ -187,6 +188,7 @@ restrictionName: string
     | '定身'
     | '飞行'
     | '疾风步'
+    | '隐藏'
 ```
 
 ### getRestriction
@@ -201,6 +203,7 @@ restrictionName: string
     | '定身'
     | '飞行'
     | '疾风步'
+    | '隐藏'
 ```
 
 ### hasRestriction
@@ -215,6 +218,7 @@ restrictionName: string
     | '定身'
     | '飞行'
     | '疾风步'
+    | '隐藏'
 ```
 
 ### isAlive
