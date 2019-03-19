@@ -200,10 +200,10 @@ end)
 
 ### 物品-即将购买
 
-购买物品时触发，此时的`item`并不是一个物品对象，因此只能进行数据读取等操作。返回`true`可以无视物品栏限制购买物品；返回`false`可以阻止购买物品。
+购买物品时触发，此时的`item`并不是一个物品对象，因此只能进行数据读取等操作。返回`true`可以无视物品栏限制购买物品；返回`false`可以阻止购买物品，第二个返回值会显示在玩家屏幕上。
 
 ```lua
 item:event('物品-即将购买', function (trg, item, buyer: unit, shop)
-    return false
+    return false, "不能购买"
 end)
 ```
