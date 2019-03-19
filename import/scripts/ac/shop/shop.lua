@@ -106,6 +106,15 @@ function mt:getItem(name)
     return unit:findSkill(name, '技能')
 end
 
+function mt:removeItem(name)
+    local unit = self._unit
+    local skill = unit:findSkill(name, '技能')
+    if skill then
+        return skill:remove()
+    end
+    return false
+end
+
 function mt:setItem(name, index, hotkey)
     local unit = self._unit
     local data = ac.table.item[name]

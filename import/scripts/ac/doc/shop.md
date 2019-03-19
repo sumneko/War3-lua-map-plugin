@@ -25,3 +25,9 @@ shop:buyItem(itemName: string[, buyer: unit])
 shop:getItem(itemName: string/integer)
     -> skill
 ```
+
+### removeItem
+```lua
+shop:removeItem(itemName: string/integer)
+    -> boolean
+```
