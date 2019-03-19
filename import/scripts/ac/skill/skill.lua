@@ -799,6 +799,8 @@ function mt:eventDispatch(name, ...)
 end
 
 function mt:cast(...)
+    self = self._parent or self
+
     -- 不能发动冷却中的技能
     if self:getCd() > 0.0 then
         return false
@@ -865,6 +867,8 @@ function mt:cast(...)
 end
 
 function mt:castByClient(target, x, y)
+    self = self._parent or self
+
     -- 合法性检查
     if not self._icon then
         return false
@@ -1008,14 +1012,20 @@ function mt:getItem()
 end
 
 function mt:disable()
+    self = self._parent or self
     self._disable = (self._disable or 0) + 1
     if self._disable == 1 then
-        self:stop()
         updateIcon(self)
+        local unit = self:getOwner()
+        local cast = unit:currentSkill()
+        if cast:is(self) then
+            cast:stop()
+        end
     end
 end
 
 function mt:enable()
+    self = self._parent or self
     self._disable = (self._disable or 0) - 1
     if self._disable == 0 then
         updateIcon(self)
@@ -1024,6 +1034,15 @@ end
 
 function mt:isEnable()
     return not self._disable or self._disable == 0
+end
+
+function mt:is(dest)
+    if not ac.isSkill(dest) then
+        return false
+    end
+    self = self._parent or self
+    dest = dest._parent or dest
+    return self == dest
 end
 
 ac.skill = setmetatable({}, {

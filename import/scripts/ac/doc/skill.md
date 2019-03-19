@@ -240,6 +240,13 @@ skill:enable()
 ### isEnable
 ```lua
 skill:isEnable()
+    -> boolean
+```
+
+### is
+```lua
+skill:is(cast: skill)
+    -> boolean
 ```
 
 ## event
