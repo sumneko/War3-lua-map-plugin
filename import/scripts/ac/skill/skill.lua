@@ -221,19 +221,19 @@ end
 
 local function updateIcon(skill)
     if skill._icon then
+        skill._icon:remove()
+        skill._icon = nil
         if skill._removed or skill._type == '隐藏' then
-            skill._icon:remove()
-            skill._icon = nil
-        end
-    else
-        if skill._removed then
             return
         end
-        if skill._type == '技能' then
-            skill._icon = ability(skill)
-        elseif skill._type == '物品' then
-            skill._icon = item(skill)
-        end
+    end
+    if skill._removed then
+        return
+    end
+    if skill._type == '技能' then
+        skill._icon = ability(skill)
+    elseif skill._type == '物品' then
+        skill._icon = item(skill)
     end
 end
 
@@ -804,6 +804,11 @@ function mt:cast(...)
         return false
     end
 
+    -- 不能发动禁用的技能
+    if not self:isEnable() then
+        return false
+    end
+
     -- 不能在死亡状态发动技能
     if not self._owner:isAlive() then
         return false
@@ -867,6 +872,11 @@ function mt:castByClient(target, x, y)
 
     -- 不能发动被动技能
     if self.passive == 1 then
+        return false
+    end
+
+    -- 不能发动禁用的技能
+    if not self:isEnable() then
         return false
     end
 
@@ -995,6 +1005,25 @@ end
 
 function mt:getItem()
     return self._item
+end
+
+function mt:disable()
+    self._disable = (self._disable or 0) + 1
+    if self._disable == 1 then
+        self:stop()
+        updateIcon(self)
+    end
+end
+
+function mt:enable()
+    self._disable = (self._disable or 0) - 1
+    if self._disable == 0 then
+        updateIcon(self)
+    end
+end
+
+function mt:isEnable()
+    return not self._disable or self._disable == 0
 end
 
 ac.skill = setmetatable({}, {

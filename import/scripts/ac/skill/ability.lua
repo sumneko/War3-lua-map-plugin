@@ -55,7 +55,7 @@ local function getId(skill)
     end
     local passive = ac.toInteger(skill.passive)
     local name
-    if passive == 0 then
+    if passive == 0 and skill:isEnable() then
         name = '@主动技能-' .. tostring(slot)
     else
         name = '@被动技能-' .. tostring(slot)

@@ -227,6 +227,21 @@ skill:cast([target: any][, data: table])
     -> boolean
 ```
 
+### disable
+```lua
+skill:disable()
+```
+
+### enable
+```lua
+skill:enable()
+```
+
+### isEnable
+```lua
+skill:isEnable()
+```
+
 ## event
 
 ### onAdd
