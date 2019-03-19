@@ -45,9 +45,9 @@ local function activeCd(skill, item)
 end
 
 local function checkBag(shop, itemData, buyer)
-    local res = item.onCanBuy(itemData, buyer, shop)
+    local res, msg = item.onCanBuy(itemData, buyer, shop)
     if res ~= nil then
-        return res
+        return res, msg
     end
     if itemData.rune == 1 then
         return true

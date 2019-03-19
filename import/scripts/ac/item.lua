@@ -56,9 +56,9 @@ local function callMethod(item, name, ...)
     if not method then
         return
     end
-    local suc, res = xpcall(method, log.error, item, ...)
+    local suc, res, data = xpcall(method, log.error, item, ...)
     if suc then
-        return res
+        return res, data
     end
 end
 
@@ -74,13 +74,13 @@ end
 local function eventDispatch(item, unit, name, ...)
     local event = METHOD[name]
     if event then
-        local res = item:eventDispatch(event, item, ...)
+        local res, data = item:eventDispatch(event, item, ...)
         if res ~= nil then
-            return res
+            return res, data
         end
-        local res = unit:eventDispatch(event, item, ...)
+        local res, data = unit:eventDispatch(event, item, ...)
         if res ~= nil then
-            return res
+            return res, data
         end
     end
     return callMethod(item, name, ...)
