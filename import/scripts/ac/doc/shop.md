@@ -19,3 +19,9 @@ shop:setBuyRange(number)
 ```lua
 shop:buyItem(itemName: string[, buyer: unit])
 ```
+
+### getItem
+```lua
+shop:getItem(itemName: string/integer)
+    -> skill
+```

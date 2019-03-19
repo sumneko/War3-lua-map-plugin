@@ -101,6 +101,11 @@ function mt:__tostring()
     return ('{shop|%s}'):format(self._unit:getName())
 end
 
+function mt:getItem(name)
+    local unit = self._unit
+    return unit:findSkill(name, '技能')
+end
+
 function mt:setItem(name, index, hotkey)
     local unit = self._unit
     local data = ac.table.item[name]
