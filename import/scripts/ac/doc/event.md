@@ -180,11 +180,11 @@ end)
 
 ### 物品-即将获得
 
-返回`true`可以无视物品栏限制获得物品；返回`false`可阻止单位获得物品。
+返回`true`可以无视物品栏限制获得物品；返回`false`可阻止单位获得物品，如果在商店购买物品时发生，第二个返回值会显示在玩家屏幕上。
 
 ```lua
 item:event('物品-即将获得', function (trg, item, unit)
-    return false
+    return false, "不能购买"
 end)
 ```
 

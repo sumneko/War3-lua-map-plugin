@@ -192,9 +192,9 @@ local function addToUnit(item, unit, slot)
     if item._removed then
         return false
     end
-    local res = eventDispatch(item, unit, 'onCanAdd', unit)
+    local res, data = eventDispatch(item, unit, 'onCanAdd', unit)
     if res == false then
-        return false
+        return false, data
     end
     if res ~= true and not item:isRune() then
         if unit:isBagFull() then
@@ -258,8 +258,9 @@ local function create(name, target, slot)
         self:updateAll()
         Items[self._handle] = self
     elseif ac.isUnit(target) then
-        if not addToUnit(self, target, slot) then
-            return nil
+        local suc, data = addToUnit(self, target, slot)
+        if not suc then
+            return nil, data
         end
     else
         return nil
@@ -469,8 +470,8 @@ function mt:blink(point)
 end
 
 function mt:eventDispatch(name, ...)
-    local res = ac.eventDispatch(self, name, ...)
-    return res
+    local res, data = ac.eventDispatch(self, name, ...)
+    return res, data
 end
 
 function mt:eventNotify(event, ...)

@@ -176,9 +176,9 @@ function mt:buyItem(name, buyer)
         return nil, err
     end
 
-    local item = buyer:createItem(name)
+    local item, err = buyer:createItem(name)
     if not item then
-        return nil, '购买失败'
+        return nil, err or '购买失败'
     end
 
     return item
