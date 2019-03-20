@@ -168,6 +168,13 @@ local function addSkill(item, slot)
             skill._item = item
             item._skill = skill
             skill:stack(item._stack)
+            if item._targetCd then
+                local remaining = item._targetCd - ac.clock()
+                if remaining > 0.0 then
+                    skill:activeCd()
+                    skill:setCd(remaining)
+                end
+            end
             if skill._icon then
                 jass.SetItemDroppable(skill._icon._handle, item.drop == 1)
                 Items[skill._icon._handle] = item
@@ -306,6 +313,7 @@ local function drop(item, point)
         return
     end
     item._stack = skill._stack
+    item._targetCd = ac.clock() + skill:getCd()
     item._skill = nil
     skill._item = nil
     if skill._icon then
@@ -527,6 +535,7 @@ function mt:give(unit, slot)
             Items[self._skill._icon._handle] = nil
         end
         self._stack = self._skill._stack
+        self._targetCd = self._skill:getCd() + ac.clock()
         self._skill:remove()
         onRemove(self)
     end
