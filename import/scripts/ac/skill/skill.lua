@@ -801,6 +801,11 @@ end
 function mt:cast(...)
     self = self._parent or self
 
+    -- 不能处于禁魔状态
+    if self:hasRestriction '禁魔' then
+        return false
+    end
+
     -- 不能发动冷却中的技能
     if self:getCd() > 0.0 then
         return false
@@ -871,6 +876,11 @@ function mt:castByClient(target, x, y)
 
     -- 合法性检查
     if not self._icon then
+        return false
+    end
+
+    -- 不能处于禁魔状态
+    if self:hasRestriction '禁魔' then
         return false
     end
 

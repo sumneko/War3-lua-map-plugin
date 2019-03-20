@@ -71,6 +71,11 @@ local Add = {
     ['隐藏'] = function (self, unit)
         jass.ShowUnit(unit._handle, false)
     end,
+    ['缴械'] = function (self, unit)
+        jass.UnitAddAbility(unit._handle, ac.id['@BUN'])
+    end,
+    ['禁魔'] = function (self, unit)
+    end,
 }
 
 local Remove = {
@@ -94,6 +99,11 @@ local Remove = {
     end,
     ['隐藏'] = function (self, unit)
         jass.ShowUnit(unit._handle, true)
+    end,
+    ['缴械'] = function (self, unit)
+        jass.UnitRemoveAbility(unit._handle, ac.id['@BUN'])
+    end,
+    ['禁魔'] = function (self, unit)
     end,
 }
 
