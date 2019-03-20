@@ -295,7 +295,7 @@ function mt:eventDispatch(name, ...)
             return res, data
         end
         local res, data = self:getOwner():eventDispatch(event, self, ...)
-        if res, data ~= nil then
+        if res ~= nil then
             unlockEvent(self)
             return res, data
         end

@@ -111,11 +111,11 @@ end
 
 function mt:eventDispatch(name, ...)
     local res, data = ac.eventDispatch(self, name, ...)
-    if res, data ~= nil then
+    if res ~= nil then
         return res
     end
     local res, data = ac.game:eventDispatch(name, ...)
-    if res, data ~= nil then
+    if res ~= nil then
         return res, data
     end
     return nil
