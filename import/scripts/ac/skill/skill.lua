@@ -219,24 +219,6 @@ local function createDefine(name)
     return defined
 end
 
-local function updateIcon(skill)
-    if skill._icon then
-        skill._icon:remove()
-        skill._icon = nil
-        if skill._removed or skill._type == '隐藏' then
-            return
-        end
-    end
-    if skill._removed then
-        return
-    end
-    if skill._type == '技能' then
-        skill._icon = ability(skill)
-    elseif skill._type == '物品' then
-        skill._icon = item(skill)
-    end
-end
-
 local function computeCost(skill)
     local cost = ac.toNumber(skill.cost)
     if cost == 0.0 then
@@ -302,7 +284,7 @@ local function addSkill(mgr, name, tp, slot, onInit)
         upgradeSkill(skill)
     end
 
-    updateIcon(skill)
+    skill:updateIcon()
 
     if onInit then
         onInit(skill)
@@ -334,7 +316,7 @@ local function removeSkill(unit, skill)
         return false
     end
 
-    updateIcon(skill)
+    skill:updateIcon()
 
     skill:eventNotify('onRemove')
 
@@ -755,6 +737,24 @@ function mt:loadString(str)
     end
 end
 
+function mt:updateIcon()
+    if self._icon then
+        self._icon:remove()
+        self._icon = nil
+        if self._removed or self._type == '隐藏' then
+            return
+        end
+    end
+    if self._removed then
+        return
+    end
+    if self._type == '技能' then
+        self._icon = ability(self)
+    elseif self._type == '物品' then
+        self._icon = item(self)
+    end
+end
+
 function mt:getOrder()
     local icon = self._icon
     if not icon then
@@ -801,11 +801,6 @@ end
 function mt:cast(...)
     self = self._parent or self
 
-    -- 不能处于禁魔状态
-    if self:hasRestriction '禁魔' then
-        return false
-    end
-
     -- 不能发动冷却中的技能
     if self:getCd() > 0.0 then
         return false
@@ -818,6 +813,11 @@ function mt:cast(...)
 
     -- 不能在死亡状态发动技能
     if not self._owner:isAlive() then
+        return false
+    end
+
+    -- 不能处于禁魔状态
+    if self._owner:hasRestriction '禁魔' then
         return false
     end
 
@@ -879,11 +879,6 @@ function mt:castByClient(target, x, y)
         return false
     end
 
-    -- 不能处于禁魔状态
-    if self:hasRestriction '禁魔' then
-        return false
-    end
-
     -- 不能发动被动技能
     if self.passive == 1 then
         return false
@@ -901,6 +896,11 @@ function mt:castByClient(target, x, y)
 
     -- 不能在死亡状态发动技能
     if not self._owner:isAlive() then
+        return false
+    end
+
+    -- 不能处于禁魔状态
+    if self._owner:hasRestriction '禁魔' then
         return false
     end
 
@@ -1025,7 +1025,7 @@ function mt:disable()
     self = self._parent or self
     self._disable = (self._disable or 0) + 1
     if self._disable == 1 then
-        updateIcon(self)
+        self:updateIcon()
         local unit = self:getOwner()
         local cast = unit:currentSkill()
         if cast:is(self) then
@@ -1038,7 +1038,7 @@ function mt:enable()
     self = self._parent or self
     self._disable = (self._disable or 0) - 1
     if self._disable == 0 then
-        updateIcon(self)
+        self:updateIcon()
     end
 end
 

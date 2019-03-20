@@ -75,6 +75,9 @@ local Add = {
         jass.UnitAddAbility(unit._handle, ac.id['@BUN'])
     end,
     ['禁魔'] = function (self, unit)
+        for skill in unit:eachSkill() do
+            skill:updateIcon()
+        end
     end,
 }
 
@@ -104,6 +107,9 @@ local Remove = {
         jass.UnitRemoveAbility(unit._handle, ac.id['@BUN'])
     end,
     ['禁魔'] = function (self, unit)
+        for skill in unit:eachSkill() do
+            skill:updateIcon()
+        end
     end,
 }
 

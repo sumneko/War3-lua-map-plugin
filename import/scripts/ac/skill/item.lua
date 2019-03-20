@@ -89,7 +89,7 @@ local function addItem(icon)
         return false
     end
 
-    if skill.passive == 1 or not skill:isEnable() then
+    if skill.passive == 1 or not skill:isEnable() and not skill:getOwner():hasRestriction '禁魔' then
         jass.UnitRemoveAbility(unit._handle, ac.id[icon._ability])
     end
     return true
