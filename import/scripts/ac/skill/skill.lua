@@ -782,20 +782,20 @@ function mt:eventDispatch(name, ...)
     lockEvent(self)
     local event = METHOD[name]
     if event then
-        local res = ac.eventDispatch(self, event, self, ...)
+        local res, data = ac.eventDispatch(self, event, self, ...)
         if res ~= nil then
             unlockEvent(self)
-            return res
+            return res, data
         end
-        local res = self:getOwner():eventDispatch(event, self, ...)
+        local res, data = self:getOwner():eventDispatch(event, self, ...)
         if res ~= nil then
             unlockEvent(self)
-            return res
+            return res, data
         end
     end
-    local res = callMethod(self, name, ...)
+    local res, data = callMethod(self, name, ...)
     unlockEvent(self)
-    return res
+    return res, data
 end
 
 function mt:cast(...)

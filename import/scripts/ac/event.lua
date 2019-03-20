@@ -10,9 +10,9 @@ function ac.eventDispatch(obj, name, ...)
         return
     end
     for i = #event, 1, -1 do
-        local res, arg = event[i](...)
+        local res, data = event[i](...)
         if res ~= nil then
-            return res, arg
+            return res, data
         end
     end
 end

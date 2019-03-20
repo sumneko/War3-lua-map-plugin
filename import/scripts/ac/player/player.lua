@@ -110,13 +110,13 @@ function mt:event(name, f)
 end
 
 function mt:eventDispatch(name, ...)
-    local res = ac.eventDispatch(self, name, ...)
-    if res ~= nil then
+    local res, data = ac.eventDispatch(self, name, ...)
+    if res, data ~= nil then
         return res
     end
-    local res = ac.game:eventDispatch(name, ...)
-    if res ~= nil then
-        return res
+    local res, data = ac.game:eventDispatch(name, ...)
+    if res, data ~= nil then
+        return res, data
     end
     return nil
 end

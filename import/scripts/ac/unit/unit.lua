@@ -538,13 +538,13 @@ function mt:event(name, f)
 end
 
 function mt:eventDispatch(name, ...)
-    local res = ac.eventDispatch(self, name, ...)
+    local res, data = ac.eventDispatch(self, name, ...)
     if res ~= nil then
-        return res
+        return res, data
     end
-    local res = self:getOwner():eventDispatch(name, ...)
+    local res, data = self:getOwner():eventDispatch(name, ...)
     if res ~= nil then
-        return res
+        return res, data
     end
     return nil
 end
