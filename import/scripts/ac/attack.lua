@@ -64,7 +64,7 @@ return function (unit, attack)
         return nil
     end
 
-    japi.SetUnitState(unit._handle, 0x16, ac.toNumber(attack.range, 100.0))
+    unit:set('攻击范围', ac.toNumber(attack.range, 100.0))
 
     return setmetatable({
         type = attack.type,

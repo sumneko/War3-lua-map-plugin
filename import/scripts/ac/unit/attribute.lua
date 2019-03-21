@@ -74,6 +74,10 @@ local Show = {
         end
         jass.SetHeroInt(unit._handle, math.floor(v), true)
     end,
+    ['攻击范围'] = function (unit, v)
+        japi.SetUnitState(unit._handle, 0x16, v)
+        japi.SetUnitState(unit._handle, 0x40, v)
+    end,
 }
 
 local Set = {

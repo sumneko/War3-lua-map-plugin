@@ -114,6 +114,7 @@ attributeName: string
     | '力量'
     | '智力'
     | '敏捷'
+    | '攻击范围'
 ```
 
 ### get
@@ -137,6 +138,7 @@ attributeName: string
     | '力量'
     | '智力'
     | '敏捷'
+    | '攻击范围'
 ```
 
 ### add
@@ -160,6 +162,7 @@ attributeName: string
     | '力量'
     | '智力'
     | '敏捷'
+    | '攻击范围'
 ```
 
 ### addRestriction
