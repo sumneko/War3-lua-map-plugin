@@ -737,6 +737,15 @@ function mt:loadString(str)
     end
 end
 
+local function isOverlay(a, b)
+    if not b then
+        return true
+    end
+    local level1 = ac.toNumber(a.iconLevel, 0)
+    local level2 = ac.toNumber(b.iconLevel, 0)
+    return level1 >= level2
+end
+
 local function searchIcon(unit, tp, iconCreator)
     local list = {}
     for skill in unit:eachSkill(tp) do
@@ -745,6 +754,9 @@ local function searchIcon(unit, tp, iconCreator)
             goto CONTINUE
         end
         local oldSkill = list[slot]
+        if not isOverlay(skill, oldSkill) then
+            goto CONTINUE
+        end
         list[slot] = skill
         if oldSkill and oldSkill._icon then
             oldSkill._icon:remove()
@@ -754,6 +766,7 @@ local function searchIcon(unit, tp, iconCreator)
     end
     for _, skill in pairs(list) do
         if not skill._icon then
+            print('图标', skill)
             skill._icon = iconCreator(skill)
         end
     end
@@ -992,6 +1005,8 @@ function mt:setOption(name, value)
         if self._icon then
             self._icon:updateHotkey()
         end
+    elseif name == 'iconLevel' then
+        self:updateIcon()
     end
 end
 
