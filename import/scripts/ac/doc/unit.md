@@ -654,3 +654,17 @@ unit:color(r: number, g: number, b: number, a: number)
 ```lua
 unit:animation(name: integer/string)
 ```
+
+### iconLevel
+只有`iconLevel`大于等于该值的技能才会显示图标
+
+```lua
+unit:iconLevel(type: string, level: integer)
+
+unit:iconLevel(type: string)
+    -> level: integer
+
+type: string
+    | '技能'
+    | '物品'
+```

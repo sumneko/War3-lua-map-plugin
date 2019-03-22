@@ -911,6 +911,13 @@ function mt:animation(name)
     end
 end
 
+function mt:iconLevel(tp, level)
+    if not self._skill then
+        return 0
+    end
+    return self._skill:iconLevel(tp, level)
+end
+
 return {
     list = UNIT_LIST,
     update = update,

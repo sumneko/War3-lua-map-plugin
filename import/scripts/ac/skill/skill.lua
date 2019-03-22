@@ -688,6 +688,67 @@ local function addInitSkill(mgr, unit)
     end
 end
 
+local function isOverlay(a, b)
+    if not b then
+        return true
+    end
+    if not b:isShow() then
+        return true
+    end
+    local level1 = ac.toNumber(a.iconLevel, 0)
+    local level2 = ac.toNumber(b.iconLevel, 0)
+    return level1 >= level2
+end
+
+local function updateAllIcons(unit, tp)
+    local list = {}
+    for skill in unit:eachSkill(tp) do
+        local slot = skill._slot
+        if not slot then
+            goto CONTINUE
+        end
+        if not skill:isShow() then
+            if skill._icon then
+                skill._icon:remove()
+                skill._icon = nil
+            end
+            goto CONTINUE
+        end
+        local oldSkill = list[slot]
+        if not isOverlay(skill, oldSkill) then
+            goto CONTINUE
+        end
+        list[slot] = skill
+        if oldSkill and oldSkill._icon then
+            oldSkill._icon:remove()
+            oldSkill._icon = nil
+        end
+        ::CONTINUE::
+    end
+    for _, skill in pairs(list) do
+        if not skill._icon then
+            if tp == '技能' then
+                skill._icon = ability(skill)
+            elseif tp == '物品' then
+                skill._icon = item(skill)
+            end
+        end
+    end
+end
+
+local function iconLevel(mgr, tp, level)
+    if tp ~= '技能' and tp ~= '物品' then
+        log.error('类型必须是[技能]或[物品]')
+        return
+    end
+    if ac.isNumber(level) then
+        mgr._iconLevel[tp] = level
+        updateAllIcons(mgr._owner, tp)
+    else
+        return mgr._iconLevel[tp]
+    end
+end
+
 mt.__index = mt
 mt.type = 'skill'
 
@@ -740,53 +801,9 @@ function mt:loadString(str)
     end
 end
 
-local function isOverlay(a, b)
-    if not b then
-        return true
-    end
-    if not b:isShow() then
-        return true
-    end
-    local level1 = ac.toNumber(a.iconLevel, 0)
-    local level2 = ac.toNumber(b.iconLevel, 0)
-    return level1 >= level2
-end
-
-local function searchIcon(unit, tp, iconCreator)
-    local list = {}
-    for skill in unit:eachSkill(tp) do
-        local slot = skill._slot
-        if not slot then
-            goto CONTINUE
-        end
-        if not skill:isShow() then
-            goto CONTINUE
-        end
-        local oldSkill = list[slot]
-        if not isOverlay(skill, oldSkill) then
-            goto CONTINUE
-        end
-        list[slot] = skill
-        if oldSkill and oldSkill._icon then
-            oldSkill._icon:remove()
-            oldSkill._icon = nil
-        end
-        ::CONTINUE::
-    end
-    for _, skill in pairs(list) do
-        if not skill._icon then
-            skill._icon = iconCreator(skill)
-        end
-    end
-end
-
 function mt:updateIcon()
-    if self._icon then
-        self._icon:remove()
-        self._icon = nil
-    end
-    searchIcon(self._owner, '技能', ability)
-    searchIcon(self._owner, '物品', item)
+    updateAllIcons(self._owner, '技能')
+    updateAllIcons(self._owner, '物品')
 end
 
 function mt:getOrder()
@@ -1106,7 +1123,18 @@ function mt:show()
 end
 
 function mt:isShow()
-    return not self._hide or self._hide == 0
+    if self._hide and self._hide ~= 0 then
+        return false
+    end
+    local mgr = self._owner._skill
+    if not mgr then
+        return false
+    end
+    local level = mgr._iconLevel[self._type]
+    if level and ac.toNumber(self.iconLevel) < level then
+        return false
+    end
+    return true
 end
 
 ac.skill = setmetatable({}, {
@@ -1124,6 +1152,10 @@ ac.skill = setmetatable({}, {
 return function (unit)
     local mgr = {
         _owner = unit,
+        _iconLevel = {
+            ['技能'] = 0,
+            ['物品'] = 0,
+        },
         ['技能'] = ac.list(),
         ['物品'] = ac.list(),
         ['隐藏'] = ac.list(),
@@ -1135,6 +1167,7 @@ return function (unit)
         currentSkill = currentSkill,
         checkRefreshAbility = checkRefreshAbility,
         checkRefreshItem = checkRefreshItem,
+        iconLevel = iconLevel,
     }
 
     unit._skill = mgr
