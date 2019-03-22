@@ -772,7 +772,6 @@ local function searchIcon(unit, tp, iconCreator)
     end
     for _, skill in pairs(list) do
         if not skill._icon then
-            print('图标', skill)
             skill._icon = iconCreator(skill)
         end
     end
