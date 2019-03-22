@@ -101,7 +101,7 @@ mt.__index = mt
 mt.type = 'ability icon'
 
 function mt:__tostring()
-    return ('{ability icon|%s}'):format(self._handle)
+    return ('{ability icon|%s}'):format(self._ability)
 end
 
 function mt:remove()

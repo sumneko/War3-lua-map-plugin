@@ -4,7 +4,7 @@ local slk = require 'jass.slk'
 
 local ORDER = require 'ac.war3.order'
 local PROTO = require 'ac.message.proto'
-local KEYBORD = message.keyboard
+local KEYBORD = require 'ac.war3.hotkey'
 local FLAG = {
     ['队列'] = 1 << 0,
     ['瞬发'] = 1 << 1,
@@ -128,7 +128,7 @@ local function findSkillByHotkey(unit, code)
     end
     for skill in unit:eachSkill() do
         local hotkey = skill.hotkey
-        if KEYBORD[hotkey] == code then
+        if skill._icon and KEYBORD[hotkey] == code then
             return skill
         end
     end
@@ -202,6 +202,13 @@ local function checkSkill(msg)
         skill = findSkillByHotkey(unit, msg.code)
         if skill and skill._icon and checkShop(skill._icon._ability) then
             return false
+        end
+        if skill and skill._icon then
+            if skill._type == '技能' and skill.targetType ~= '单位' and skill.targetType ~= '点' and skill.targetType ~= '单位或点' and skill.targetType ~= '物品' then
+                local order = skill._icon:getOrder()
+                message.order_immediate(ORDER[order], 0)
+                return false
+            end
         end
     else
         skill = findSkillByHotkey(localHero(), msg.code)
