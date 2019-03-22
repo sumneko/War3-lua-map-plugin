@@ -46,6 +46,15 @@ description = '技能描述'
 icon = [[ReplaceableTextures\CommandButtons\BTNInvisibility.blp]]
 ```
 
+### iconLevel
+图标等级
+
+当同一个格子上有多个技能时，优先显示等级高的
+
+```lua
+iconLevel = 10
+```
+
 ### range
 施法范围
 
@@ -247,6 +256,18 @@ skill:isEnable()
 ```lua
 skill:is(cast: skill)
     -> boolean
+```
+
+### setOption
+```lua
+skill:setOption(key: string, value: any)
+
+key: string
+    | 'title'
+    | 'description'
+    | 'icon'
+    | 'hotkey'
+    | 'iconLevel'
 ```
 
 ## event
