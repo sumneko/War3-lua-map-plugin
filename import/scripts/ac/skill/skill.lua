@@ -737,22 +737,35 @@ function mt:loadString(str)
     end
 end
 
+local function searchIcon(unit, tp, iconCreator)
+    local list = {}
+    for skill in unit:eachSkill(tp) do
+        local slot = skill._slot
+        if not slot then
+            goto CONTINUE
+        end
+        local oldSkill = list[slot]
+        list[slot] = skill
+        if oldSkill and oldSkill._icon then
+            oldSkill._icon:remove()
+            oldSkill._icon = nil
+        end
+        ::CONTINUE::
+    end
+    for _, skill in pairs(list) do
+        if not skill._icon then
+            skill._icon = iconCreator(skill)
+        end
+    end
+end
+
 function mt:updateIcon()
     if self._icon then
         self._icon:remove()
         self._icon = nil
-        if self._removed or self._type == '隐藏' then
-            return
-        end
     end
-    if self._removed then
-        return
-    end
-    if self._type == '技能' then
-        self._icon = ability(self)
-    elseif self._type == '物品' then
-        self._icon = item(self)
-    end
+    searchIcon(self._owner, '技能', ability)
+    searchIcon(self._owner, '物品', item)
 end
 
 function mt:getOrder()
