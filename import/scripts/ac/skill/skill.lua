@@ -490,8 +490,10 @@ local function getMaxCd(skill, cool)
 end
 
 local function onCoolDown(skill)
-    skill._cdTimer:remove()
     skill._maxCd = nil
+    if skill._cdTimer then
+        skill._cdTimer:remove()
+    end
     if skill._icon then
         skill._icon:setCd(0.0)
     end
