@@ -199,6 +199,7 @@ local castmt = {
 }
 
 local function createCast(skill)
+    skill = skill._parent or skill
     return setmetatable({
         _parent = skill,
         _dual = getmetatable(skill),
@@ -497,6 +498,7 @@ local function onCoolDown(skill)
 end
 
 local function setCd(skill, cd)
+    skill = skill._parent or skill
     if not skill._maxCd then
         return false
     end
@@ -523,6 +525,7 @@ local function setCd(skill, cd)
 end
 
 local function activeCd(skill, ...)
+    skill = skill._parent or skill
     local n = select('#', ...)
     local maxCd
     if n == 0 then
