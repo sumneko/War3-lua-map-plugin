@@ -349,4 +349,10 @@ local order2id = {
     incineratearrowoff = 0xD02C0,
 }
 
-return order2id
+local map = {}
+for k, v in pairs(order2id) do
+    map[k] = v
+    map[v] = k
+end
+
+return map

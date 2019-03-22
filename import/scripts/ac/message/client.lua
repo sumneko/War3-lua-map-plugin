@@ -3,7 +3,6 @@ local jass = require 'jass.common'
 local slk = require 'jass.slk'
 
 local ORDER = require 'ac.war3.order'
-local CMD_ORDER = ORDER[slk.ability['@CMD'].DataF]
 local PROTO = require 'ac.message.proto'
 local KEYBORD = message.keyboard
 local FLAG = {
@@ -255,9 +254,20 @@ local function onRightClick()
     return true
 end
 
+local function clickAttack(ability)
+    local unit = getSelect()
+    if not unit then
+        return false
+    end
+    local skill = findSkillByAbility(unit, ability)
+    if skill:getName() == '@命令' then
+        return true
+    end
+    return false
+end
+
 local function onClickAbility(msg)
-    local order = msg.order
-    if order == CMD_ORDER then
+    if clickAttack(ac.id[msg.ability]) then
         stackCommand '攻击'
         return true
     end

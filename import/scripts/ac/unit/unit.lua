@@ -202,7 +202,7 @@ function ac.unit(handle)
         -- 初始化状态
         buff.manager(u)
         -- 添加命令图标
-        u:addSkill('@命令', '技能')
+        u:addSkill('@命令', '技能', 9)
         -- 添加协议技能
         jass.UnitAddAbility(handle, ac.id['@PRT'])
         -- 设置为玩家的英雄

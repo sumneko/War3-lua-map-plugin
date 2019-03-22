@@ -4,7 +4,6 @@ local item = require 'ac.item'
 local ORDER = require 'ac.war3.order'
 local PROTO = require 'ac.message.proto'
 local TRG = jass.CreateTrigger()
-local CMD_ORDER = ORDER[slk.ability['@CMD'].DataF]
 
 local StackedCommand = nil
 
@@ -100,6 +99,15 @@ local function onCommand(unit, target)
     end
 end
 
+local function findSkillByOrder(unit, order)
+    for skill in unit:eachSkill() do
+        if skill._icon and skill._icon:getOrder() == order then
+            return skill
+        end
+    end
+    return nil
+end
+
 local function onPointOrder(unit)
     local orderId = jass.GetIssuedOrderId()
     if orderId == ORDER['channel'] then
@@ -107,7 +115,9 @@ local function onPointOrder(unit)
         local arg = jass.GetOrderPointY()
         onProto(unit, id, arg)
         return
-    elseif orderId == CMD_ORDER then
+    end
+    local skill = findSkillByOrder(unit, ORDER[orderId])
+    if skill and skill:getName() == '@命令' then
         onCommand(unit)
         return
     end
@@ -115,7 +125,8 @@ end
 
 local function onUnitOrder(unit, target)
     local orderId = jass.GetIssuedOrderId()
-    if orderId == CMD_ORDER then
+    local skill = findSkillByOrder(unit, ORDER[orderId])
+    if skill and skill:getName() == '@命令' then
         onCommand(unit, target)
         return
     end
@@ -146,21 +157,22 @@ end
 
 local function onCastStart(unit)
     local id = jass.GetSpellAbilityId()
-    if id == ac.id['@CMD'] then
+    -- 检查发动技能
+    local skill = searchAbilityId(unit, ac.id[id])
+    if not skill then
+        return
+    end
+    if skill:getName() == '@命令' then
         order(unit, 'stop')
         unit:_stopCastByClient()
-    else
-        -- 检查发动技能
-        local skill = searchAbilityId(unit, ac.id[id])
-        if skill then
-            local target = ac.unit(jass.GetSpellTargetUnit())
-                        or item.findByHandle(jass.GetSpellTargetItem())
-            local x = jass.GetSpellTargetX()
-            local y = jass.GetSpellTargetY()
-            order(unit, 'stop')
-            skill:castByClient(target, x, y)
-        end
+        return
     end
+    local target = ac.unit(jass.GetSpellTargetUnit())
+                or item.findByHandle(jass.GetSpellTargetItem())
+    local x = jass.GetSpellTargetX()
+    local y = jass.GetSpellTargetY()
+    order(unit, 'stop')
+    skill:castByClient(target, x, y)
 end
 
 jass.TriggerAddCondition(TRG, jass.Condition(function ()
