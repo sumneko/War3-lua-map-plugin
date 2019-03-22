@@ -741,6 +741,9 @@ local function isOverlay(a, b)
     if not b then
         return true
     end
+    if not b:isShow() then
+        return true
+    end
     local level1 = ac.toNumber(a.iconLevel, 0)
     local level2 = ac.toNumber(b.iconLevel, 0)
     return level1 >= level2
@@ -751,6 +754,9 @@ local function searchIcon(unit, tp, iconCreator)
     for skill in unit:eachSkill(tp) do
         local slot = skill._slot
         if not slot then
+            goto CONTINUE
+        end
+        if not skill:isShow() then
             goto CONTINUE
         end
         local oldSkill = list[slot]
@@ -1081,6 +1087,24 @@ function mt:is(dest)
     self = self._parent or self
     dest = dest._parent or dest
     return self == dest
+end
+
+function mt:hide()
+    self._hide = (self._hide or 0) + 1
+    if self._hide == 1 then
+        self:updateIcon()
+    end
+end
+
+function mt:show()
+    self._hide = (self._hide or 0) - 1
+    if self._hide == 0 then
+        self:updateIcon()
+    end
+end
+
+function mt:isShow()
+    return not self._hide or self._hide == 0
 end
 
 ac.skill = setmetatable({}, {

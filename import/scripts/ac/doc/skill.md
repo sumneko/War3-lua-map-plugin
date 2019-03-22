@@ -258,6 +258,22 @@ skill:is(cast: skill)
     -> boolean
 ```
 
+### show
+```lua
+skill:show()
+```
+
+### hide
+```lua
+skill:hide()
+```
+
+### isShow
+```lua
+skill:isShow()
+    -> boolean
+```
+
 ### setOption
 ```lua
 skill:setOption(key: string, value: any)
