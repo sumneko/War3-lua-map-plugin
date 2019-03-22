@@ -1,5 +1,4 @@
 local type = type
-local pairs = pairs
 local tableSort = table.sort
 local tableInsert = table.insert
 local mathFloor = math.floor
@@ -238,4 +237,31 @@ function ac.sortPairs(t)
         local k = keys[i]
         return k, t[k]
     end
+end
+
+ac.pairs = pairs
+
+local stdNext = next
+local cantPairs = {
+    ['table'] = true,
+    ['thread'] = true,
+    ['userdata'] = true,
+    ['function'] = true,
+}
+
+function next(...)
+    local key, value = stdNext(...)
+    if cantPairs[type(key)] then
+        error('不能遍历索引为gc对象的表')
+    end
+    return key, value
+end
+
+function pairs(t)
+    local mt = getmetatable(t)
+    if mt and mt.__pairs then
+        return mt.__pairs(t)
+    end
+    next(t)
+    return stdNext, t, nil
 end
