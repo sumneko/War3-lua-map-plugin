@@ -242,6 +242,10 @@ function mt:updateAll()
     self:updateStack()
 end
 
+function mt:getOrder()
+    return ''
+end
+
 function mt:needRefreshItem()
     local skill = self._skill
     local unit = skill._owner
