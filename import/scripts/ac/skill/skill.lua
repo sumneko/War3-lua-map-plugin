@@ -317,6 +317,11 @@ local function removeSkill(unit, skill)
         return false
     end
 
+    if skill._icon then
+        skill._icon:remove()
+        skill._icon = nil
+    end
+
     skill:updateIcon()
 
     skill:eventNotify('onRemove')
