@@ -246,7 +246,7 @@ local function create(unit)
         _private = ac.list()
     }, mt)
     unit:removeSkill('@命令')
-    jass.UnitAddAbility(unit._handle, ac.id['AInv'])
+    unit:bagSize(6)
     jass.UnitAddAbility(unit._handle, ac.id['@SLC'])
 
     for i = 1, 6 do
