@@ -284,6 +284,7 @@ key: string
     | 'icon'
     | 'hotkey'
     | 'iconLevel'
+    | 'passive'
 ```
 
 ## event
@@ -303,6 +304,18 @@ end
 ### onUpgrade
 ```lua
 function skill:onUpgrade()
+end
+```
+
+### onEnable
+```lua
+function skill:onEnable()
+end
+```
+
+### onDisable
+```lua
+function skill:onDisable()
 end
 ```
 

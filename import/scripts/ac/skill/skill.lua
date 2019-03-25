@@ -17,6 +17,8 @@ local METHOD = {
     ['onAdd']         = '技能-获得',
     ['onRemove']      = '技能-失去',
     ['onUpgrade']     = '技能-升级',
+    ['onEnable']      = '技能-启用',
+    ['onDisable']     = '技能-禁用',
     ['onCanCast']     = '技能-即将施法',
     ['onCastStart']   = '技能-施法开始',
     ['onCastChannel'] = '技能-施法引导',
@@ -1105,6 +1107,7 @@ function mt:disable()
         if self:is(cast) then
             cast:stop()
         end
+        self:eventNotify('onDisable')
     end
 end
 
@@ -1117,6 +1120,7 @@ function mt:enable()
             self._icon = nil
             self:updateIcon()
         end
+        self:eventNotify('onEnable')
     end
 end
 
