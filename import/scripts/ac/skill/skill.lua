@@ -1088,7 +1088,7 @@ function mt:disable()
         self:updateIcon()
         local unit = self:getOwner()
         local cast = unit:currentSkill()
-        if cast:is(self) then
+        if self:is(cast) then
             cast:stop()
         end
     end
