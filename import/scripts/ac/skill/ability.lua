@@ -149,8 +149,20 @@ end
 
 function mt:updateIcon()
     local skill = self._skill
-    local icon = skill.icon
-    if not skill:isEnable() then
+    local icon = tostring(skill.icon)
+    if skill:isEnable() then
+        if skill.passive == 1 then
+            icon = iconBlender.add(icon, 'frame_passive')
+        end
+        local stack = ac.nearInteger(skill._stack)
+        if stack > 0 then
+            if stack >= 10 then
+                icon = iconBlender.add(icon, 'stack_9+')
+            else
+                icon = iconBlender.add(icon, 'stack_' .. tostring(stack))
+            end
+        end
+    else
         icon = iconBlender.getDisIcon(icon)
     end
     if icon == self._cache.icon then
@@ -221,6 +233,7 @@ function mt:updateCost()
 end
 
 function mt:updateStack()
+    self:updateIcon()
 end
 
 function mt:refresh()

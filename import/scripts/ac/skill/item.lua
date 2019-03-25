@@ -154,7 +154,11 @@ end
 function mt:updateIcon()
     local skill = self._skill
     local icon = skill.icon
-    if not skill:isEnable() then
+    if skill:isEnable() then
+        if skill.passive == 1 then
+            icon = iconBlender.add(icon, 'frame_passive')
+        end
+    else
         icon = iconBlender.getDisIcon(icon)
     end
     if icon == self._cache.icon then

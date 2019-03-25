@@ -1020,7 +1020,8 @@ function mt:isCast()
 end
 
 function mt:setOption(name, value)
-    self:set(name, value)
+    self = self._parent or self
+    self[name] = value
     if name == 'title' then
         if self._icon then
             self._icon:updateTitle()
@@ -1039,6 +1040,15 @@ function mt:setOption(name, value)
         end
     elseif name == 'iconLevel' then
         self:updateIcon()
+    elseif name == 'passive' then
+        if self._icon then
+            self._icon:remove()
+            if self._type == '技能' then
+                self._icon = ability(self)
+            elseif self._type == '物品' then
+                self._icon = item(self)
+            end
+        end
     end
 end
 
