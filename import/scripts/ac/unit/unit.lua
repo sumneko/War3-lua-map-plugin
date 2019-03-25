@@ -95,7 +95,7 @@ local function onRemove(unit)
     if destructors then
         -- 保证所有人都按固定的顺序执行
         local list = {}
-        for f in pairs(destructors) do
+        for f in ac.pairs(destructors) do
             list[#list+1] = f
         end
         table.sort(list, function (a, b)
