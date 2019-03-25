@@ -11,6 +11,8 @@ local pcall = pcall
 local xpcall = xpcall
 local select = select
 
+print(ROOT)
+
 local Count = 0
 
 local METHOD = {
@@ -1050,6 +1052,10 @@ function mt:setOption(name, value)
             elseif self._type == '物品' then
                 self._icon = item(self)
             end
+        end
+    elseif name == 'passiveIcon' then
+        if self._icon then
+            self._icon:updateIcon()
         end
     end
 end

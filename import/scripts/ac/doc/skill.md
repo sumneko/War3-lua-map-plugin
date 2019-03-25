@@ -55,6 +55,15 @@ icon = [[ReplaceableTextures\CommandButtons\BTNInvisibility.blp]]
 iconLevel = 10
 ```
 
+### passiveIcon
+被动图标
+
+将图标转化为被动图标
+
+```lua
+passiveIcon = 1
+```
+
 ### range
 施法范围
 

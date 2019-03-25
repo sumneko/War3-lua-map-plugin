@@ -151,7 +151,7 @@ function mt:updateIcon()
     local skill = self._skill
     local icon = tostring(skill.icon)
     if skill:isEnable() then
-        if skill.passive == 1 then
+        if skill.passiveIcon == 1 then
             icon = iconBlender.add(icon, 'frame_passive')
         end
         local stack = ac.nearInteger(skill._stack)
