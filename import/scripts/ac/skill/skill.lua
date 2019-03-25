@@ -1085,7 +1085,11 @@ function mt:disable()
     self = self._parent or self
     self._disable = (self._disable or 0) + 1
     if self._disable == 1 then
-        self:updateIcon()
+        if self._icon then
+            self._icon:remove()
+            self._icon = nil
+            self:updateIcon()
+        end
         local unit = self:getOwner()
         local cast = unit:currentSkill()
         if self:is(cast) then
@@ -1098,7 +1102,11 @@ function mt:enable()
     self = self._parent or self
     self._disable = (self._disable or 0) - 1
     if self._disable == 0 then
-        self:updateIcon()
+        if self._icon then
+            self._icon:remove()
+            self._icon = nil
+            self:updateIcon()
+        end
     end
 end
 

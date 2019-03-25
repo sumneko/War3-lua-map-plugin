@@ -2,6 +2,8 @@ local slk = require 'jass.slk'
 local jass = require 'jass.common'
 local japi = require 'jass.japi'
 
+local iconBlender = require 'ac.icon'
+
 local Pool
 local Cache = {}
 
@@ -152,6 +154,9 @@ end
 function mt:updateIcon()
     local skill = self._skill
     local icon = skill.icon
+    if not skill:isEnable() then
+        icon = iconBlender.getDisIcon(icon)
+    end
     if icon == self._cache.icon then
         return
     end
