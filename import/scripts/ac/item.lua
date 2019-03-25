@@ -419,9 +419,34 @@ local function findByHandle(handle)
     return Items[handle]
 end
 
+local function loadString(skill, str)
+    return str:gsub('${(.-)}', function (pat)
+        local pos = pat:find(':', 1, true)
+        if pos then
+            local key = pat:sub(1, pos-1)
+            local f, err = load('return '..key, key, "t", skill)
+            if not f then
+                return err
+            end
+            local value = f()
+            local fmt = pat:sub(pos+1)
+            return ('%'..fmt):format(value)
+        else
+            local f, err = load('return '..pat, pat, "t", skill)
+            if not f then
+                return err
+            end
+            local value = f()
+            return tostring(value)
+        end
+    end)
+end
+
 function mt:updateTitle()
     local item = self._data
-    local title = item.title or item.name or self._name
+    local skill = item.skill and ac.skill[item.skill]
+    local title = skill and skill.title and skill.title[1] or item.title or item.name or self._name
+    title = self:loadString(title)
     if title == self._cache.title then
         return
     end
@@ -431,12 +456,33 @@ end
 
 function mt:updateDescription()
     local item = self._data
-    local desc = item.description
+    local skill = item.skill and ac.skill[item.skill]
+    local desc = skill and skill.description and skill.description[1] or item.description
+    desc = self:loadString(desc)
     if desc == self._cache.description then
         return
     end
     self._cache.description = desc
     japi.EXSetItemDataString(ac.id[self._id], 5, desc)
+end
+
+function mt:loadString(str)
+    str = tostring(str)
+
+    local skillName = self._data.skill
+    local skillTable = ac.table.skill[skillName]
+
+    local skill = setmetatable({}, {__index = function (_, k)
+        local v = skillTable and skillTable[k] or self._data[k]
+        return v
+    end})
+
+    local suc, res = pcall(loadString, skill, str)
+    if suc then
+        return res
+    else
+        return str
+    end
 end
 
 function mt:updateAll()
