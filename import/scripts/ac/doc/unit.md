@@ -180,6 +180,7 @@ restrictionName: string
     | '隐藏'
     | '缴械'
     | '禁魔'
+    | '晕眩'
 ```
 
 ### removeRestriction
@@ -196,6 +197,7 @@ restrictionName: string
     | '隐藏'
     | '缴械'
     | '禁魔'
+    | '晕眩'
 ```
 
 ### getRestriction
@@ -213,6 +215,7 @@ restrictionName: string
     | '隐藏'
     | '缴械'
     | '禁魔'
+    | '晕眩'
 ```
 
 ### hasRestriction
@@ -230,6 +233,7 @@ restrictionName: string
     | '隐藏'
     | '缴械'
     | '禁魔'
+    | '晕眩'
 ```
 
 ### isAlive

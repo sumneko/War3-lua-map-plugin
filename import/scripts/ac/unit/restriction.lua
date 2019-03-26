@@ -79,6 +79,9 @@ local Add = {
             skill:updateIcon()
         end
     end,
+    ['晕眩'] = function (self, unit)
+        japi.EXPauseUnit(unit._handle, true)
+    end,
 }
 
 local Remove = {
@@ -110,6 +113,9 @@ local Remove = {
         for skill in unit:eachSkill() do
             skill:updateIcon()
         end
+    end,
+    ['晕眩'] = function (self, unit)
+        japi.EXPauseUnit(unit._handle, false)
     end,
 }
 
