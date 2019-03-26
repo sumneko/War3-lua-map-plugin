@@ -186,18 +186,21 @@ function mt:dialog(data)
     return dialog(self, data)
 end
 
-function mt:moveCamera(point, time)
+function mt:moveCamera(point, time, height)
     if ac.localPlayer() ~= self then
         return
     end
     if not ac.isPoint(point) then
         return
     end
+    if not ac.isNumber(height) then
+        height = nil
+    end
     local x, y = point:getXY()
-    if time then
-        jass.PanCameraToTimed(x, y, ac.toNumber(time))
+    if height then
+        jass.PanCameraToTimedWithZ(x, y, height, ac.toNumber(time))
     else
-        jass.SetCameraPosition(x, y)
+        jass.PanCameraToTimed(x, y, ac.toNumber(time))
     end
 end
 

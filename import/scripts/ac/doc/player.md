@@ -102,7 +102,7 @@ player:dialog {
 
 ### moveCamera
 ```lua
-player:moveCamera(point[, duration: number])
+player:moveCamera(point[, duration: number][, height: number])
 ```
 
 ### controller
