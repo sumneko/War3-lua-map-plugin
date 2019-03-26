@@ -92,7 +92,7 @@ function mt:onShow(k)
         return
     end
     local v = self:get(k)
-    local s = self._show[k]
+    local s = self._show[k] or 0.0
     if v == s then
         return
     end
