@@ -97,8 +97,10 @@ function mt:onShow(k)
         return
     end
     local player = self._player
+    local delta = v - s
     self._show[k] = v
     Show[k](player, v)
+    player:eventNotify('玩家-属性变化', player, k, delta)
 end
 
 function mt:onSet(k)

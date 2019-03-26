@@ -92,6 +92,12 @@ player:event('玩家-聊天', function (trg, player, string)
 end)
 ```
 
+### 玩家-属性变化
+```lua
+player:event('玩家-属性变化', function (trg, unit, attributeName: string, delta: number)
+end)
+```
+
 # skill
 
 ### 技能-获得
