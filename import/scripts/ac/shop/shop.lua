@@ -103,14 +103,34 @@ end
 
 function mt:getItem(name)
     local unit = self._unit
-    return unit:findSkill(name, '技能')
+    if ac.isInteger(name) then
+        local skill = unit:findSkill(name, '技能')
+        if skill then
+            return skill
+        end
+    else
+        for skill in unit:eachSkill '技能' do
+            if skill.itemName == name then
+                return skill
+            end
+        end
+    end
+    return nil
 end
 
 function mt:removeItem(name)
     local unit = self._unit
-    local skill = unit:findSkill(name, '技能')
-    if skill then
-        return skill:remove()
+    if ac.isInteger(name) then
+        local skill = unit:findSkill(name, '技能')
+        if skill then
+            return skill:remove()
+        end
+    else
+        for skill in unit:eachSkill '技能' do
+            if skill.itemName == name then
+                return skill:remove()
+            end
+        end
     end
     return false
 end
