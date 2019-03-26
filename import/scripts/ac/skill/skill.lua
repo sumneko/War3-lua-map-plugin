@@ -11,8 +11,6 @@ local pcall = pcall
 local xpcall = xpcall
 local select = select
 
-print(ROOT)
-
 local Count = 0
 
 local METHOD = {
