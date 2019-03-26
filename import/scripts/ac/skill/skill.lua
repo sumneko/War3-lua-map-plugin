@@ -648,7 +648,10 @@ local function onCastStart(cast)
     local unit = cast._owner
 
     unit:stopCast()
-    jass.SetUnitAnimation(unit._handle, cast.animation)
+    ac.wait(0, function()
+        jass.SetUnitAnimation(unit._handle, cast.animation or 'stand')
+        jass.QueueUnitAnimation(unit._handle, 'stand')
+    end)
 
     cast._mgr._currentSkill = cast
     cast._stun = unit:addRestriction '硬直'
