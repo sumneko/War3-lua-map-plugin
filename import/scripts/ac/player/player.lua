@@ -204,6 +204,51 @@ function mt:moveCamera(point, time, height)
     end
 end
 
+local CameraField = {
+    ['距离'] = 0,
+    ['远景截断'] = 0,
+    ['X轴旋转'] = 0,
+    ['镜头区域'] = 0,
+    ['Y轴旋转'] = 0,
+    ['Z轴旋转'] = 0,
+    ['高度'] = 0,
+}
+
+function mt:setCamera(state, value, time)
+    if ac.localPlayer() ~= self then
+        return
+    end
+    local field = CameraField[state]
+    if not field then
+        return
+    end
+    if not ac.isNumber(value) then
+        return
+    end
+    jass.SetCameraField(field, value, ac.toNumber(time))
+end
+
+function mt:addCamera(state, value, time)
+    if ac.localPlayer() ~= self then
+        return
+    end
+    local field = CameraField[state]
+    if not field then
+        return
+    end
+    if not ac.isNumber(value) then
+        return
+    end
+    jass.AdjustCameraField(field, value, ac.toNumber(time))
+end
+
+function mt:resetCamera(time)
+    if ac.localPlayer() ~= self then
+        return
+    end
+    jass.ResetToGameCamera(ac.toNumber(time))
+end
+
 function mt:controller()
     local state = jass.GetPlayerController(self._handle)
     if state == 0 then

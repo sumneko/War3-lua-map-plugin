@@ -105,6 +105,39 @@ player:dialog {
 player:moveCamera(point[, duration: number][, height: number])
 ```
 
+### setCamera
+```lua
+player:setCamera(state: string, value: number[, time: number])
+
+state: string
+    | '距离'
+    | '高度'
+    | '远景截断'
+    | '镜头区域'
+    | 'X轴旋转'
+    | 'Y轴旋转'
+    | 'Z轴旋转'
+```
+
+### addCamera
+```lua
+player:addCamera(state: string, value: number[, time: number])
+
+state: string
+    | '距离'
+    | '高度'
+    | '远景截断'
+    | '镜头区域'
+    | 'X轴旋转'
+    | 'Y轴旋转'
+    | 'Z轴旋转'
+```
+
+### resetCamera
+```lua
+player:resetCamera()
+```
+
 ### controller
 ```lua
 player:controller()
