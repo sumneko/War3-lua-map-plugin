@@ -193,12 +193,59 @@ function mt:updateRange()
     japi.EXSetAbilityDataReal(self:handle(), 1, 0x6B, range)
 end
 
+--计算出目标允许的二进制
+local convert_targets = {
+	["地面"]	= 2 ^ 1,
+    ["空中"]	= 2 ^ 2,
+    ["建筑"]	= 2 ^ 3,
+    ["守卫"]	= 2 ^ 4,
+    ["物品"]	= 2 ^ 5,
+    ["树木"]	= 2 ^ 6,
+    ["墙"]		= 2 ^ 7,
+    ["残骸"]	= 2 ^ 8,
+    ["装饰物"]	= 2 ^ 9,
+   	["桥"]		= 2 ^ 10,
+    ["未知"]	= 2 ^ 11,
+    ["自己"]	= 2 ^ 12,
+    ["玩家单位"]	= 2 ^ 13,
+    ["联盟"]	= 2 ^ 14,
+    ["中立"]	= 2 ^ 15,
+    ["敌人"]	= 2 ^ 16,
+    ["未知"]	= 2 ^ 17,
+    ["未知"]	= 2 ^ 18,
+    ["未知"]	= 2 ^ 19,
+    ["可攻击的"]	= 2 ^ 20,
+    ["无敌"]	= 2 ^ 21,
+    ["英雄"]	= 2 ^ 22,
+    ["非-英雄"]	= 2 ^ 23,
+    ["存活"]	= 2 ^ 24,
+    ["死亡"]	= 2 ^ 25,
+    ["有机生物"]	= 2 ^ 26,
+    ["机械类"]	= 2 ^ 27,
+    ["非-自爆工兵"]	= 2 ^ 28,
+    ["自爆工兵"]	= 2 ^ 29,
+    ["非-古树"]	= 2 ^ 30,
+    ["古树"]	= 2 ^ 31,
+}
+local function convertTargets(targetData)
+	local result = 0
+	for _,name in ipairs(targetData) do
+		local flag = convert_targets[name]
+		if not flag then
+			error('错误的目标允许类型: ' .. name)
+		end
+		result = result + flag
+	end
+	return result
+end
+
 function mt:updateTargetType()
     local id = self._id
     if slk.ability[id].code ~= 'ANcl' then
         return
     end
     local skill = self._skill
+    --设置技能目标类型
     local targetType = skill.targetType
     if self._cache.targetType == targetType then
         return
@@ -217,6 +264,11 @@ function mt:updateTargetType()
         japi.EXSetAbilityDataInteger(self:handle(), 1, 0x64, 0x20)
     else
         japi.EXSetAbilityDataReal(self:handle(), 1, 0x6D, 0)
+    end
+    --设置技能目标允许
+    local targetData = skill.targetData
+    if targetData then
+	    japi.EXSetAbilityDataInteger(self:handle(), 1, 0x64, convertTargets(targetData))
     end
     -- 刷新一下
     self:refresh()

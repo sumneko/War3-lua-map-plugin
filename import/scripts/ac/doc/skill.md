@@ -82,6 +82,13 @@ targetType = '单位或点'
 targetType = '物品'
 ```
 
+### targetData
+目标允许
+
+```lua
+targetData = {'地面','空中','敌人',...}
+```
+
 ### passive
 被动技能
 
