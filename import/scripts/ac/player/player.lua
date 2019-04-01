@@ -428,8 +428,6 @@ function mt:remove(typeName,message)
 			function borad:onClick()
 				jass.EndGame(true)
 			end
-		else
-			jass.EndGame(true)
 		end
     end
 end
