@@ -98,6 +98,12 @@ player:event('玩家-属性变化', function (trg, unit, attributeName: string, 
 end)
 ```
 
+### 玩家-退出游戏
+```lua
+player:event('玩家-退出游戏', function (trg, player, typeName: string)
+end)
+```
+
 # skill
 
 ### 技能-获得
