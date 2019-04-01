@@ -7,6 +7,8 @@ local EVENT = {
     Deselected  = jass.EVENT_PLAYER_UNIT_DESELECTED,
     Chat        = 96,
     Level       = jass.EVENT_PLAYER_HERO_LEVEL,
+    Order		= jass.EVENT_PLAYER_UNIT_ISSUED_ORDER,
+    PointOrder	= jass.EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER,
     TargetOrder = jass.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER,
     PickUpItem  = jass.EVENT_PLAYER_UNIT_PICKUP_ITEM,
     DropItem    = jass.EVENT_PLAYER_UNIT_DROP_ITEM,
@@ -40,11 +42,66 @@ local CallBack = {
             unit:_onLevel()
         end
     end,
+    [EVENT.Order] = function ()
+    	local unit = ac.unit(jass.GetTriggerUnit())
+    	if unit then
+	        local order = jass.GetIssuedOrderId()
+	        local orderList = {
+				['stop'] = '停止',
+				['holdposition'] = '保持原位',
+				['patrol'] = '警戒',
+			}
+	        local orderID = orderList[ORDER[order]]
+	        if orderID then
+		        unit:eventNotify('单位-发布命令', unit, orderID, nil)
+	        end
+        end
+    end,
+    [EVENT.PointOrder] = function ()
+    	local unit = ac.unit(jass.GetTriggerUnit())
+    	if unit then
+	    	local order = jass.GetIssuedOrderId()
+	    	local orderList = {
+				['smart'] = '移动',
+				['attack'] = '攻击',
+				['patrol'] = '巡逻',
+				['move'] = '移动',
+				['AImove'] = '休眠',
+			}
+	        local orderID = orderList[ORDER[order]]
+	        local x = jass.GetOrderPointX()
+	        local y = jass.GetOrderPointY()
+	        local target = ac.point(x,y)
+	        if orderID and target then
+	        	unit:eventNotify('单位-发布命令', unit, orderID, target)
+	    	end
+    	end
+    end,
     [EVENT.TargetOrder] = function ()
         local unit = ac.unit(jass.GetTriggerUnit())
         local handle = jass.GetOrderTargetItem()
+        local order = jass.GetIssuedOrderId()
+        --抛出事件
+        local target = ac.unit(jass.GetOrderTargetUnit())
+        if target then
+			local orderList = {
+				['smart'] = function()
+					if unit:isEnemy(target) then
+						return '攻击'
+					else
+						return '跟随'
+					end
+				end,
+				['attack'] = '攻击',
+				['patrol'] = '跟随',
+			}
+	        local orderID = orderList[ORDER[order]]
+	        if orderID then
+	        	unit:eventNotify('单位-发布命令', unit, orderID, target)
+	    	end
+    	end
+        --拾取物品
         if handle ~= 0 then
-            local order = jass.GetIssuedOrderId()
             if order == ORDER['smart'] then
                 item.onLootOrder(unit, handle)
             end
@@ -83,6 +140,8 @@ return function ()
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.Deselected, nil)
         jass.TriggerRegisterPlayerChatEvent(trg, jass.Player(i), '', false)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.Level, nil)
+        jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.Order, nil)
+        jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PointOrder, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.TargetOrder, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PickUpItem, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.DropItem, nil)

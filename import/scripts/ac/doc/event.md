@@ -72,6 +72,12 @@ unit:event('单位-属性变化', function (trg, unit, attributeName: string, de
 end)
 ```
 
+### 单位-发布命令
+```lua
+unit:event('单位-发布命令', function (trg, unit, orderID: string, target: unit/point/nil)
+end)
+```
+
 # player
 
 ### 玩家-选中单位
