@@ -10,6 +10,7 @@ local EVENT = {
     TargetOrder = jass.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER,
     PickUpItem  = jass.EVENT_PLAYER_UNIT_PICKUP_ITEM,
     DropItem    = jass.EVENT_PLAYER_UNIT_DROP_ITEM,
+    Leave		= jass.EVENT_PLAYER_LEAVE,
 }
 local CallBack = {
     [EVENT.Selected] = function ()
@@ -67,6 +68,12 @@ local CallBack = {
             item.onDrop(unit, handle)
         end)
     end,
+    [EVENT.Leave] = function()
+    	local player = ac.player(jass.GetTriggerPlayer())
+        if player and not player._isRemove then
+            player:remove('失败')
+        end
+	end,
 }
 
 return function ()
@@ -79,6 +86,7 @@ return function ()
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.TargetOrder, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PickUpItem, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.DropItem, nil)
+        jass.TriggerRegisterPlayerEvent(trg, jass.Player(i), EVENT.Leave)
     end
     jass.TriggerAddCondition(trg, jass.Condition(function ()
         local eventId = jass.GetTriggerEventId()

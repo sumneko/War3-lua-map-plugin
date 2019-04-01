@@ -418,6 +418,7 @@ function mt:remove(typeName,message)
 	end
 	self:eventNotify('玩家-退出游戏', self,typeName)
 	jass.RemovePlayer(self._handle,index)
+	self._isRemove = typeName
 	if self:controller() ~= '电脑' then
 		if message then
 			local borad = self:dialog{
