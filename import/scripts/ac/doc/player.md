@@ -275,3 +275,12 @@ ac.player(index: integer)
 ac.localPlayer()
     -> player
 ```
+
+### remove
+```lua
+player:remove([typeName: string, message: string])
+
+typeName: string
+    | '胜利'
+    | '失败'
+```

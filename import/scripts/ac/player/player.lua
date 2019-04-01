@@ -405,3 +405,29 @@ function ac.localPlayer()
     end
     return LocalPlayer
 end
+
+function mt:remove(index,message)
+	if index == '胜利' then
+		index = 0
+	elseif index == '失败' then
+		index = 1
+	else
+		log.error('没有填写移除玩家的原因（胜利/失败）')
+		return false
+	end
+	ac.game:eventNotify('玩家-退出游戏', self)
+	jass.RemovePlayer(self._handle,index)
+	if self:controller() ~= '电脑' then
+		if message then
+			local borad = self:dialog{
+			    message,
+				{'1', 'X', '退出游戏(X)|r'},
+			}
+			function borad:onClick()
+				jass.EndGame(true)
+			end
+		else
+			jass.EndGame(true)
+		end
+    end
+end
