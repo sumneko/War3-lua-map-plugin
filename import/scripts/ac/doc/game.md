@@ -21,3 +21,8 @@ ac.game:pause()
 ```lua
 ac.game:start()
 ```
+
+### endGame
+```lua
+ac.game:endGame()
+```

@@ -17,3 +17,7 @@ end
 function ac.game:start()
 	jass.PauseGame(false)
 end
+
+function ac.game:endGame()
+	jass.EndGame(true)
+end
