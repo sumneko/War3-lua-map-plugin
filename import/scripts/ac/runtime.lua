@@ -1,5 +1,4 @@
 local runtime = require 'jass.runtime'
-local console = require 'jass.console'
 
 console.enable = true
 
