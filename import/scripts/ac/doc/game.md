@@ -26,3 +26,13 @@ ac.game:start()
 ```lua
 ac.game:endGame()
 ```
+
+### ac.game:fog
+```lua
+ac.game:fog([boolean: boolean])
+```
+
+### ac.game:mask
+```lua
+ac.game:mask([boolean: boolean])
+```

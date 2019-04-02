@@ -284,3 +284,13 @@ typeName: string
     | '胜利'
     | '失败'
 ```
+
+### setFog
+```lua
+player:setFog(index: string,rect: rect)
+
+index: string
+    | '黑色阴影'
+    | '战争迷雾'
+    | '可见'
+```

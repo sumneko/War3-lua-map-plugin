@@ -431,3 +431,22 @@ function mt:remove(typeName,message)
 		end
     end
 end
+
+function mt:setFog(index,rect)
+	if index == '黑色阴影' then
+		index = 1
+	elseif index == '战争迷雾' then
+		index = 2
+	elseif index == '可见' then
+		index = 4
+	else
+		log.error('可见度类型不正确')
+		return
+	end
+	if rect then
+		jass.SetFogStateRect(self._handle, index, rect._handle, false)
+	else
+		log.error('未传入区域')
+		return
+	end
+end

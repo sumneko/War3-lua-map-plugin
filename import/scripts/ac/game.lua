@@ -21,3 +21,17 @@ end
 function ac.game:endGame()
 	jass.EndGame(true)
 end
+
+function ac.game:fog(boolean)
+	if not boolean then
+		boolean = true
+	end
+	jass.FogEnable(boolean)
+end
+
+function ac.game:mask(boolean)
+	if not boolean then
+		boolean = true
+	end
+	jass.FogMaskEnable(boolean)
+end
