@@ -407,6 +407,9 @@ function ac.localPlayer()
 end
 
 function mt:remove(typeName,message)
+	if self._isRemove then
+		return
+	end
 	local index
 	if typeName == '胜利' then
 		index = 0
