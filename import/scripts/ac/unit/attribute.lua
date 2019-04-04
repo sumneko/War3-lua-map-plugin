@@ -239,8 +239,16 @@ return function (unit, default)
         _rate = {},
         _show = {},
     }, mt)
-    for _, k in ipairs(Care) do
-        local v = default and default[k] or Default[k] or 0.0
+    if not default then
+	    default = {}
+    end
+    for _,k in ipairs(Care) do
+	    if not default[k] then
+		    local v = Default[k] or 0.0
+		    obj:add(k, v)
+	    end
+    end
+    for k,v in pairs(default) do
         obj:add(k, v)
     end
     return obj
