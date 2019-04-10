@@ -36,3 +36,13 @@ ac.game:fog([boolean: boolean])
 ```lua
 ac.game:mask([boolean: boolean])
 ```
+
+### ac.game:music
+```lua
+ac.game:music([string: boolean])
+```
+
+### ac.game:musicTheme
+```lua
+ac.game:musicTheme([string: boolean])
+```

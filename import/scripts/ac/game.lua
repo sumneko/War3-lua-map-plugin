@@ -35,3 +35,16 @@ function ac.game:mask(boolean)
 	end
 	jass.FogMaskEnable(boolean)
 end
+
+function ac.game:music(name)
+	if not name then
+		name = 'music'
+	end
+	jass.PlayMusic(name)
+end
+
+function ac.game:musicTheme(name)
+	if name then
+		jass.PlayThematicMusic(name)
+	end
+end
