@@ -51,7 +51,9 @@ local function dispatch(damage)
     if not target then
         error('伤害没有目标')
     end
-
+	if target:hasRestriction '无敌' then
+		return false
+	end
     damage.currentDamage = damage.damage
 
     -- 检查伤害是否被上层接管

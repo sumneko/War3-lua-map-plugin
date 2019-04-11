@@ -40,7 +40,10 @@ function ac.game:music(name)
 	if not name then
 		name = 'music'
 	end
-	jass.PlayMusic(name)
+	jass.StopMusic(false)
+	ac.wait(0,function()
+		jass.PlayMusic(name)
+	end)
 end
 
 function ac.game:musicTheme(name)

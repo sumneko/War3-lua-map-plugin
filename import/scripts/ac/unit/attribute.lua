@@ -213,8 +213,26 @@ function mt:onShow(k)
         return
     end
     local delta = v - s
+    --当单次扣除生命超过过多会导致单位承受不住直接去世，因此分段处理
+    local maxDelta = 5000000
+    if k == '生命' and delta <= -maxDelta then
+	    local hp = s - delta%maxDelta
+	    Show[k](unit,hp)
+	    local num = math.floor(delta/maxDelta)
+	    local function action()
+	    	if num > 0 then
+		    	ac.wait(0,function()
+		    		hp = s - maxDelta
+		    		Show[k](unit,hp)
+		    		num = num - 1
+		    		action()
+		    	end)
+	    	end
+    	end
+    else
+	    Show[k](unit, v)
+    end
     self._show[k] = v
-    Show[k](unit, v)
     unit:eventNotify('单位-属性变化', unit, k, delta)
 end
 
