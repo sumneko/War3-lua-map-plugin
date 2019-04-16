@@ -279,7 +279,7 @@ end
 local function insertItem(w2l)
     newObject(w2l.slk.item, '@CHE', 'ches') {}
     local nextId = idCreator '%'
-    for i = 1, 300 do
+    for i = 1, 1500 do
         local abilityId = nextId()
         newObject(w2l.slk.ability, abilityId, 'ANcl', 2) {
             Name = '物品技能-' .. tostring(i),
@@ -306,7 +306,7 @@ local function insertItem(w2l)
         }
     end
 
-    for i = 1, 1000 do
+    for i = 1, 5000 do
         newObject(w2l.slk.item, nextId(), 'ches') {
             Name = '@神符-' .. tostring(i),
             powerup = 1,
