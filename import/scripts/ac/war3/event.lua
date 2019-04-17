@@ -11,6 +11,7 @@ local EVENT = {
     PointOrder	= jass.EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER,
     TargetOrder = jass.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER,
     PickUpItem  = jass.EVENT_PLAYER_UNIT_PICKUP_ITEM,
+    PawnItem    = jass.EVENT_PLAYER_UNIT_PAWN_ITEM,
     DropItem    = jass.EVENT_PLAYER_UNIT_DROP_ITEM,
     Leave		= jass.EVENT_PLAYER_LEAVE,
 }
@@ -115,6 +116,14 @@ local CallBack = {
         local handle = jass.GetManipulatedItem()
         item.onPickUp(unit, handle)
     end,
+    [EVENT.PawnItem] = function()
+    	if ac.world.flag 'ignore item' then
+            return
+        end
+        local unit = ac.unit(jass.GetTriggerUnit())
+        local handle = jass.GetSoldItem()
+        item.onPawn(unit, handle)
+	end,
     [EVENT.DropItem] = function ()
         if ac.world.flag 'ignore item' then
             return
@@ -144,6 +153,7 @@ return function ()
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PointOrder, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.TargetOrder, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PickUpItem, nil)
+        jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PawnItem, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.DropItem, nil)
         jass.TriggerRegisterPlayerEvent(trg, jass.Player(i), EVENT.Leave)
     end

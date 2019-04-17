@@ -267,7 +267,7 @@ local function create(unit)
     }, mt)
     unit:bagSize(6)
     jass.UnitAddAbility(unit._handle, ac.id['@SLC'])
-
+	jass.UnitAddAbility(unit._handle, ac.id['@SIT'])
     for i = 1, 6 do
         unit:addSkill('@商店物品栏', '物品', i)
     end

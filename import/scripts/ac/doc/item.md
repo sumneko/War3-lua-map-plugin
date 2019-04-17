@@ -87,6 +87,20 @@ rune = 1
 cool = 1
 ```
 
+### pawnable
+可以卖掉
+
+```lua
+pawnable = 1
+```
+
+### rune
+可以使用（图标可点击）
+
+```lua
+useable = 1
+```
+
 ## method
 
 ### getOwner

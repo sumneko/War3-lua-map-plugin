@@ -7,17 +7,19 @@ local iconBlender = require 'ac.icon'
 local Pool
 local Cache = {}
 
-local function poolAdd(id)
-    Pool[#Pool+1] = id
+local function poolAdd(id,poolIndex)
+	local data = Pool[poolIndex]
+    data[#data+1] = id
 end
 
-local function poolGet()
-    local max = #Pool
+local function poolGet(poolIndex)
+	local data = Pool[poolIndex]
+    local max = #data
     if max == 0 then
         return nil
     end
-    local id = Pool[max]
-    Pool[max] = nil
+    local id = data[max]
+    data[max] = nil
     return id
 end
 
@@ -26,12 +28,20 @@ local function init()
         return
     end
     Pool = {}
+    local itemType = {'可用不可卖','可用可卖','不可用不可卖','不可用可卖'}
     for id, item in pairs(slk.item) do
         local name = item.Name
         if name then
-            if name:sub(1, #'@物品-') == '@物品-' then
-                poolAdd(id)
-            end
+	        for _,poolIndex in ipairs(itemType) do
+		        if not Pool[poolIndex] then
+			    	Pool[poolIndex] = {}
+		    	end
+		    	local str = '@'..poolIndex .. '物品'
+			    if name:sub(1, #str) == '@'.. poolIndex .. '物品' then
+	                poolAdd(id,poolIndex)
+	                break
+	            end
+		    end
         end
     end
 end
@@ -42,7 +52,12 @@ local function releaseId(icon)
         return
     end
     icon._id = nil
-    poolAdd(id)
+    local index = icon._poolIndex
+    if not index then
+	    log.error('没有进行分类的物品？',icon)
+    else
+	    poolAdd(id,index)
+    end 
 end
 
 local function getSlotMax(unit)
@@ -289,13 +304,31 @@ end
 
 return function (skill)
     init()
-
-    local id = poolGet()
+	local id
+	local poolIndex
+	--能使用的
+	if skill.useable then
+		--能卖的
+		if skill.pawnable then
+			poolIndex = '可用可卖'
+		else	--不能卖的			
+			poolIndex = '可用不可卖'
+		end
+	else	--不能使用的		
+		--能卖的
+		if skill.pawnable then
+			poolIndex = '不可用可卖'
+		else
+			--不能卖的
+			poolIndex = '不可用不可卖'
+		end
+	end
+	id = poolGet(poolIndex)
+	
     if not id then
-        log.error('无法为技能分配物品图标')
+       	log.error('无法为技能分配物品图标')
         return nil
     end
-
     if not Cache[id] then
         Cache[id] = {}
     end
@@ -305,6 +338,7 @@ return function (skill)
         _skill = skill,
         _cache = Cache[id],
         _slk = slk.item[id],
+        _poolIndex = poolIndex,
     }, mt)
 
     local dummy = jass.CreateItem(ac.id[id], 0, 0)

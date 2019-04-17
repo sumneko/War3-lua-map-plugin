@@ -201,6 +201,9 @@ local function insertAbility(w2l)
         DataA = {999999},
         DataB = {4},
     }
+    newObject(w2l.slk.ability, '@SIT', 'Apit') {
+    	Name = '@商店-出售物品'
+    }
     newObject(w2l.slk.ability, '@BAG', 'AInv') {
         Name = '@物品栏',
     }
@@ -277,9 +280,10 @@ local function insertAbility(w2l)
 end
 
 local function insertItem(w2l)
-    newObject(w2l.slk.item, '@CHE', 'ches') {}
+    newObject(w2l.slk.item, '@CHE', 'ches') {}    
+    --可用不可卖物品
     local nextId = idCreator '%'
-    for i = 1, 1500 do
+    for i = 1, 1000 do
         local abilityId = nextId()
         newObject(w2l.slk.ability, abilityId, 'ANcl', 2) {
             Name = '物品技能-' .. tostring(i),
@@ -298,14 +302,60 @@ local function insertItem(w2l)
             Rng = {0, 0},
         }
         newObject(w2l.slk.item, nextId(), 'ches') {
-            Name = '@物品-' .. tostring(i),
+            Name = '@可用不可卖物品-' .. tostring(i),
             usable = 1,
             abilList = abilityId,
             droppable = 0,
+            goldcost = 0,
+            file = [[Objects\InventoryItems\tome\tome.mdl]],
+        }
+        --不可用物品
+       	newObject(w2l.slk.item, nextId(), 'ches') {
+            Name = '@不可用不可卖物品-' .. tostring(i),
+            abilList = abilityId,
+            droppable = 0,
+            goldcost = 0,
+            file = [[Objects\InventoryItems\tome\tome.mdl]],
+        }
+        newObject(w2l.slk.item, nextId(), 'ches') {
+            Name = '@不可用可卖物品-' .. tostring(i),
+            abilList = abilityId,
+            droppable = 0,
+            pawnable = 1,
+            goldcost = 0,
             file = [[Objects\InventoryItems\tome\tome.mdl]],
         }
     end
-
+    --可用可卖物品
+    for i = 1, 1000 do
+        local abilityId = nextId()
+        newObject(w2l.slk.ability, abilityId, 'ANcl', 2) {
+            Name = '物品技能-' .. tostring(i),
+            EffectArt = '',
+            TargetArt = '',
+            Targetattach = '',
+            Animnames = '',
+            CasterArt = '',
+            hero = 0,
+            levels = 2,
+            DataA = {0, 0},
+            DataB = {0, 0},
+            DataC = {1, 1},
+            DataD = {0, 0},
+            DataE = {0, 0},
+            Rng = {0, 0},
+        }
+        newObject(w2l.slk.item, nextId(), 'ches') {
+            Name = '@可用可卖物品-' .. tostring(i),
+            usable = 1,
+            abilList = abilityId,
+            droppable = 0,
+            pawnable = 1,
+            goldcost = 0,
+            file = [[Objects\InventoryItems\tome\tome.mdl]],
+        }
+    end
+	local nextId = idCreator '#'
     for i = 1, 5000 do
         newObject(w2l.slk.item, nextId(), 'ches') {
             Name = '@神符-' .. tostring(i),

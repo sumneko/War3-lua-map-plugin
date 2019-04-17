@@ -342,12 +342,50 @@ local function drop(item, point)
     return item
 end
 
+local function onPawn(unit, handle)
+	local item = Items[handle]	
+	local sell = {}
+	if type(item.price) == 'table' then
+        for _,data in ipairs(item.price) do
+	        sell[data.type] = data.value
+        end
+    end
+	unit:eventNotify('单位-出售物品',unit,item,sell)
+	--默认原价贩卖，可通过修改sell更改贩卖价格
+	local player = unit:getOwner()
+	for name,value in pairs(sell) do
+		player:add(name,value)
+		--漂浮文字
+		if name == '金币' and value > 0 then
+			ac.textTag()
+	            : text('|cffffdd00+'..math.floor(value)..'|n', 0.025)
+	            : at(unit:getPoint(),140)
+	            : speed(0.025, 90)
+	            : life(1.5, 0.8)
+	            : show(function(p)
+	                return player == p
+	            end)
+        elseif name == '木材' and value > 0 then
+	        ac.textTag()
+	            : text('|cff25cc75+'..math.floor(value)..'|n', 0.025)
+	            : at(unit:getPoint(), 100)
+	            : speed(0.025, 90)
+	            : life(1.5, 0.8)
+	            : show(function (p)
+	                return player == p
+	            end)
+        end
+	end
+	item:remove()
+end
+
 local function onDrop(unit, handle)
     local x = jass.GetItemX(handle)
     local y = jass.GetItemY(handle)
     local item = Items[handle]
     jass.RemoveItem(handle)
     if item then
+	    unit:eventNotify('单位-丢弃物品', unit, item)
         if item._owner ~= unit then
             return
         end
@@ -668,6 +706,7 @@ return {
     create = create,
     onLootOrder = onLootOrder,
     onPickUp = onPickUp,
+    onPawn = onPawn,
     onDrop = onDrop,
     onCanBuy = onCanBuy,
     findItem = findItem,
