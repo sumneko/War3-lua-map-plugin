@@ -21,6 +21,7 @@ local function init()
             _handle = handle,
             _id = id,
             _hero = {},
+            _hotkey = {},
         }, mt)
         player._attribute = attribute(player)
         All[id] = player
@@ -451,5 +452,31 @@ function mt:setFog(index,rect)
 	else
 		log.error('未传入区域')
 		return
+	end
+end
+
+local KEYBORD = require 'ac.war3.hotkey'
+
+function mt:setHotKey(slot,hotkey)
+	local config = self._hotkey
+	if not hotkey then
+		config[slot] = nil
+		return
+	end
+	if slot < 1 or slot > 12 then
+		log.error('技能槽位不合法')
+		return
+	end
+	if not KEYBORD[hotkey] then
+		log.error('技能热键不合法')
+		return
+	end	
+	if config[slot] ~= KEYBORD[hotkey] then
+		if ac.isInTable(config,hotkey) == true then
+			log.error('技能热键已被占用')
+			return
+		else
+			config[slot] = KEYBORD[hotkey]
+		end
 	end
 end

@@ -294,3 +294,8 @@ index: string
     | '战争迷雾'
     | '可见'
 ```
+
+### setHotKey
+```lua
+player:setHotKey(slot: number,hotkey: string)
+```

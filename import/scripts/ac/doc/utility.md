@@ -117,3 +117,8 @@ ac.toNumber(any[, default: number])
 ac.toInteger(any[, default: integer])
     -> integer
 ```
+### isInTable
+```lua
+ac.isInTable(tbl: table,any)
+	-> boolean
+```

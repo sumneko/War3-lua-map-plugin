@@ -744,6 +744,10 @@ local function updateAllIcons(unit, tp)
             elseif tp == '物品' then
                 skill._icon = item(skill)
             end
+            local cd = skill:getCd()
+            if cd > 0 then
+	            setCd(skill,cd)
+            end
         end
     end
 end

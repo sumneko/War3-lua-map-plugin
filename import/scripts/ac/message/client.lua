@@ -23,6 +23,10 @@ local COMMAND = {
 }
 local LastSelectClock = 0
 
+local function getHotKey()
+	return ac.localPlayer()._hotkey
+end
+
 local function localHero()
     return ac.localPlayer():getHero()
 end
@@ -126,10 +130,31 @@ local function findSkillByHotkey(unit, code)
     if not unit then
         return nil
     end
-    for skill in unit:eachSkill() do
-        local hotkey = skill.hotkey
+    --从玩家的改键设置里找到对应槽位
+    local config = getHotKey()
+    local slot
+    for key,hotkey in pairs(config) do
+	    if code == hotkey then
+		    slot = key
+		    break
+	    end
+    end
+    if slot then
+    	for skill in unit:eachSkill() do
+	        if skill._icon and skill._slot == slot then
+	            return skill
+	        end
+	    end
+    end
+    for skill in unit:eachSkill() do	    
+        local hotkey = skill.hotkey       
         if skill._icon and KEYBORD[hotkey] == code then
-            return skill
+	        --如果该槽位技能已经被改键设置过，则按原按键不返回技能
+	        if config[skill._slot] then
+		        return true
+	        else
+            	return skill
+        	end
         end
     end
     return nil
@@ -200,21 +225,34 @@ local function checkSkill(msg)
     local skill
     if canControl() then
         skill = findSkillByHotkey(unit, msg.code)
-        if skill and skill._icon and checkShop(skill._icon._ability) then
+        if skill then
+	        if skill ~= true and skill._icon then
+		        if not checkShop(skill._icon._ability) then
+			        --由于Esc会被当成是E，村规处理。缺陷：Esc按键只能适用于无目标技能
+			        if skill.hotkey == 'Esc' then
+                		local order = skill._icon:getOrder()
+               			message.order_immediate(ORDER[order], 0)
+			        else
+			        	pressKey(skill.hotkey)
+		        	end
+		        end
+	        end
             return false
         end
-        if skill and skill._icon then
-            if skill._type == '技能' and skill.targetType ~= '单位' and skill.targetType ~= '点' and skill.targetType ~= '单位或点' and skill.targetType ~= '物品' then
-                local order = skill._icon:getOrder()
-                message.order_immediate(ORDER[order], 0)
-                return false
-            end
-        end
+        --if skill and skill._icon then
+            --if skill._type == '技能' and skill.targetType ~= '单位' and skill.targetType ~= '点' and skill.targetType ~= '单位或点' and skill.targetType ~= '物品' then
+            --    local order = skill._icon:getOrder()
+            --    message.order_immediate(ORDER[order], 0)
+            --	  return false
+            --end
+        --end
     else
         skill = findSkillByHotkey(localHero(), msg.code)
         if skill then
-            selectHero()
-            pressKey(skill.hotkey)
+	        if skill ~= true then
+	            selectHero()
+	            pressKey(skill.hotkey)
+            end
             return false
         end
     end

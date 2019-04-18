@@ -79,6 +79,15 @@ function ac.nearInteger(obj)
     return mathFloor(n + 0.5)
 end
 
+function ac.isInTable(tbl,val)
+	for k,v in pairs(tbl) do
+		if k == val or v == val then
+			return true
+		end
+	end
+	return false
+end
+
 -- 只能存放对象，能按添加顺序遍历的数据结构
 local mt = {}
 mt.__index = mt

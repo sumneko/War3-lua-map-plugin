@@ -176,6 +176,10 @@ end
 function mt:updateHotkey()
     local skill = self._skill
     local hotkey = skill.hotkey
+    --由于Esc会被当成是E，所以村规一下
+    if hotkey == 'Esc' then
+	    return
+    end
     if hotkey == self._cache.hotkey then
         return
     end

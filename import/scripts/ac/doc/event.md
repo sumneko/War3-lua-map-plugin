@@ -78,6 +78,12 @@ unit:event('单位-发布命令', function (trg, unit, orderID: string, target: 
 end)
 ```
 
+### 单位-出售物品
+```lua
+unit:event('单位-出售物品', function (trg, unit, item, sell: table)
+end)
+```
+
 # player
 
 ### 玩家-选中单位
