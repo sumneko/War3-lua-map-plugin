@@ -265,17 +265,14 @@ local function onKeyDown(msg)
         lockHero()
         return false
     end
-
+	local res = checkCommonCommand(msg)
+    if res ~= nil then
+        return res
+    end
     local res = checkSkill(msg)
     if res ~= nil then
         return res
     end
-
-    local res = checkCommonCommand(msg)
-    if res ~= nil then
-        return res
-    end
-
     return true
 end
 
