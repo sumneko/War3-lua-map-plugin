@@ -1,6 +1,6 @@
 local runtime = require 'jass.runtime'
 
-console.enable = true
+console.enable = false
 
 --重载print,自动转换编码
 print = console.write

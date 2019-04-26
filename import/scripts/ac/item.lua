@@ -254,8 +254,24 @@ local function create(name, target, slot)
         _cache = Cache[id],
         _count = Count,
     }, data)
-
-    if ac.isPoint(target) then
+	local hero
+	if ac.isUnit(target) then
+		if self:isRune() or target:isAlive() then
+			local suc, data = addToUnit(self, target, slot)
+	        if not suc then
+	            return nil, data
+	        end
+	    --如果单位死亡是不能创建物品到物品栏的，因此非神符的物品无法被创建
+		else
+			if target:isHero() then
+				--先把物品创建在地上并隐藏，等英雄复活了再丢给英雄
+				hero = target
+				target = target:getPoint()
+			else
+				return nil,data
+			end
+		end
+    elseif ac.isPoint(target) then
         local x, y = target:getXY()
         self._handle = jass.CreateItem(ac.id[id], x, y)
         if self._handle == 0 then
@@ -264,15 +280,17 @@ local function create(name, target, slot)
         end
         self:updateAll()
         Items[self._handle] = self
-    elseif ac.isUnit(target) then
-        local suc, data = addToUnit(self, target, slot)
-        if not suc then
-            return nil, data
-        end
     else
         return nil
     end
-
+	if hero then
+		self:hide()
+		local trg
+		trg = hero:event('单位-复活',function()
+			self:give(hero,slot)
+			trg:remove()
+		end)
+	end
     return self
 end
 
