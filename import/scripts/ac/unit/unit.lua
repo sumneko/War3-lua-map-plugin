@@ -17,6 +17,7 @@ local select = select
 
 local All = {}
 local UNIT_LIST = ac.list()
+local Removed = {}
 local IdMap
 
 local function getIdMap()
@@ -57,6 +58,14 @@ local function update(delta)
             end
         end
         ::CONTINUE::
+    end
+    local clock = ac.clock()
+    for handle, unrefClock in pairs(Removed) do
+        if clock > unrefClock then
+            All[handle] = nil
+            Removed[handle] = nil
+            dbg.handle_unref(handle)
+        end
     end
 end
 
@@ -332,13 +341,13 @@ function mt:remove()
         self:kill(self)
     end
     local handle = self._handle
-    All[handle] = nil
     UNIT_LIST:remove(self)
     jass.RemoveUnit(handle)
     onRemove(self)
 
     self._handle = 0
-    dbg.handle_unref(handle)
+
+    Removed[handle] = ac.clock() + 10
 end
 
 function mt:getPoint()
