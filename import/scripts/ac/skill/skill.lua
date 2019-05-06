@@ -552,7 +552,7 @@ local function activeCd(skill, ...)
     else
         return false
     end
-
+    
     skill._maxCd = maxCd
     if skill._icon then
         skill._icon:setMaxCd(maxCd)
@@ -569,6 +569,10 @@ local function destroyCast(cast)
         cast._timer:remove()
     end
     cast._mgr._currentSkill = nil
+    --如果技能没CD，那么给个0.01秒CD打断技能
+    if cast:getCd() == 0 and cast._parent and cast._parent._icon then
+    	cast._parent._icon:setCd(0.01)
+end
 end
 
 local function onCastStop(cast)
@@ -583,6 +587,7 @@ local function onCastBreak(cast)
     destroyCast(cast)
 
     cast:eventNotify('onCastBreak')
+    print(cast:getCd())
 end
 
 local function onCastFinish(cast)
@@ -667,6 +672,13 @@ local function onCastStart(cast)
     else
         onCastChannel(cast)
     end
+
+    --前摇CD动画
+    local cd = time - 0.01
+    if cast._parent and cast._parent._icon and time > 0 then
+	    cast._parent._icon:setIconMaxCd(cd)
+    	cast._parent._icon:setCd(cd)
+	end
 end
 
 local function onCanCast(cast)

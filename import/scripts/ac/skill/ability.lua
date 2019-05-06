@@ -329,12 +329,18 @@ function mt:forceRefresh()
     self:needRefreshAbility()
 end
 
+--仅设置图标的CD
+function mt:setIconMaxCd(maxCd)
+	maxCd = math.max(0.01,maxCd)
+	japi.EXSetAbilityDataReal(self:handle(), 1, 0x69, maxCd)
+end
+
 function mt:setMaxCd(maxCd)
-    if maxCd == self._cache.maxCd then
-        return
-    end
+    --if maxCd == self._cache.maxCd then
+    --    return
+    --end
     self._cache.maxCd = maxCd
-    japi.EXSetAbilityDataReal(self:handle(), 1, 0x69, maxCd)
+    self:setIconMaxCd(maxCd)
 end
 
 function mt:setCd(cd)

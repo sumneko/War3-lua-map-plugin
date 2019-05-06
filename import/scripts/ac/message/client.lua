@@ -119,6 +119,8 @@ local function instantCommand(cmd)
         message.order_immediate(ORDER['holdposition'], 0)
     elseif cmd == '停止' then
         message.order_immediate(ORDER['stop'], 0)
+        local unit = getSelect()
+        unit:stop()
     elseif cmd == '休眠' then
         proto(PROTO['休眠'])
     elseif cmd == '警戒' then
@@ -228,24 +230,22 @@ local function checkSkill(msg)
         if skill then
 	        if skill ~= true and skill._icon then
 		        if not checkShop(skill._icon._ability) then
+			        local order = skill._icon:getOrder()
 			        --由于Esc会被当成是E，村规处理。缺陷：Esc按键只能适用于无目标技能
-			        if skill.hotkey == 'Esc' then
-                		local order = skill._icon:getOrder()
-               			message.order_immediate(ORDER[order], 0)
+			        if skill.hotkey == 'Esc' then                		
+               			message.order_immediate(ORDER[order],FLAG['恢复'])
 			        else
-			        	pressKey(skill.hotkey)
+				        --如果是无目标技能，是否打断当前命令？
+				        if skill:getCd() == 0 and not skill.breakOrder and skill.targetType ~= '单位' and skill.targetType ~= '点' and skill.targetType ~= '单位或点' and skill.targetType ~= '物品' then
+							message.order_immediate(ORDER[order],FLAG['恢复'])
+						else
+			        		pressKey(skill.hotkey)
+		        		end
 		        	end
 		        end
 	        end
             return false
         end
-        --if skill and skill._icon then
-            --if skill._type == '技能' and skill.targetType ~= '单位' and skill.targetType ~= '点' and skill.targetType ~= '单位或点' and skill.targetType ~= '物品' then
-            --    local order = skill._icon:getOrder()
-            --    message.order_immediate(ORDER[order], 0)
-            --	  return false
-            --end
-        --end
     else
         skill = findSkillByHotkey(localHero(), msg.code)
         if skill then

@@ -151,6 +151,12 @@ castShotTime = 1
 ```lua
 castFinishTime = 1
 ```
+### breakOrder
+施法完成打断先前命令（仅对无目标技能有效）
+
+```lua
+breakOrder = any
+```
 
 ## method
 

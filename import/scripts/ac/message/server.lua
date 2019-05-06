@@ -171,7 +171,7 @@ local function onCastStart(unit)
                 or item.findByHandle(jass.GetSpellTargetItem())
     local x = jass.GetSpellTargetX()
     local y = jass.GetSpellTargetY()
-    order(unit, 'stop')
+    --order(unit, 'stop')
     skill:castByClient(target, x, y)
 end
 
