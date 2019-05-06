@@ -587,7 +587,6 @@ local function onCastBreak(cast)
     destroyCast(cast)
 
     cast:eventNotify('onCastBreak')
-    print(cast:getCd())
 end
 
 local function onCastFinish(cast)
@@ -653,10 +652,9 @@ local function onCastStart(cast)
     local unit = cast._owner
 
     unit:stopCast()
-    ac.wait(0, function()
-        jass.SetUnitAnimation(unit._handle, cast.animation or 'stand')
-        jass.QueueUnitAnimation(unit._handle, 'stand')
-    end)
+    if cast.animation then
+	    unit:animation(cast.animation)
+    end
 
     cast._mgr._currentSkill = cast
     cast._stun = unit:addRestriction '硬直'

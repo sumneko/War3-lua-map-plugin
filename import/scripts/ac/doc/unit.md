@@ -86,6 +86,13 @@ skill = {
 hideSkill = {'技能A', '技能B'}
 ```
 
+### scale
+缩放值，不填默认为1，游戏内的实际缩放为物编缩放乘以这个值
+
+```lua
+scale = 1
+```
+
 ## method
 
 ### getName
@@ -656,8 +663,9 @@ unit:color(r: number, g: number, b: number, a: number)
 
 ### animation
 ```lua
-unit:animation(name: integer/string)
+unit:animation(name: integer/string[,loop: boolean/string])
 ```
+loop为true时，动画不会自动重置。为其他动作时，动画结束后会播放loop的动画
 
 ### iconLevel
 只有`iconLevel`大于等于该值的技能才会显示图标
@@ -671,4 +679,10 @@ unit:iconLevel(type: string)
 type: string
     | '技能'
     | '物品'
+```
+
+### scale
+```lua
+unit:scale([scale: number])
+    -> [scale: number]
 ```

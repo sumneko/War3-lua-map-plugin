@@ -138,6 +138,9 @@ local function createMover(mover)
     if mover.model then
         local dummy = mover.source:createUnit('@运动马甲', mover.start, mover.angle)
         if dummy then
+	        if mover.size then
+		        dummy:scale(mover.size)
+	        end
             mover.mover = dummy
             mover._needKillMover = true
             mover._needDestroyParicle = dummy:particle(mover.model, 'origin')
@@ -252,6 +255,10 @@ function mt:setOption(k, v)
         if not ac.isNumber(v) then
             return
         end
+    elseif k == 'size' then
+	   	if self.model and self.mover then
+		   	self.mover:scale(v)
+	   	end
     end
     self[k] = v
 end

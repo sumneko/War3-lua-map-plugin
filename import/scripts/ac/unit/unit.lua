@@ -186,6 +186,7 @@ function ac.unit(handle)
         _level = jass.GetUnitLevel(handle),
         _owner = ac.player(jass.GetOwningPlayer(handle)),
         _collision = ac.toNumber(slkUnit.collision),
+        _modelscale = ac.toNumber(slkUnit.modelscale),
         _userData = {},
     }, mt)
     dbg.gchash(u, handle)
@@ -193,7 +194,8 @@ function ac.unit(handle)
 
     All[handle] = u
     UNIT_LIST:insert(u)
-
+    -- 单位缩放值
+	u:scale(data.scale or 1)
     if class == '生物' then
         -- 初始化单位属性
         u._attribute = attribute(u, u._data.attribute)
@@ -910,11 +912,30 @@ function mt:color(r, g, b, a)
     jass.SetUnitVertexColor(self._handle, r, g, b, a)
 end
 
-function mt:animation(name)
-    if ac.isInteger(name) then
-        jass.SetUnitAnimationByIndex(self._handle, name)
-    elseif ac.isString(name) then
-        jass.SetUnitAnimation(self._handle, name)
+function mt:animation(name,loop)
+	local handle = self._handle
+	ac.wait(0,function()
+	    if ac.isInteger(name) then
+	        jass.SetUnitAnimationByIndex(handle, name)
+	    elseif ac.isString(name) then
+	        jass.SetUnitAnimation(handle, name)
+	    end
+	    if loop ~= true then
+			if not loop then
+				loop = 'stand'
+			end
+			jass.QueueUnitAnimation(handle,loop)
+		end
+	end)
+end
+
+function mt:scale(n)
+	if ac.isNumber(n) then
+		local scale = self._modelscale * n
+        jass.SetUnitScale(self._handle,scale,scale,scale)
+        self._scale = n
+    else
+        return self._scale or 1.0
     end
 end
 
