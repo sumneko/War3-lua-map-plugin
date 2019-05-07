@@ -17,11 +17,13 @@ local function init()
     All = {}
     for id = MIN_ID, MAX_ID do
         local handle = jass.Player(id - 1)
+        local name = jass.GetPlayerName(handle)
         local player = setmetatable({
             _handle = handle,
             _id = id,
             _hero = {},
             _hotkey = {},
+            _originName = name,
         }, mt)
         player._attribute = attribute(player)
         All[id] = player
@@ -300,6 +302,10 @@ function mt:name(name)
     else
         return jass.GetPlayerName(self._handle)
     end
+end
+
+function mt:originName()
+	return self._originName
 end
 
 function mt:alliance(dest, tp, flag)

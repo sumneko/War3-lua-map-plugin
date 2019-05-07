@@ -82,6 +82,9 @@ local Add = {
     ['晕眩'] = function (self, unit)
         japi.EXPauseUnit(unit._handle, true)
     end,
+   	['蝗虫'] = function (self, unit)
+        jass.UnitAddAbility(unit._handle, ac.id['@LOC'])
+    end,
 }
 
 local Remove = {
@@ -116,6 +119,9 @@ local Remove = {
     end,
     ['晕眩'] = function (self, unit)
         japi.EXPauseUnit(unit._handle, false)
+    end,
+    ['蝗虫'] = function (self, unit)
+        jass.UnitRemoveAbility(unit._handle, ac.id['@LOC'])
     end,
 }
 

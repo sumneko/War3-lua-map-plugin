@@ -572,7 +572,7 @@ local function destroyCast(cast)
     --如果技能没CD，那么给个0.01秒CD打断技能
     if cast:getCd() == 0 and cast._parent and cast._parent._icon then
     	cast._parent._icon:setCd(0.01)
-end
+	end
 end
 
 local function onCastStop(cast)
