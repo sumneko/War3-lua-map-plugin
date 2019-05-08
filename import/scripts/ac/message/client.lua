@@ -119,8 +119,6 @@ local function instantCommand(cmd)
         message.order_immediate(ORDER['holdposition'], 0)
     elseif cmd == '停止' then
         message.order_immediate(ORDER['stop'], 0)
-        local unit = getSelect()
-        unit:stop()
     elseif cmd == '休眠' then
         proto(PROTO['休眠'])
     elseif cmd == '警戒' then
