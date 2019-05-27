@@ -15,6 +15,14 @@ local EVENT = {
     DropItem    = jass.EVENT_PLAYER_UNIT_DROP_ITEM,
     Leave		= jass.EVENT_PLAYER_LEAVE,
 }
+function getOrder(target)
+	if unit:isEnemy(target) then
+			return '攻击'
+		else
+			return '跟随'
+		end
+	end
+end
 local CallBack = {
     [EVENT.Selected] = function ()
         local unit = ac.unit(jass.GetTriggerUnit())
@@ -86,13 +94,7 @@ local CallBack = {
         local target = ac.unit(jass.GetOrderTargetUnit())
         if target then
 			local orderList = {
-				['smart'] = function()
-					if unit:isEnemy(target) then
-						return '攻击'
-					else
-						return '跟随'
-					end
-				end,
+				['smart'] = getOrder(target),
 				['attack'] = '攻击',
 				['patrol'] = '跟随',
 			}
