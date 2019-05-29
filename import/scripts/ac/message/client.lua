@@ -119,10 +119,12 @@ local function instantCommand(cmd)
         message.order_immediate(ORDER['holdposition'], FLAG['瞬发'])
     elseif cmd == '停止' then
         message.order_immediate(ORDER['stop'],FLAG['瞬发'])
+        message.order_immediate(ORDER['stop'],0)
     elseif cmd == '休眠' then
         proto(PROTO['休眠'])
     elseif cmd == '警戒' then
         message.order_immediate(ORDER['patrol'], FLAG['瞬发'])
+        message.order_immediate(ORDER['patrol'],0)
     end
 end
 
