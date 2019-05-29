@@ -568,6 +568,9 @@ local function destroyCast(cast)
     if cast._timer then
         cast._timer:remove()
     end
+    if cast._trg then
+	    cast._trg:remove()
+    end
     cast._mgr._currentSkill = nil
     --如果技能没CD，那么给个0.01秒CD打断技能
     if cast:getCd() == 0 and cast._parent and cast._parent._icon then
@@ -659,7 +662,11 @@ local function onCastStart(cast)
     cast._mgr._currentSkill = cast
     cast._stun = unit:addRestriction '硬直'
     cast._step = 'start'
-
+	cast._trg = unit:event('单位-发布命令',function(_, _, orderID)
+		if orderID == '停止' then
+			cast:stop()
+		end
+	end)
     cast:eventNotify('onCastStart')
 
     local time = ac.toNumber(cast.castStartTime)

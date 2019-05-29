@@ -15,12 +15,11 @@ local EVENT = {
     DropItem    = jass.EVENT_PLAYER_UNIT_DROP_ITEM,
     Leave		= jass.EVENT_PLAYER_LEAVE,
 }
-function getOrder(target)
+local function getOrder(unit,target)
 	if unit:isEnemy(target) then
-			return '攻击'
-		else
-			return '跟随'
-		end
+		return '攻击'
+	else
+		return '跟随'
 	end
 end
 local CallBack = {
@@ -94,7 +93,7 @@ local CallBack = {
         local target = ac.unit(jass.GetOrderTargetUnit())
         if target then
 			local orderList = {
-				['smart'] = getOrder(target),
+				['smart'] = getOrder(unit,target),
 				['attack'] = '攻击',
 				['patrol'] = '跟随',
 			}
