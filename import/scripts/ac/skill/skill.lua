@@ -125,7 +125,7 @@ local function compileDual(name, definedData, maxLevel)
 end
 
 local function compileData(name, data)
-    local maxLevel = ac.toInteger(data, 1)
+    local maxLevel = ac.toInteger(data.maxLevel, 1)
     if maxLevel < 1 then
         log.error(('技能[%s]的等级上限小于1'):format(name))
         return nil
