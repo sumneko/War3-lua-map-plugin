@@ -51,3 +51,18 @@ function ac.game:musicTheme(name)
 		jass.PlayThematicMusic(name)
 	end
 end
+
+function ac.game:cameraBounds(MinX,MinY,MaxX,MaxY)
+	if not MinX or not MinY or not MaxX or not MaxY then
+		MinX,MinY,MaxX,MaxY = ac.world.bounds()
+	end
+	jass.SetCameraBounds(MinX,MinY,MinX,MaxY,MaxX,MaxY,MaxX,MinX)
+end
+
+function ac.game:setDayTime(time)
+	jass.SetFloatGameState(2,time)
+end
+
+function ac.game:stopDayTime(boolean)
+	jass.SuspendTimeOfDay(boolean)
+end

@@ -46,3 +46,18 @@ ac.game:music([string: boolean])
 ```lua
 ac.game:musicTheme([string: boolean])
 ```
+
+### ac.game:cameraBounds
+```lua
+ac.game:cameraBounds([MinX: number,MinY: number,MaxX: number,MaxY: number])
+```
+
+### ac.game:setDayTime
+```lua
+ac.game:setDayTime(time: number)
+```
+
+### ac.game:stopDayTime
+```lua
+ac.game:stopDayTime(boolean: boolean)
+```
