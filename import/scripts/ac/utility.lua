@@ -88,6 +88,26 @@ function ac.isInTable(tbl,val)
 	return false
 end
 
+--复制一个表
+function ac.copytable(tbl)
+	local list = {}
+	for a,b in pairs(tbl) do
+		if type(b) == 'table' then
+			list[a] = ac.copytable(b)
+		else
+			list[a] = b
+		end
+	end
+	return list
+end
+
+--分割字符串
+function ac.split(str, p)
+	local rt = {}
+	string.gsub(str, '[^' .. p .. ']+', function (w) table.insert(rt, w) end)
+	return rt
+end
+
 -- 只能存放对象，能按添加顺序遍历的数据结构
 local mt = {}
 mt.__index = mt
