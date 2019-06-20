@@ -308,6 +308,13 @@ key: string
     | 'iconLevel'
     | 'passive'
 ```
+### upgrade
+
+提升1级，等级不可倒退
+
+```lua
+skill:upgrade()
+```
 
 ## event
 

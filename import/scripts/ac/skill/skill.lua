@@ -1194,6 +1194,16 @@ function mt:isShow()
     return true
 end
 
+--技能升级
+function mt:upgrade()
+	upgradeSkill(self)
+	--刷新标题和描述
+	if self._icon then
+		self._icon:updateTitle()
+		self._icon:updateDescription()
+	end
+end
+
 ac.skill = setmetatable({}, {
     __index = function (self, name)
         local skill = createDefine(name)
