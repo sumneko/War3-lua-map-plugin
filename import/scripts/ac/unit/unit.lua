@@ -187,6 +187,12 @@ function ac.unit(handle)
         _owner = ac.player(jass.GetOwningPlayer(handle)),
         _collision = ac.toNumber(slkUnit.collision),
         _modelscale = ac.toNumber(slkUnit.modelscale),
+        _color = {
+        	['红'] = ac.toNumber(slkUnit.red)/255,
+        	['绿'] = ac.toNumber(slkUnit.green)/255,
+        	['蓝'] = ac.toNumber(slkUnit.green)/255,
+        	['透明度'] = 0,
+        },
         _userData = {},
     }, mt)
     dbg.gchash(u, handle)
@@ -330,8 +336,10 @@ function mt:kill(target)
     if target._shop then
         shop.onDead(target._shop)
     end
-
-    target:eventNotify('单位-死亡', target, self)
+    --不是弹道则抛出死亡事件
+	if not target._isMover then
+    	target:eventNotify('单位-死亡', target, self)
+	end
 end
 
 function mt:remove()
@@ -905,11 +913,51 @@ function mt:speed(n)
 end
 
 function mt:color(r, g, b, a)
-    r = math.floor(ac.toNumber(r, 1.0) * 255)
-    g = math.floor(ac.toNumber(g, 1.0) * 255)
-    b = math.floor(ac.toNumber(b, 1.0) * 255)
-    a = math.floor(ac.toNumber(a, 1.0) * 255)
+	local data = self._color
+	local function getRGB(num,index)
+		if not num then
+			num = data[index]
+		end
+		num = ac.toNumber(num, 1.0)
+		num = math.max(0,math.min(1,num))
+		data[index] = num
+		num = math.floor(num * 255)
+		return num
+	end
+    r = getRGB(r,'红')
+    g = getRGB(g,'绿')
+    b = getRGB(b,'蓝')
+    a = 255 - getRGB(a,'透明度')
     jass.SetUnitVertexColor(self._handle, r, g, b, a)
+end
+
+function mt:alpha(n)
+	if ac.isNumber(n) then
+		self:color(_,_,_,n)
+    else
+        return self._color['透明度']
+    end
+end
+
+function mt:addColor(index,n)
+	local data = self._color
+	local num = data[index]
+	if num then
+		if ac.isNumber(n) then
+			n = n + num
+			if index == '红' then
+				self:color(n,_,_,_)
+			elseif index == '绿' then
+				self:color(_,n,_,_)
+			elseif index == '蓝' then
+				self:color(_,_,n,_)
+			elseif index == '透明度' then
+				self:alpha(n)
+			end
+		else
+			return num
+		end
+	end	
 end
 
 function mt:animation(name,loop)

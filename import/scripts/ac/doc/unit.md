@@ -661,6 +661,28 @@ unit:speed([speed: number])
 unit:color(r: number, g: number, b: number, a: number)
 ```
 
+### alpha
+
+仅设置透明度
+
+```lua
+unit:alhpa([n: number])
+```
+
+## addColor
+
+增加颜色值
+
+```lua
+unit:addColor(index: string[,n: number])
+
+index: string
+    | '红'
+    | '绿'
+    | '蓝'
+    | '透明度'
+```
+
 ### animation
 ```lua
 unit:animation(name: integer/string[,loop: boolean/string])

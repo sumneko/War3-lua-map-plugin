@@ -141,6 +141,7 @@ local function createMover(mover)
 	        if mover.size then
 		        dummy:scale(mover.size)
 	        end
+	        dummy._isMover = true
             mover.mover = dummy
             mover._needKillMover = true
             mover._needDestroyParicle = dummy:particle(mover.model, 'origin')
