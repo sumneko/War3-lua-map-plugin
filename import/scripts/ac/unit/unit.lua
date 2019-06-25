@@ -188,10 +188,16 @@ function ac.unit(handle)
         _collision = ac.toNumber(slkUnit.collision),
         _modelscale = ac.toNumber(slkUnit.modelscale),
         _color = {
-        	['红'] = ac.toNumber(slkUnit.red)/255,
-        	['绿'] = ac.toNumber(slkUnit.green)/255,
-        	['蓝'] = ac.toNumber(slkUnit.green)/255,
+        	['红'] = 1,
+        	['绿'] = 1,
+        	['蓝'] = 1,
         	['透明度'] = 0,
+        },
+        _RGB = {
+			['红'] = ac.toNumber(slkUnit.red),
+			['绿'] = ac.toNumber(slkUnit.green),
+			['蓝'] = ac.toNumber(slkUnit.blue),
+			['透明度'] = 255,
         },
         _userData = {},
     }, mt)
@@ -918,10 +924,10 @@ function mt:color(r, g, b, a)
 		if not num then
 			num = data[index]
 		end
-		num = ac.toNumber(num, 1.0)
-		num = math.max(0,math.min(1,num))
 		data[index] = num
-		num = math.floor(num * 255)
+		num = ac.toNumber(num, 1.0)
+		num = math.max(0,math.min(1,num))		
+		num = math.floor(num * self._RGB[index])
 		return num
 	end
     r = getRGB(r,'红')
