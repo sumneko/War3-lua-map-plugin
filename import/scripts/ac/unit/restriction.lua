@@ -85,6 +85,9 @@ local Add = {
    	['蝗虫'] = function (self, unit)
         jass.UnitAddAbility(unit._handle, ac.id['@LOC'])
     end,
+    ['隐身'] = function (self, unit)
+        jass.UnitAddAbility(unit._handle, ac.id['@GHO'])
+    end,
 }
 
 local Remove = {
@@ -122,6 +125,9 @@ local Remove = {
     end,
     ['蝗虫'] = function (self, unit)
         jass.UnitRemoveAbility(unit._handle, ac.id['@LOC'])
+    end,
+    ['隐身'] = function (self, unit)
+        jass.UnitRemoveAbility(unit._handle, ac.id['@GHO'])
     end,
 }
 
