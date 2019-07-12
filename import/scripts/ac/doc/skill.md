@@ -71,6 +71,14 @@ passiveIcon = 1
 range = 500
 ```
 
+### showArea
+是否显示影响区域，area大于0时才有效
+
+```lua
+showArea = 1
+area = 500
+```
+
 ### targetType
 目标类型
 

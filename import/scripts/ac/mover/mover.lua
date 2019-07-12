@@ -217,7 +217,9 @@ function mt:remove()
     if self._needDestroyParicle then
         self._needDestroyParicle()
     end
-
+	if self._height ~= 0.0 then
+		self.mover:addHeight(-self._height)
+	end
     eventNotify(self, 'onRemove')
 end
 

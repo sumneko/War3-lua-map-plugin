@@ -983,8 +983,13 @@ function mt:castByClient(target, x, y)
         return false
     end
 
-    -- 不能处于禁魔状态
-    if self._owner:hasRestriction '禁魔' then
+    -- 技能分类下不能处于禁魔状态
+    if self._type == '技能' and self._owner:hasRestriction '禁魔' then
+        return false
+    end
+
+    -- 物品分类下不能处于锁闭状态
+    if self._type == '物品' and self._owner:hasRestriction '锁闭' then
         return false
     end
 

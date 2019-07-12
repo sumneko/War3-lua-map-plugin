@@ -197,6 +197,15 @@ function mt:updateRange()
     japi.EXSetAbilityDataReal(self:handle(), 1, 0x6B, range)
 end
 
+function mt:updateArea()
+	local skill = self._skill
+	local area = ac.toNumber(skill.area)
+	if skill.showArea == 1 and area > 0 then
+		japi.EXSetAbilityDataReal(self:handle(), 1, 0x6A, area)
+    	japi.EXSetAbilityDataReal(self:handle(), 1, 0x6E, 3)
+	end
+end
+
 --计算出目标允许的二进制
 local convert_targets = {
 	["地面"]	= 2 ^ 1,
@@ -312,6 +321,7 @@ function mt:updateAll()
     self:updateTargetType()
     self:updateCost()
     self:updateStack()
+    self:updateArea()
 end
 
 function mt:getOrder()
