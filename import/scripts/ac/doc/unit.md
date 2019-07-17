@@ -188,6 +188,7 @@ restrictionName: string
     | '缴械'
     | '禁魔'
     | '晕眩'
+    | '魔免'
 ```
 
 ### removeRestriction
@@ -205,6 +206,7 @@ restrictionName: string
     | '缴械'
     | '禁魔'
     | '晕眩'
+    | '魔免'
 ```
 
 ### getRestriction
@@ -707,4 +709,10 @@ type: string
 ```lua
 unit:scale([scale: number])
     -> [scale: number]
+```
+
+### visible
+```lua
+unit:visible(unit/player)
+	-> boolean
 ```

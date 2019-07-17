@@ -24,6 +24,12 @@ unit:event('单位-受到伤害', function (trg, unit, damage)
 end)
 ```
 
+### 单位-被攻击
+```lua
+unit:event('单位-被攻击', function (trg, unit, attacker)
+end)
+```
+
 ### 单位-攻击出手
 ```lua
 unit:event('单位-攻击出手', function (trg, unit, target, damage, mover)

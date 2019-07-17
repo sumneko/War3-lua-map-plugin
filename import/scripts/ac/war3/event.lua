@@ -14,6 +14,7 @@ local EVENT = {
     PawnItem    = jass.EVENT_PLAYER_UNIT_PAWN_ITEM,
     DropItem    = jass.EVENT_PLAYER_UNIT_DROP_ITEM,
     Leave		= jass.EVENT_PLAYER_LEAVE,
+    Attacked	= jass.EVENT_PLAYER_UNIT_ATTACKED,
 }
 local function getOrder(unit,target)
 	if unit:isEnemy(target) then
@@ -135,6 +136,13 @@ local CallBack = {
             item.onDrop(unit, handle)
         end)
     end,
+    [EVENT.Attacked] = function ()
+		local unit = ac.unit(jass.GetTriggerUnit())
+		local attacker = ac.unit(jass.GetAttacker())
+		if unit and attacker then
+			unit:eventNotify('单位-被攻击', unit, attacker)
+		end
+    end,
     [EVENT.Leave] = function()
     	local player = ac.player(jass.GetTriggerPlayer())
         if player and not player._isRemove then
@@ -156,6 +164,7 @@ return function ()
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PickUpItem, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.PawnItem, nil)
         jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.DropItem, nil)
+        jass.TriggerRegisterPlayerUnitEvent(trg, jass.Player(i), EVENT.Attacked, nil)
         jass.TriggerRegisterPlayerEvent(trg, jass.Player(i), EVENT.Leave)
     end
     jass.TriggerAddCondition(trg, jass.Condition(function ()

@@ -216,6 +216,11 @@ local function insertAbility(w2l)
     newObject(w2l.slk.ability, '@GHO', 'Agho') {
         Name = '@隐身',
     }
+    newObject(w2l.slk.ability, '@ACM', 'ACmi') {
+        Name = '@魔免',
+        Buttonpos_1 = 0,
+        Buttonpos_2 = -11,
+    }
 
     -- 通魔使用的命令字符串（共需要12个）
     local orderList = {

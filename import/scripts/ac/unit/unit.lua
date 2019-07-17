@@ -1000,6 +1000,13 @@ function mt:iconLevel(tp, level)
     return self._skill:iconLevel(tp, level)
 end
 
+function mt:visible(player)
+	if player.type == 'unit' then
+		player = player:getOwner()
+	end
+	return jass.IsUnitVisible(self._handle,player._handle)	
+end
+
 return {
     list = UNIT_LIST,
     update = update,
