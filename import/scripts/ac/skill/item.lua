@@ -235,9 +235,9 @@ end
 function mt:updateStack()
     local skill = self._skill
     local stack = ac.nearInteger(skill._stack)
-    if stack == self._cache.stack then
-        return
-    end
+    --if stack == self._cache.stack then
+    --    return
+    --end
     self._cache.stack = stack
     jass.SetItemCharges(self._handle, stack)
 end
@@ -257,14 +257,16 @@ end
 
 function mt:updateAll()
 	ac.wait(0,function()
-	    self:updateTitle()
-	    self:updateDescription()
-	    self:updateIcon()
-	    self:updateHotkey()
-	    self:updateRange()
-	    self:updateTargetType()
-	    self:updateCost()
-	    self:updateStack()
+		if not self._removed then
+		    self:updateTitle()
+		    self:updateDescription()
+		    self:updateIcon()
+		    self:updateHotkey()
+		    self:updateRange()
+		    self:updateTargetType()
+		    self:updateCost()
+		    self:updateStack()
+	    end
     end)
 end
 

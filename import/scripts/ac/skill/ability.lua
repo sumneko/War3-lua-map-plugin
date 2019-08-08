@@ -199,11 +199,16 @@ end
 
 function mt:updateArea()
 	local skill = self._skill
+	local index = 1
 	local area = ac.toNumber(skill.area)
 	if skill.showArea == 1 and area > 0 then
 		japi.EXSetAbilityDataReal(self:handle(), 1, 0x6A, area)
-    	japi.EXSetAbilityDataReal(self:handle(), 1, 0x6E, 3)
+    	index = index + 2
 	end
+	if skill.ignoreAcmi == 1 then
+		index = index + 8
+	end
+	japi.EXSetAbilityDataReal(self:handle(), 1, 0x6E, index)
 end
 
 --计算出目标允许的二进制

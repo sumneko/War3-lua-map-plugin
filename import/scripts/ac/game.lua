@@ -66,3 +66,7 @@ end
 function ac.game:stopDayTime(boolean)
 	jass.SuspendTimeOfDay(boolean)
 end
+
+function ac.game:getDayTime()
+	return jass.GetTimeOfDay()
+end

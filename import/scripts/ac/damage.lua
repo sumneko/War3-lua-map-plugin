@@ -51,7 +51,7 @@ local function dispatch(damage)
     if not target then
         error('伤害没有目标')
     end
-	if target:hasRestriction '无敌' then
+	if target:hasRestriction '无敌' or not target:isAlive() then
 		return false
 	end
     damage.currentDamage = damage.damage

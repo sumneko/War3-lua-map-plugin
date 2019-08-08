@@ -461,6 +461,55 @@ function mt:setFog(index,rect)
 	end
 end
 
+function mt:setFogArea(data)
+	local target = data.target
+	local area = data.area
+	local rect = data.rect
+	if (target and area and area > 0) or rect then
+		local list = 
+		{
+			['阴影'] = 1,
+			['迷雾'] = 2,
+			['可见'] = 4,
+		}
+		local type = data.type or '可见'
+		local handle
+		if rect then
+			handle = jass.CreateFogModifierRect(self._handle,list[type],rect._handle,true,false)
+		else
+			local x,y = data.target:getXY()
+			local p = jass.Location(x,y)
+			handle = jass.CreateFogModifierRadiusLoc(self._handle,list[type],p,area,true,false)
+			jass.RemoveLocation(p)
+		end
+		local mt = {}
+		function mt:remove()
+			if not mt._isRemove then
+				mt._isRemove = true
+				jass.DestroyFogModifier(handle)
+			end
+		end
+		function mt:enable()
+			if not mt._isRemove then
+				jass.FogModifierStart(handle)
+			end
+		end
+		function mt:disable()
+			if not mt._isRemove then
+				jass.FogModifierStop(handle)
+			end
+		end
+		mt:enable()
+		local time = data.time
+		if time then
+			ac.wait(time,function()
+				mt:remove()
+			end)
+		end
+		return mt
+	end
+end
+
 local KEYBORD = require 'ac.war3.hotkey'
 
 function mt:setHotKey(slot,hotkey)

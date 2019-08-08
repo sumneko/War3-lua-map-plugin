@@ -689,6 +689,13 @@ end
 local function onCanCast(cast)
     local res = cast:eventDispatch('onCanCast')
     if res == false then
+	    --把扣掉的魔法加回来
+	    if cast.cost then
+			ac.wait(0,function()
+				local handle = cast:getOwner()._handle
+				jass.SetUnitState(handle,2,jass.GetUnitState(handle,2) + cast.cost)
+			end)
+		end
         return false
     end
     return true

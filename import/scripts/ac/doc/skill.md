@@ -79,6 +79,13 @@ showArea = 1
 area = 500
 ```
 
+### ignoreAcmi
+是否无视魔免
+
+```
+ignoreAcmi = 1
+```
+
 ### targetType
 目标类型
 

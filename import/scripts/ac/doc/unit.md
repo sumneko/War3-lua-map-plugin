@@ -711,8 +711,13 @@ unit:scale([scale: number])
     -> [scale: number]
 ```
 
-### visible
+### getSight
 ```lua
-unit:visible(unit/player)
-	-> boolean
+unit:getSight()
+	-> number
+```
+
+### addSight
+```lua
+unit:addSight(r:number)
 ```

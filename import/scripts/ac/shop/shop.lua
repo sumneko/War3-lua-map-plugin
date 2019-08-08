@@ -200,7 +200,7 @@ function mt:buyItem(name, buyer)
     if not item then
         return nil, err or '购买失败'
     end
-
+    ac.game:eventNotify('商店-出售物品', self, item)
     return item
 end
 
@@ -302,6 +302,15 @@ local function onDead(shop)
     shop._trg1:remove()
     shop._trg2:remove()
     shop._trg3:remove()
+end
+
+function mt:getName()
+	return self._unit:getName()
+end
+
+function mt:remove()
+	onDead(self)
+	self._unit:remove()
 end
 
 return {

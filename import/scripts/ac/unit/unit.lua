@@ -199,6 +199,8 @@ function ac.unit(handle)
 			['蓝'] = ac.toNumber(slkUnit.blue),
 			['透明度'] = 255,
         },
+        _sight = slkUnit.sight,
+        _nsight = slkUnit.nsight,
         _userData = {},
     }, mt)
     dbg.gchash(u, handle)
@@ -404,6 +406,29 @@ function mt:blink(point)
     end
     if not self:setPoint(point) then
         return false
+    end
+    return true
+end
+
+function mt:setPosition(point)
+	if self._removed then
+        return false
+    end
+    local x, y = point:getXY()
+    local minx, miny, maxx, maxy = ac.world.bounds()
+    if x < minx then
+        x = minx
+    elseif x > maxx then
+        x = maxx
+    end
+    if y < miny then
+        y = miny
+    elseif y > maxy then
+        y = maxy
+    end
+    jass.SetUnitPosition(self._handle,x,y)
+    if self._lastPoint then
+        self._lastPoint = ac.point(x, y)
     end
     return true
 end
@@ -1000,11 +1025,30 @@ function mt:iconLevel(tp, level)
     return self._skill:iconLevel(tp, level)
 end
 
-function mt:visible(player)
-	if player.type == 'unit' then
-		player = player:getOwner()
+function mt:addSight(r)
+	local unit = self._handle
+	jass.UnitAddAbility(unit,ac.id['@ASI'])
+	local skill = japi.EXGetUnitAbility(unit,ac.id['@ASI'])
+	japi.EXSetAbilityDataReal(skill,2,108,-r)
+	jass.SetUnitAbilityLevel(unit,ac.id['@ASI'], 2)
+	jass.UnitRemoveAbility(unit, ac.id['@ASI'])
+	self._sight = self._sight + r
+	self._nsight = self._nsight + r
+end
+
+function mt:getSight()
+	local time = ac.game:getDayTime()
+	local sight
+	if time >= 18 and time < 6 then
+		sight = self._sight
+	else
+		sight = self._nsight
 	end
-	return jass.IsUnitVisible(self._handle,player._handle)	
+	return math.max(0,math.min(1800,sight))
+end
+
+function mt:setFogArea(data)
+	self:getOwner():setFogArea(data)
 end
 
 return {

@@ -61,3 +61,9 @@ ac.game:setDayTime(time: number)
 ```lua
 ac.game:stopDayTime(boolean: boolean)
 ```
+
+### ac.game:getDayTime
+```lua
+ac.game:getDayTime()
+	-> number
+```

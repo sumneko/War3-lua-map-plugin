@@ -249,3 +249,12 @@ item:event('物品-即将购买', function (trg, item, buyer: unit, shop)
     return false, "不能购买"
 end)
 ```
+
+### 商店-出售物品
+
+购买物品时触发，此时的`item`并不是一个物品对象，因此只能进行数据读取等操作。
+
+```lua
+shop:event('物品-出售物品', function (trg, shop, item)
+end)
+```
