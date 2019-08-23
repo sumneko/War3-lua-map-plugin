@@ -70,3 +70,10 @@ end
 function ac.game:getDayTime()
 	return jass.GetTimeOfDay()
 end
+
+function ac.game:ping(point,time,data)
+	local x,y = point:getXY()
+	--jass.PingMinimap(x,y,time or 1)
+	data = data or {}
+	jass.PingMinimapEx(x,y,time or 1,data.r or 255,data.g or 255,data.b or 255,data.type or false)
+end

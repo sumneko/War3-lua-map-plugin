@@ -67,3 +67,14 @@ ac.game:stopDayTime(boolean: boolean)
 ac.game:getDayTime()
 	-> number
 ```
+
+### ac.game:ping
+```lua
+ac.game:ping(point:point[,time:number,data:table])
+data = {
+    r = 255,
+    g = 255,
+    b = 255,
+    type = true,
+}
+```
